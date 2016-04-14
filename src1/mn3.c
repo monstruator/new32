@@ -42,6 +42,7 @@ main(int argc, char **argv)
     	struct sigevent event;
 		pid_t pid, proxym;
 		long timer_mn3=0;
+		unsigned char num_mess=0;
 
 	delay(1500);
 	open_shmem();
@@ -53,14 +54,14 @@ main(int argc, char **argv)
 	if (p->cvs==10) 
 	{
 		name="SPIAK_N8_Eth2";// "192.168.3.1";
-		SRC_PORT=4003;
-		DST_PORT=4000;
+		SRC_PORT=4001;
+		DST_PORT=4001;
 	}
 	else 
 	{
-		name ="SPIAK_N9_Eth4";// "192.168.3.1";
-		SRC_PORT=4005;
-		DST_PORT=4001;
+		name ="SPIAK_N9_Eth4";// "192.168.1.2";
+		SRC_PORT=4002;
+		DST_PORT=4002;
 	}
 
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
@@ -81,12 +82,16 @@ main(int argc, char **argv)
 				bytes = Udp_Client_Read(&Uc42,bufi,4096);
 				if (bytes>0)
 				{
-					//printf(" Udp_READ=%d	\n", bytes);
-					//printf("\n<===== ");for(i=0;i<28;i++) printf(" %d ", bufi[i]);
+					printf(" Udp_READ=%d	\n", bytes);
+					printf("\n<===== ");for(i=0;i<28;i++) printf(" %d ", bufi[i]);
 
 					memcpy(&p->inbufMN3,&bufi,sizeof(packcmd));
 
 					memcpy(pack_buf,&p->toMN3,sizeof(packusoi)); ///!!!!!!
+					pack_buf[0]=70;
+					pack_buf[1]=num_mess++;
+					pack_buf[2]=1;
+					pack_buf[3]=1;
 					//printf("cr_com->MO3 = %d \n",	p->toMN3.cr_com);
 					//for(j=0;j<9;j++) printf("%08x ",p->toMN3.sost_kasrt[j]);  printf("\n");
 					//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
