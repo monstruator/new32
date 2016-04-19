@@ -93,7 +93,7 @@ main(int argc, char *argv[])
 	//create_shmem();
 	delay(2500);
 	open_shmem();
-	delay(100);
+	delay(1000);
 	
 	if (argc<3) 
 	{
