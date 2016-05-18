@@ -50,7 +50,7 @@ timer_t  tm10;
 struct sigevent event_sig;
 struct itimerspec timer_sig;
 
-unsigned short D_Bridge=D_BRD;
+unsigned short D_Bridge=D_BRD, power;
 long V_Bridge=V_BRD,Base_adr0,Base_adr2,value1=0xFFFFFFFF;
 int ind=0;
 struct conf_pci my_device;
@@ -176,13 +176,23 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 						{
 							case 1: p->work_com[c_step].s[i].status=1;
 									read_w=pc_rml(0x41f0);
-									if(p->verbose) printf("		R999 READ=%x %x\n",0x41f0,read_w);
-									p->work_com[c_step].s[i].status=2;
+									if (read_w == pc_rml(0x41f0))
+									{
+										if(p->verbose)
+										{
+											printf("		R999 READ=%x %x\n",0x41f0,read_w);
+											p->work_com[c_step].s[i].status=2;
+										}
+										else p->work_com[c_step].s[i].status=3;
+									}
+									else p->work_com[c_step].s[i].status=3;	
 									break;
 							case 2: p->work_com[c_step].s[i].status=1;
 									com999.cm.power=p->inbufMN3.a_params[0];
 									send_com();
+									if (p->inbufMN3.a_params[0]==((pc_rml(0x41f0) & 0x300000)>>20))
 									p->work_com[c_step].s[i].status=2;
+									else p->work_com[c_step].s[i].status=3;	
 									break;
 							case 4:	p->work_com[c_step].s[i].status=1; 
 									if(p->verbose) printf("		R999 BASE SETUP \n");
@@ -226,6 +236,7 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 									{
 										p->work_com[c_step].s[i].status=1; 
 										if(p->verbose) printf("		R999 REQUEST \n");
+										
 										pc_so_uf (1,0,1,0); //1 raz 1 slovo
 										pc_wml(0x8000,0x3a0201f8);		
 										pc_wm (0x2004,0x00); //KCP 
@@ -236,7 +247,19 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 									{
 										read_w=pc_rml(0x41f0);
 										if(p->verbose>1) printf("		R999 READ=%x %x\n",0x41f0,read_w);
+										printf("		R999 READ=%x %x\n",0x41f0,read_w);
+										printf("Chetnost'=%d\n",((pc_rml(0x41f0) & 0x1)>>31));
+										printf("Comandi=%d\n",((pc_rml(0x41f0) & 0x7f)>>24));
+										printf("RRCh=%d\n",((pc_rml(0x41f0) & 0x01)>>23));
+										printf("AP=%d\n",((pc_rml(0x41f0) & 0x01)>>22));
+										printf("Moshnost'=%d\n",((pc_rml(0x41f0) & 0x0c)>>18));
+										printf("C1-I=%d\n",((pc_rml(0x41f0) & 0x1)>>19));
+										printf("CA=%d\n",((pc_rml(0x41f0) & 0x01)>>18));
+										printf("Scorost'=%d\n",((pc_rml(0x41f0) & 0x03)>>16));
+										printf("Nomer kanala=%d\n",((pc_rml(0x41f0) & 0xFF)>>8));
+										printf("const=%d\n",((pc_rml(0x41f0) & 0x01)>>0));
 										p->toMN3.sost_r999=read_w;
+										
 										p->work_com[c_step].s[i].status=2;
 									}  
 									//if(p->verbose) printf("		%d %d\n",p->work_com[c_step].s[i].status,p->sys_timer - p->work_com[c_step].t_start);
