@@ -1,0 +1,10 @@
+cc -T3 -o timer timer.c
+cc -T3 -o mn3 mn3.c
+cc -T1 -ms -o Tcp_test Tcp_test.c
+cc -T1 -ms -o cpp_tcp cpp_tcp.c
+cc -T1 -ms -o rele1 rele1.c
+cc -T1 -ms -o r999 r999.c
+
+rm *.o
+
+ 
