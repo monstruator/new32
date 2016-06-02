@@ -79,6 +79,7 @@ main(int argc, char *argv[])
     short c_step=0,T0=0;	
     long cpp_timer=0;
     int data_read; //4tenie dannih 
+	struct form193 *f193;
 	//===============================================================================
 	//			 timer 10ms
 	event_sig.sigev_signo = SIGALRM;
@@ -362,6 +363,83 @@ main(int argc, char *argv[])
                                         p->work_com[c_step].s[i].status=2;
                                     }
                                     break;
+									
+							/*case 93: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
+                                    {   
+										memset( f193, 0, sizeof(struct sac) );
+										f193->s.ps = 1;
+										if( p->inbufMN3.a_params[1] ) {
+										f193->s.vr = 1;
+										f193->s.v0 = ( ( p->inbufMN3.a_params[1] % 3600 ) / 60 ) % 10;
+										f193->s.v1 = ( ( p->inbufMN3.a_params[1] % 3600 ) / 60 ) / 10;;
+										f193->s.v2 = ( p->inbufMN3.a_params[1] / 3600 ) % 10 ;
+										f193->s.v3 = ( p->inbufMN3.a_params[1] / 3600 ) / 10;
+										}
+										else f193->s.vr = 0;
+										f193->s.kvi = 2;
+										f193->s.nf = 193;
+										p->count_cpp_message++;
+										f193->s.r0 = ( ( ( p->count_cpp_message % 10000 ) % 1000 ) % 100 ) % 10;
+										f193->s.r1 = ( ( ( p->count_cpp_message % 10000 ) % 1000 ) % 100 ) / 10;
+										f193->s.r2 = ( ( p->count_cpp_message % 10000 ) % 1000 ) / 100;
+										f193->s.r3 = ( p->count_cpp_message % 10000 ) / 1000;										
+										
+										f193->a0 = ( ( ( ( p->inbufMN3.a_params[2] % 100000 ) % 10000 ) % 1000 ) % 100 ) % 10;
+										f193->a1 = ( ( ( ( p->inbufMN3.a_params[2] % 100000 ) % 10000 ) % 1000 ) % 100 ) / 10;
+										f193->a2 = ( ( ( p->inbufMN3.a_params[2] % 100000 ) % 10000 ) % 1000 ) / 100;
+										f193->a3 = ( ( p->inbufMN3.a_params[2] % 100000 ) % 10000 ) / 1000;
+										f193->a4 = ( p->inbufMN3.a_params[2] % 100000 ) / 10000;
+										f193->a5 = p->inbufMN3.a_params[2] / 100000;
+										f193->p0 = ( ( ( ( p->inbufMN3.a_params[3] % 100000 ) % 10000 ) % 1000 ) % 100 ) % 10;
+										f193->p1 = ( ( ( ( p->inbufMN3.a_params[3] % 100000 ) % 10000 ) % 1000 ) % 100 ) / 10;
+										f193->p2 = ( ( ( p->inbufMN3.a_params[3] % 100000 ) % 10000 ) % 1000 ) / 100;
+										f193->p3 = ( ( p->inbufMN3.a_params[3] % 100000 ) % 10000 ) / 1000;
+										f193->p4 = ( p->inbufMN3.a_params[3] % 100000 ) / 10000;
+										f193->p5 = p->inbufMN3.a_params[3] / 100000;
+										
+										p->a0_cpp=f193->a0;  //бортовой номер
+										p->a1_cpp=f193->a1;
+										p->a2_cpp=f193->a2;
+										p->a3_cpp=f193->a3;
+										p->a4_cpp=f193->a4;
+										p->a5_cpp=f193->a5;
+										p->p0_cpp=f193->p0;
+										p->p1_cpp=f193->p1;
+										p->p2_cpp=f193->p2;
+										p->p3_cpp=f193->p3;
+										p->p4_cpp=f193->p4;
+										p->p5_cpp=f193->p5;
+										
+										f193.t2=0x1d; 
+										
+										//f193.pn=0;
+										f193.kfs=43; 	
+										//f193.x=0; 
+										//f193.y=0;
+										//f193.k=0;
+										//f193.speed=0;
+										
+										f11.zag.TS=3;
+										f11.zag.II=2;
+										f11.zag.KSS=sizeof(struct form11)/2;
+										f11.zag.PS=1;
+										f11.data.KU0=0; f11.data.ustKU0=1; 
+										f11.data.KU1=0; f11.data.ustKU1=1;
+										f11.data.KU2=0; f11.data.ustKU2=1;
+										f11.data.KU3=1; f11.data.ustKU3=1;
+										f11.data.KU4=0; f11.data.ustKU4=1;
+										f11.data.KU5=1; f11.data.ustKU5=1;
+										f11.data.KU6=7; f11.data.ustKU6=1;
+										f11.data.KU7=0; f11.data.ustKU7=1;
+										f11.data.KU8=0; f11.data.ustKU8=1;
+										f11.data.KU9=0; f11.data.ustKU9=1;
+										f11.data.KU10=0; f11.data.ustKU10=1;
+										f11.data.KU11=0; f11.data.ustKU11=1;
+										f11.data.KU12=0; f11.data.ustKU12=1;
+										
+										  										
+                                    }
+                                    break;*/
 							default: 
 									if(p->verbose) printf("Bad minicom %d for %d chan : %d",p->work_com[c_step].s[i].n_com,N_CHAN);					
 									p->work_com[c_step].s[i].status=3;

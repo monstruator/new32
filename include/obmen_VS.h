@@ -217,6 +217,39 @@ typedef struct
 	short cur_step; //tekuwii wag vipolneni9 komandi
 	short kol_step; //kol-vo wagov vipolneni9 komandi
 	short verbose;	//detalizaci9 pe4ati
+	
+	short count_cpp_message;   //kolichestvo soobsheniy cpp
+	short count_r999_message;   //kolichestvo soobsheniy r999
+	unsigned short a0_cpp: 4;
+    unsigned short a1_cpp: 4;
+    unsigned short a2_cpp: 4;
+    unsigned short a3_cpp: 4;
+	  
+	unsigned short a4_cpp: 4;
+    unsigned short a5_cpp: 4;
+    unsigned short p0_cpp: 4;
+    unsigned short p1_cpp: 4;
+	  
+    unsigned short p2_cpp: 4;
+    unsigned short p3_cpp: 4;
+    unsigned short p4_cpp: 4;
+    unsigned short p5_cpp: 4;
+		
+	unsigned short a0_r999: 4;
+    unsigned short a1_r999: 4;
+    unsigned short a2_r999: 4;
+    unsigned short a3_r999: 4;
+	  
+	unsigned short a4_r999: 4;
+    unsigned short a5_r999: 4;
+    unsigned short p0_r999: 4;
+    unsigned short p1_r999: 4;
+	  
+    unsigned short p2_r999: 4;
+    unsigned short p3_r999: 4;
+    unsigned short p4_r999: 4;
+    unsigned short p5_r999: 4;
+	
 }SHMEM_MO3A;
 
 

@@ -46,6 +46,71 @@ struct form11
 	short CHK_SUM;
 };
 
+struct sac {
+      unsigned short ps: 1;
+      unsigned short vr: 1;
+      unsigned short rez1: 1;
+      unsigned short kvi: 4;
+      unsigned short rez2: 1;
+      unsigned short nf: 8;
+
+      unsigned short a0: 4;
+      unsigned short a1: 4;
+      unsigned short a2: 4;
+      unsigned short a3: 4;
+
+      unsigned short a4: 4;
+      unsigned short a5: 4;
+      unsigned short p0: 4;
+      unsigned short p1: 4;
+
+      unsigned short p2: 4;
+      unsigned short p3: 4;
+      unsigned short p4: 4;
+      unsigned short p5: 4;
+
+      unsigned short r0: 4;
+      unsigned short r1: 4;
+      unsigned short r2: 4;
+      unsigned short r3: 4;
+
+
+      unsigned short v0: 4;
+      unsigned short v1: 4;
+      unsigned short v2: 4;
+      unsigned short v3: 4;
+   };
+
+struct form193 {
+      struct sac s;
+      unsigned short t1: 8; 
+      unsigned short t2: 8; 
+      unsigned short pn: 8;
+      unsigned short kfs: 8;
+	  unsigned short x: 16;
+      unsigned short y: 16;
+      unsigned short k: 16;
+      unsigned short speed: 16;
+      unsigned short v1_0: 4;
+      unsigned short v1_1: 4;
+      unsigned short v1_2: 4;
+      unsigned short v1_3: 4;
+      unsigned int v2_0: 6;
+      unsigned int v2_1: 6;
+      unsigned int v2_2: 7;
+      unsigned int r11: 1;
+      unsigned int v3_0: 6;
+      unsigned int v3_1: 6;
+      unsigned short v3_2: 8;
+      unsigned short r12: 8;
+      unsigned short r13: 16;
+      unsigned short r14: 16;
+      unsigned short r15: 16;
+      unsigned short r16: 16;
+
+   };
+
+
 struct form13 
 {
 	char nf;//=13; //nomer formul9ra

@@ -128,12 +128,19 @@ main(int argc, char **argv)
 						p->work_com[n_s].s[n_mc].n_com=1; //SVCH work
 						p->work_com[n_s].s[n_mc].status=0;		
                         n_mc++; //kol-vo mini komand + 1
+						
+						p->work_com[n_s].s[n_mc].n_chan=3; //rele
+						if (p->inbufMN3.a_params[0]) p->work_com[n_s].s[n_mc].n_com=51;
+						else	p->work_com[n_s].s[n_mc].n_com=50;					
+						//p->work_com[n_s].s[n_mc].status=0;		
+						n_mc++; //kol-vo mini komand + 1
 					//---------------------------------------------
 					//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
                         p->work_com[n_s].t_start=p->sys_timer;                        
-                        p->work_com[n_s].t_stop =p->sys_timer+100;                        
+                        p->work_com[n_s].t_stop =p->sys_timer+100;
+						
  						break;
 				case 4 :
 						if (p->cvs==10)
@@ -599,7 +606,7 @@ main(int argc, char **argv)
 							n_s=1;  //nomer waga
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;
-							p->work_com[n_s].s[n_mc].n_com=2;
+							p->work_com[n_s].s[n_mc].n_com=10*p->inbufMN3.a_params[0];
 							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
@@ -621,7 +628,7 @@ main(int argc, char **argv)
 							n_s=1;  //nomer waga
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;
-							p->work_com[n_s].s[n_mc].n_com=1;
+							p->work_com[n_s].s[n_mc].n_com=10*p->inbufMN3.a_params[0]+1;
 							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
