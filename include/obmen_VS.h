@@ -173,7 +173,7 @@ typedef   struct  {
       short kzv; //kod zaverweni9 (0 - norma)
       int k_o; //kod owibki
       short fk; //kod FK (0 - norma)
-      short link; 
+      short link; //kod vipolneni9 komandi
 
       unsigned int sost_kasrt[9];
       unsigned int sost_spiak;
