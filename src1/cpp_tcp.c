@@ -19,8 +19,9 @@
 #define MaxKdr	  10000	//макс число хранимых кадров
 		  
 #include "../include/shared_mem.h"
-#include "../include/IP_nb.h"
-#include "../include/1.h"
+#include "../include/USOIwrk.h"
+#include "../include/CrSocket.h"
+#include "../include/MesForm.h"
 
   
 #define MS 1000000
@@ -31,14 +32,6 @@
 
 	#endif
 	
-// --------------my global--------------------
-      unsigned short buffer[62];
-      unsigned long k,sum;
-      unsigned char byte_bufer[124];
-      int i,jj,m,K,K_com,FLAG;                               
-      int FLAG_Z,FLAG_DMW,FLAG_CV;
-//--------------------------------------------   
- 
 un short bufW [LENBUFWR], bufR [LENBUFRD];
 pid_t proxy_time;
 volatile un counter;
