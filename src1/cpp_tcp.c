@@ -19,10 +19,8 @@
 #define MaxKdr	  10000	//макс число хранимых кадров
 		  
 #include "../include/shared_mem.h"
-#include "../include/USOIwrk.h"
-#include "../include/CrSocket.h"
-#include "../include/MesForm.h"
-
+#include "../include/IP_nb.h"
+#include "../include/1.h"
 
   
 #define MS 1000000
@@ -32,7 +30,15 @@
 		  HELPа
 
 	#endif
-
+	
+// --------------my global--------------------
+      unsigned short buffer[62];
+      unsigned long k,sum;
+      unsigned char byte_bufer[124];
+      int i,jj,m,K,K_com,FLAG;                               
+      int FLAG_Z,FLAG_DMW,FLAG_CV;
+//--------------------------------------------   
+ 
 un short bufW [LENBUFWR], bufR [LENBUFRD];
 pid_t proxy_time;
 volatile un counter;
@@ -169,7 +175,7 @@ main(int argc, char *argv[])
                                     break;
 							case 8: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			FM SHPS\n");
-									f11.data.KU4=p->inbufMN3.a_params[0];; //  0 - FM1, 1 - FM2 
+									f11.data.KU4=p->inbufMN3.a_params[0]; //  0 - FM1, 1 - FM2 
 									f11.data.ustKU4=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									col=tcp_send_read(col);
 									if ((col==0x14)&&(p->inbufMN3.a_params[0]==f12->data.SS3)) //esli otet=sosto9nie 

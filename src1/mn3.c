@@ -9,7 +9,8 @@
   #include <stdlib.h>
   #include <netdb.h>
   #include <math.h>
-  #include "../include/func_IP.h"
+  //#include "../include/func_IP.h"
+  #include "../include/IP_nb.h"
   #include "../include/shared_mem.h"
   
  //#define SRC_PORT 4003
@@ -22,7 +23,7 @@
   
 main(int argc, char **argv)
 {//--- KOHCTAHTbl npu6opa 1.0 ---//
-		int sock, length, i , count_mes=0, i1 , i_p=0 , i2=0 , j;
+		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0 , j;
 		static Udp_Client_t Uc42;
 		short c_step=0,TC10=0;	
 		char bufi[1024];
@@ -53,7 +54,8 @@ main(int argc, char **argv)
 	printf("START M03A<->PULT cvs=%d verbose=%d\n",p->cvs,p->verbose);
 	if (p->cvs==10) 
 	{
-		name="SPIAK_N8_Eth2";// "192.168.3.1";
+		//name="SPIAK_N8_Eth2";// "192.168.3.1";
+		name="192.168.1.2";
 		SRC_PORT=4001;
 		DST_PORT=4001;
 	}
@@ -82,7 +84,7 @@ main(int argc, char **argv)
 				bytes = Udp_Client_Read(&Uc42,bufi,4096);
 				if (bytes>0)
 				{
-					//printf(" Udp_READ=%d	\n", bytes);
+					//printf(" Udp_READ=%d	%d\n", bytes, ii++);
 					//printf("\n<===== ");for(i=0;i<28;i++) printf(" %d ", bufi[i]);
 
 					memcpy(&p->inbufMN3,&bufi,sizeof(packcmd));
@@ -517,7 +519,37 @@ main(int argc, char **argv)
                         p->work_com[n_s].t_start=p->sys_timer;                        
                         p->work_com[n_s].t_stop =p->sys_timer+100;                        
  						break;
-				case 63 : case 64 : case 65 : case 75 :
+						
+						case 62 : //t625 rqst
+						n_s=1;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=6; //t625
+						p->work_com[n_s].s[n_mc].n_com=1;
+						//p->work_com[n_s].s[n_mc].status=0;		
+						n_mc++; //kol-vo mini komand + 1
+						//---------------------------------------------
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+						p->work_com[n_s].t_start=p->sys_timer;                        
+						p->work_com[n_s].t_stop =p->sys_timer+100;   
+						break;
+						
+						case 63 : //t625 SVCH/DMW
+						n_s=1;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=6; //t625
+						p->work_com[n_s].s[n_mc].n_com=2;
+						//p->work_com[n_s].s[n_mc].status=0;		
+						n_mc++; //kol-vo mini komand + 1
+						//---------------------------------------------
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+						p->work_com[n_s].t_start=p->sys_timer;                        
+						p->work_com[n_s].t_stop =p->sys_timer+100;   
+						break;
+						
+						
+				case 64 : case 65 : case 75 :
 						
 						//Dobavil
 						 printf("cvs=%d\n", p->cvs);
@@ -688,6 +720,32 @@ main(int argc, char **argv)
 							p->toMN3.cr_com++;
 						}
  						break;
+					case 93 : //t625 inf
+						n_s=1;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=6; //t625
+						p->work_com[n_s].s[n_mc].n_com=3;
+						//p->work_com[n_s].s[n_mc].status=0;		
+						n_mc++; //kol-vo mini komand + 1
+						//---------------------------------------------
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+						p->work_com[n_s].t_start=p->sys_timer;                        
+						p->work_com[n_s].t_stop =p->sys_timer+100;   
+						break;
+				//	case 111 : //t625 rqst
+				//		n_s=1;  //nomer waga
+				//		n_mc=0; //s4et4ik mini komamdi
+				//		p->work_com[n_s].s[n_mc].n_chan=6; //t625
+				//		p->work_com[n_s].s[n_mc].n_com=1;
+				//		//p->work_com[n_s].s[n_mc].status=0;		
+				//		n_mc++; //kol-vo mini komand + 1
+						//---------------------------------------------
+				//		p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+				//		p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+				//		p->work_com[n_s].t_start=p->sys_timer;                        
+				//		p->work_com[n_s].t_stop =p->sys_timer+100;   
+				//		break;
 					default:    
                         printf("Bad command : %d\n",p->inbufMN3.num_com);
 						p->toMN3.kzv=1;

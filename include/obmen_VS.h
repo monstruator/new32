@@ -1,5 +1,133 @@
 #define BU1	1 //nomer interfeisa 
 #define CPP	2 //nomer interfeisa
+
+struct sac {
+      unsigned short ps: 1;
+      unsigned short vr: 1;
+      unsigned short rez1: 1;
+      unsigned short kvi: 4;
+      unsigned short rez2: 1;
+      unsigned short nf: 8;
+
+      unsigned short a0: 4;
+      unsigned short a1: 4;
+      unsigned short a2: 4;
+      unsigned short a3: 4;
+
+      unsigned short a4: 4;
+      unsigned short a5: 4;
+      unsigned short p0: 4;
+      unsigned short p1: 4;
+
+      unsigned short p2: 4;
+      unsigned short p3: 4;
+      unsigned short p4: 4;
+      unsigned short p5: 4;
+
+      unsigned short r0: 4;
+      unsigned short r1: 4;
+      unsigned short r2: 4;
+      unsigned short r3: 4;
+
+
+      unsigned short v0: 4;
+      unsigned short v1: 4;
+      unsigned short v2: 4;
+      unsigned short v3: 4;
+   }; 
+
+
+ typedef struct
+       {
+       struct Tabl_4_6_8
+        {
+        unsigned short Dlina;     // aeeia a aaeoao
+        unsigned short Ident;     // auai? ioi?aaeoaey
+        unsigned int   Parol_ml;  // ie aaeou ia?iey
+        unsigned short Zapros;    // oei niiauaiey
+        unsigned short Error;     // ioeaea
+        unsigned short Protokol;  // oi?aaeaiea T-625
+        unsigned short Tip;       // oei iaeaoa
+        unsigned char  Parol_st ; // no aaeo ia?iey
+        unsigned char  T625 ;     // oei iieo?aoaey
+        unsigned char  Reserv ;   // ?aca?a
+        unsigned char  CVM_A ;    // oei ioi?aaeoaey
+        } Read_com ;              // aeeia 20 aaeo
+     //-------------------------
+        struct Tabl_5
+        {
+        unsigned short Dlina;     // aeeia a aaeoao
+        unsigned short Ident;     // auai? ioi?aaeoaey
+        unsigned int   Parol_ml;  // ie aaeou ia?iey
+        unsigned short Zapros;    // oei niiauaiey
+        unsigned short Error;     // ioeaea
+        unsigned short Protokol;  // oi?aaeaiea T-625
+        unsigned short Tip;       // oei iaeaoa
+        unsigned char  Parol_st ; // no aaeo ia?iey
+        unsigned char  T625 ;     // oei iieo?aoaey
+        unsigned char  reserv ;   // ?aca?a
+        unsigned char  CVM_A ;    // oei ioi?aaeoaey
+        unsigned char  Sost;       // oae ninoiyiea
+        unsigned int   Reserv1;     // ?aca?a
+        unsigned short Opt;        // ?a?ei ?aaiou
+        } O_na_zapros;              // aeeia 27 aaeo
+    //---------------------------------------------------
+        struct Tabl_7_9
+        {
+        unsigned short Dlina;     // aeeia a aaeoao
+        unsigned short Ident;     // auai? ioi?aaeoaey
+        unsigned int   Parol_ml;  // ie aaeou ia?iey
+        unsigned short Zapros;    // oei niiauaiey
+        unsigned short Error;     // ioeaea
+        unsigned short Protokol;  // oi?aaeaiea T-625
+        unsigned short Tip;       // oei iaeaoa
+        unsigned char  Parol_st ; // no aaeo ia?iey
+        unsigned char  T625 ;     // oei iieo?aoaey
+        unsigned char  reserv ;   // ?aca?a
+        unsigned char  CVM_A ;    // oei ioi?aaeoaey
+        unsigned short N_kan;     // iiia? eaiaea
+        unsigned int   Ident_r;   // eaaioeo ii?aaaey?uee ?a?ei eaiaea
+        unsigned short R1;        // ?aca?a
+        unsigned short R2;        // ?aca?a
+        unsigned char  Result;    // ?acoeuoao onoaiiaee
+        }  O_na_kom;               // aeeia 31 aae
+        } STR625;
+
+       union  {
+        unsigned char bufcom[31];
+        struct Tabl_4_6_8 Read_com;
+        struct Tabl_5 O_na_zapros;
+        struct Tabl_7_9 O_na_kom;} read_7118;   
+ //-----------------------------------------------
+    typedef            struct Tabl_2
+        {
+        unsigned short OICH;
+        unsigned short Protokol;
+        unsigned short N_Port;
+        unsigned short N_Can;
+        struct sac Sach;
+        unsigned short Data[50];
+        unsigned int Summa;
+        } Read_inf;
+
+       union  {
+	   unsigned short buffer[62];
+       unsigned char byte_bufer[124];
+	   struct Tabl_2 Read_inf;}
+	   read_data;
+   
+typedef   struct 
+{   
+    unsigned int count625_cmd ;  // s4et4ik prynjatyx cmd 625
+    unsigned int  count625_inf ; // s4et4ik prinjatyx paketov dannyx 625
+    unsigned char T625_on_off;
+    unsigned char T625_ok_nok;
+    unsigned char T625_Result;
+    unsigned char T625_SV_Result;
+    unsigned char T625_DMW_Result; 
+} cmd625;
+ 
+
 typedef struct {
 	unsigned short cr_data_pac;
 	short	SVCH_FORM_SACH[6];
@@ -173,7 +301,7 @@ typedef   struct  {
       short kzv; //kod zaverweni9 (0 - norma)
       int k_o; //kod owibki
       short fk; //kod FK (0 - norma)
-      short link; //kod vipolneni9 komandi
+      short link; 
 
       unsigned int sost_kasrt[9];
       unsigned int sost_spiak;
@@ -218,8 +346,15 @@ typedef struct
 	short kol_step; //kol-vo wagov vipolneni9 komandi
 	short verbose;	//detalizaci9 pe4ati
 	
+	short    komanda625;
+	short    SOST625;
+	cmd625   cmd_625;   //otvet iz t625 
+	Read_inf inf_625;   //inf for t625
+	
 	short count_cpp_message;   //kolichestvo soobsheniy cpp
 	short count_r999_message;   //kolichestvo soobsheniy r999
+	
+	
 	unsigned short a0_cpp: 4;
     unsigned short a1_cpp: 4;
     unsigned short a2_cpp: 4;
