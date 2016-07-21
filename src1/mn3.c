@@ -123,8 +123,7 @@ main(int argc, char **argv)
 				case 1 : 
 					n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
 					p->work_com[n_s].s[n_mc].n_chan=2;
-					p->work_com[n_s].s[n_mc].n_com=1; //SVCH work
-					p->work_com[n_s].s[n_mc].status=0;		
+					p->work_com[n_s].s[n_mc].n_com=1; //SVCH work		
                     n_mc++; //kol-vo mini komand + 1
 					
 					if (p->cvs==10)
@@ -216,7 +215,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=101;//all ok status=2
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -235,7 +233,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=5;//SVCH PRD-PRM CHAN
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -257,7 +254,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=2;
 						p->work_com[n_s].s[n_mc].n_com=101;//all ok status=2
-						p->work_com[n_s].s[n_mc].status=0;		
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -275,7 +271,6 @@ main(int argc, char **argv)
 								n_mc=0; //s4et4ik mini komamdi
 								p->work_com[n_s].s[n_mc].n_chan=4;
 								p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com;
-								p->work_com[n_s].s[n_mc].status=0;		
 								n_mc++; //kol-vo mini komand + 1
 								//---------------------------------------------
 								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -304,7 +299,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com; //nado naoborot
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							//---------------------------------------------
@@ -328,7 +322,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
@@ -340,7 +333,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;//rele
 							p->work_com[n_s].s[n_mc].n_com=40;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							//---------------------------------------------
@@ -354,7 +346,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;
 							p->work_com[n_s].s[n_mc].n_com=50;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -378,7 +369,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 
 							//---------------------------------------------
@@ -391,8 +381,8 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;//rele
 							p->work_com[n_s].s[n_mc].n_com=41;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
+							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;  }
@@ -401,7 +391,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;
 							p->work_com[n_s].s[n_mc].n_com=40;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -424,7 +413,6 @@ main(int argc, char **argv)
 						p->work_com[n_s].s[n_mc].n_chan=3;
 						if (p->fromMN3.a_params[0]) p->work_com[n_s].s[n_mc].n_com=21;
 						else p->work_com[n_s].s[n_mc].n_com=20; //! 20
-						p->work_com[n_s].s[n_mc].status=0;		
 						n_mc++; //kol-vo mini komand + 1
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->work_com[n_s].t_start=p->sys_timer;                        
@@ -445,7 +433,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com; //SVCH ATT
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -466,7 +453,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=2;
 						p->work_com[n_s].s[n_mc].n_com=101;//all ok status=2
-						p->work_com[n_s].s[n_mc].status=0;		
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -482,7 +468,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -502,8 +487,7 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=2;
 						p->work_com[n_s].s[n_mc].n_com=61; //SVCH status
-						p->work_com[n_s].s[n_mc].status=0;		
-                        n_mc++; //kol-vo mini komand + 1
+						n_mc++; //kol-vo mini komand + 1
 					//---------------------------------------------
 					
 					//---------------------------------------------
@@ -518,7 +502,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=6; //t625
 						p->work_com[n_s].s[n_mc].n_com=1;
-						//p->work_com[n_s].s[n_mc].status=0;		
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -532,7 +515,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=6; //t625
 						p->work_com[n_s].s[n_mc].n_com=2;
-						//p->work_com[n_s].s[n_mc].status=0;		
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -551,12 +533,10 @@ main(int argc, char **argv)
 							p->work_com[n_s].s[n_mc].n_com=41; 
 							else
 							p->work_com[n_s].s[n_mc].n_com=40;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=65;   //FK
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -570,7 +550,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=65;   //FK
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 						
 							p->work_com[n_s].t_start=p->sys_timer;                        
@@ -587,7 +566,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=1;
 						p->work_com[n_s].s[n_mc].n_com=2;
-						p->work_com[n_s].s[n_mc].status=0;						
 						n_mc++; //kol-vo mini komand + 1						
                         p->work_com[n_s].t_start=p->sys_timer;                        
                         p->work_com[n_s].t_stop =p->sys_timer+100;                        
@@ -598,7 +576,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=1;
 						p->work_com[n_s].s[n_mc].n_com=2;
-						p->work_com[n_s].s[n_mc].status=0;						
 						n_mc++; //kol-vo mini komand + 1						
                         p->work_com[n_s].t_start=p->sys_timer;                        
                         p->work_com[n_s].t_stop =p->sys_timer+200;                        
@@ -626,8 +603,7 @@ main(int argc, char **argv)
 					n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
 					p->work_com[n_s].s[n_mc].n_chan=2;
 					p->work_com[n_s].s[n_mc].n_com=90; //SVCH work
-					p->work_com[n_s].s[n_mc].status=0;		
-                    n_mc++; //kol-vo mini komand + 1
+					n_mc++; //kol-vo mini komand + 1
 					
 					if (p->cvs==10)
 					{
@@ -652,7 +628,6 @@ main(int argc, char **argv)
 							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->work_com[n_s].s[n_mc].n_com=65;   //FK
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -669,7 +644,6 @@ main(int argc, char **argv)
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->fromMN3.a_params[0]=1; //FK 1 CPP
 							p->work_com[n_s].s[n_mc].n_com=65;   //FK
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -686,7 +660,6 @@ main(int argc, char **argv)
 							p->work_com[n_s].s[n_mc].n_chan=2;
 							p->fromMN3.a_params[0]=1; //FK 1 CPP
 							p->work_com[n_s].s[n_mc].n_com=66;   //FK
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -706,7 +679,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;
 							p->work_com[n_s].s[n_mc].n_com=10*p->fromMN3.a_params[0];
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -728,7 +700,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=3;
 							p->work_com[n_s].s[n_mc].n_com=10*p->fromMN3.a_params[0]+1;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -750,7 +721,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=4;
 							p->work_com[n_s].s[n_mc].n_com=1;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -772,7 +742,6 @@ main(int argc, char **argv)
 							n_mc=0; //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=4;
 							p->work_com[n_s].s[n_mc].n_com=2;
-							p->work_com[n_s].s[n_mc].status=0;		
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -792,7 +761,6 @@ main(int argc, char **argv)
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=6; //t625
 						p->work_com[n_s].s[n_mc].n_com=3;
-						//p->work_com[n_s].s[n_mc].status=0;		
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
@@ -804,8 +772,7 @@ main(int argc, char **argv)
 				//		n_s=1;  //nomer waga
 				//		n_mc=0; //s4et4ik mini komamdi
 				//		p->work_com[n_s].s[n_mc].n_chan=6; //t625
-				//		p->work_com[n_s].s[n_mc].n_com=1;
-				//		//p->work_com[n_s].s[n_mc].status=0;		
+				//		p->work_com[n_s].s[n_mc].n_com=1;	
 				//		n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 				//		p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
