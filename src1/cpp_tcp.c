@@ -180,11 +180,10 @@ main(int argc, char *argv[])
 									else p->work_com[c_step].s[i].status=3;
                                     if(p->verbose) printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 									break;
-							case 12: 
-							
+							case 12: 	
 									/*p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			SVCH TKI-RLI \n");
-									f11.data.KU3=p->fromMN3.a_params[0]; //  1 - TKI, 0 - RLI 
+									f11.data.KU3=p->fromMN3.a_params[0]; //  0 - TKI, 1 - RLI 
 									f11.data.ustKU3=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									col=tcp_send_read(col);
 									printf("SS21=%d\n",f12->data.SS2_1);
@@ -203,7 +202,7 @@ main(int argc, char *argv[])
 									{
 										p->work_com[c_step].s[i].status=1;
 										if(p->verbose) printf("			SVCH TKI-RLI \n");
-										f11.data.KU3=p->fromMN3.a_params[0]; //  1 - TKI, 0 - RLI 
+										f11.data.KU3=p->fromMN3.a_params[0]; //  0 - TKI, 1 - RLI 
 										f11.data.ustKU3=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										col=tcp_send_read(col);
 										//printf("SS2=%d\n",f12->data.SS2_1);
@@ -362,7 +361,7 @@ main(int argc, char *argv[])
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									f11.data.KU2=1; //priem : 1 - vkl, 0 - otkl 
 									f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									f11.data.KU3=1;//  1 - TKI, 0 - RLI 
+									f11.data.KU3=0;//  0 - TKI, 1 - RLI 
 									f11.data.ustKU3=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									f11.data.KU7=0;//  oslablenie 0 - 25
 									f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'

@@ -21,7 +21,7 @@ struct form11
 	char ustKU1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 	char KU2; // priem : 1 - vkl, 0 - otkl 
 	char ustKU2; // 1 - ustanovit' , 0 - ne ustanavlivat'
-	char KU3; //  1 - TKI, 0 - RLI 
+	char KU3; //  0 - TKI, 1 - RLI 
 	char ustKU3; // 1 - ustanovit' , 0 - ne ustanavlivat'
 	char KU4; //  1 - FM1, 0 - FM2 
 	char ustKU4; // 1 - ustanovit' , 0 - ne ustanavlivat'
