@@ -46,41 +46,6 @@ struct form11
 	short CHK_SUM;
 };
 
-struct sac {
-      unsigned short ps: 1;
-      unsigned short vr: 1;
-      unsigned short rez1: 1;
-      unsigned short kvi: 4;
-      unsigned short rez2: 1;
-      unsigned short nf: 8;
-
-      unsigned short a0: 4;
-      unsigned short a1: 4;
-      unsigned short a2: 4;
-      unsigned short a3: 4;
-
-      unsigned short a4: 4;
-      unsigned short a5: 4;
-      unsigned short p0: 4;
-      unsigned short p1: 4;
-
-      unsigned short p2: 4;
-      unsigned short p3: 4;
-      unsigned short p4: 4;
-      unsigned short p5: 4;
-
-      unsigned short r0: 4;
-      unsigned short r1: 4;
-      unsigned short r2: 4;
-      unsigned short r3: 4;
-
-
-      unsigned short v0: 4;
-      unsigned short v1: 4;
-      unsigned short v2: 4;
-      unsigned short v3: 4;
-   };
-
 struct form193 {
       struct sac s;
       unsigned short t1: 8; 

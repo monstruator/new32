@@ -36,6 +36,22 @@ struct sac {
       unsigned short v3: 4;
    }; 
 
+struct sostSPIAK {
+      unsigned char Spiak: 1;
+      unsigned char Cpp:   1;
+      unsigned char T625:  1;
+      unsigned char rez1:  5;
+	 
+	  unsigned char ispr:  1;
+	  unsigned char rabota:1;
+	  unsigned char reset: 1;
+	  unsigned char regl:  1;
+	  unsigned char konez: 1;
+	  unsigned char kontr: 1;
+	  unsigned char rez2:  2;
+	  
+	  unsigned short rez3;     
+   }; 
 
  typedef struct
        {
@@ -118,7 +134,7 @@ struct sac {
    
 typedef   struct 
 {   
-    unsigned int count625_cmd ;  // s4et4ik prynjatyx cmd 625
+    unsigned int  count625_cmd ;  // s4et4ik prynjatyx cmd 625
     unsigned int  count625_inf ; // s4et4ik prinjatyx paketov dannyx 625
     unsigned char T625_on_off;
     unsigned char T625_ok_nok;
@@ -300,11 +316,11 @@ typedef   struct  {
       int lp2_param; //1 parametr komandi
       short kzv; //kod zaverweni9 (0 - norma)
       int k_o; //kod owibki
-      short fk; //kod FK (0 - norma)
+      short fk; //kod FK (0 - norma / 1 - ne norma)
       short link; 
 
       unsigned int sost_kasrt[9];
-      unsigned int sost_spiak;
+      struct sostSPIAK sost_spiak  ;
 	  unsigned int sost_r999;
 
       Mem_Region23_t Mem_Region2;

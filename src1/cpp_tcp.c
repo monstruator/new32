@@ -79,6 +79,7 @@ main(int argc, char *argv[])
     long cpp_timer=0;
     int data_read; //4tenie dannih 
 	struct form193 *f193;
+	int ustSS=0; // ustanovlennoe zna4enie
 	//===============================================================================
 	//			 timer 10ms
 	event_sig.sigev_signo = SIGALRM;
@@ -139,11 +140,12 @@ main(int argc, char *argv[])
 						{
 							case 1: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			SVCH work \n");
-									f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									if (p->inbufMN3.a_params[0]==1) f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									else f11.data.KU0=ustSS=2;
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									//col = sizeof(f11);
 									col=tcp_send_read(col);
-									if ((f12->data.SS1==0)&&(col==0x14)) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->inbufMN3.a_params[0]==1)) //esli otet=sosto9nie 
+									if ((f12->data.SS1==ustSS)&&(col==0x14)&&(f12->data.SS0_all==1)) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->inbufMN3.a_params[0]==1)) //esli otet=sosto9nie 
 									{
 										//if (f12->data.SS0_all) 
 										p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -198,7 +200,7 @@ main(int argc, char *argv[])
 									else p->work_com[c_step].s[i].status=3;
                                     break;
 									*/
-									 if(p->work_com[c_step].s[i].status==0) 
+									if(p->work_com[c_step].s[i].status==0) 
 									{
 										p->work_com[c_step].s[i].status=1;
 										if(p->verbose) printf("			SVCH TKI-RLI \n");
@@ -320,24 +322,48 @@ main(int argc, char *argv[])
 									else p->work_com[c_step].s[i].status=3;
                                     //printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 									break;
-							case 65 : case 75: p->work_com[c_step].s[i].status=1;
-                                    if(p->verbose) printf("		FK %d \n",p->inbufMN3.a_params[0]);
-									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+							case 65 : 
+								p->work_com[c_step].s[i].status=1;
+                                if(p->verbose) printf("		FK %d \n",p->inbufMN3.a_params[0]);
+								f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+								f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+								f11.data.KU8=p->inbufMN3.a_params[0]; //FK 1 - 12
+								f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+								col=tcp_send_read(col);
+								if ((col==0x14)&&(p->inbufMN3.a_params[0]==f12->data.SS7)&&(f12->data.SS1==1)) //esli otet=sosto9nie 
+								{
+									
+									if (f12->data.SS0_prm==0) p->toMN3.fk=1;
+									p->work_com[c_step].s[i].status=2; // ispravnost'
+								}
+								else p->work_com[c_step].s[i].status=3;
+								if(p->verbose>1) printf("SS7=%d ",f12->data.SS7);
+								break;
+							case 90:
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									if(p->verbose) printf("			SVCH work \n");
+									f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									f11.data.KU8=p->inbufMN3.a_params[0]; //FK 1 - 12
-									f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU2=1; //priem : 1 - vkl, 0 - otkl 
+									f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU3=1;//  1 - TKI, 0 - RLI 
+									f11.data.ustKU3=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU7=0;//  oslablenie 0 - 25
+									f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									//col = sizeof(f11);
 									col=tcp_send_read(col);
-									if ((col==0x14)&&( p->inbufMN3.a_params[0]==f12->data.SS7)) //esli otet=sosto9nie 
-									{
-										if(p->verbose>1) 
-										{	
-											if(p->verbose>1) printf("SS7=%d ",f12->data.SS7);
-											if(p->verbose) {if (f12->data.SS1==0) printf("WK \n"); else printf("FK\n");}
-										}
-										p->work_com[c_step].s[i].status=2; // ispravnost'
-									}
-									else p->work_com[c_step].s[i].status=3;
-                                    break;
+								}
+								
+								if ((col==0x14)&&(f12->data.SS0_all==1)&&(p->work_com[c_step].s[i].status==1)) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->inbufMN3.a_params[0]==1)) //esli otet=sosto9nie 
+								{
+									if ((f12->data.SS0_all)&&(f12->data.SS1==0)&&(f12->data.SS2_0==0)&&(f12->data.SS2_1==0)&&(f12->data.SS6==0)) 
+									p->work_com[c_step].s[i].status=2; // ispravnost'
+								}
+								else p->work_com[c_step].s[i].status=3;
+                                //printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
+								break;
 							case 103: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
                                     {   
                                         printf("Send to 1 chan\n");
@@ -571,10 +597,12 @@ short tcp_send_read(int col)
 				
 				if(p->verbose) printf("\n");
 				//printf("nf=%d\n",f12->data.nf);
+				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 				return f12->zag.TS;
 			}
 			else 
 			{
+				p->toMN3.sost_spiak.Cpp=0; //neispavno CPP
 				return 0; //owibka soedineni9
 			}//owibka priema
 			T_ALRM=0;

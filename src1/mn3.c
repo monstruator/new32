@@ -115,7 +115,7 @@ main(int argc, char **argv)
                // p->toMN3.krk = 0;
                 p->toMN3.link = 0;
 					
-				printf("\nNew command : %d , param: %d %d %d    time=%d\n",p->inbufMN3.num_com,p->inbufMN3.a_params[0],p->inbufMN3.a_params[1],p->inbufMN3.a_params[2],p->sys_timer);
+				printf("\n-------------------   New command : %d , param: %d %d %d    time=%d   ---------\n",p->inbufMN3.num_com,p->inbufMN3.a_params[0],p->inbufMN3.a_params[1],p->inbufMN3.a_params[2],p->sys_timer);
 				switch (p->inbufMN3.num_com)
 				{
 				case 1 : 
@@ -124,24 +124,24 @@ main(int argc, char **argv)
 				//#else
 				case 70 :    
 				//#endif  
-						n_s=1;  //nomer waga
-						n_mc=0; //s4et4ik mini komamdi
-						p->work_com[n_s].s[n_mc].n_chan=2;
-						p->work_com[n_s].s[n_mc].n_com=1; //SVCH work
-						p->work_com[n_s].s[n_mc].status=0;		
-                        n_mc++; //kol-vo mini komand + 1
-						
+					n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
+					p->work_com[n_s].s[n_mc].n_chan=2;
+					p->work_com[n_s].s[n_mc].n_com=1; //SVCH work
+					p->work_com[n_s].s[n_mc].status=0;		
+                    n_mc++; //kol-vo mini komand + 1
+					
+					if (p->cvs==10)
+					{
 						p->work_com[n_s].s[n_mc].n_chan=3; //rele
 						if (p->inbufMN3.a_params[0]) p->work_com[n_s].s[n_mc].n_com=51;
-						else	p->work_com[n_s].s[n_mc].n_com=50;					
-						//p->work_com[n_s].s[n_mc].status=0;		
+						else	p->work_com[n_s].s[n_mc].n_com=50;						
 						n_mc++; //kol-vo mini komand + 1
+					}
 					//---------------------------------------------
-					//---------------------------------------------
-						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-                        p->work_com[n_s].t_start=p->sys_timer;                        
-                        p->work_com[n_s].t_stop =p->sys_timer+100;
+					p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+					p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+                    p->work_com[n_s].t_start=p->sys_timer;                        
+                    p->work_com[n_s].t_stop =p->sys_timer+100;
 						
  						break;
 				case 4 :
@@ -534,7 +534,7 @@ main(int argc, char **argv)
 						p->work_com[n_s].t_stop =p->sys_timer+100;   
 						break;
 						
-						case 63 : //t625 SVCH/DMW
+				case 63 : //t625 SVCH/DMW
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=6; //t625
@@ -550,9 +550,6 @@ main(int argc, char **argv)
 						
 						
 				case 64 : case 65 : case 75 :
-						
-						//Dobavil
-						 printf("cvs=%d\n", p->cvs);
 						if (p->cvs==10) {
 							n_s=1;  //nomer waga
 							n_mc=0; //s4et4ik mini komamdi
@@ -631,6 +628,49 @@ main(int argc, char **argv)
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage 
 
 						//printf("номер канала на нулевом шаге = %d\n",p->work_com[0].s[0].n_chan);
+ 						break;
+				case 90 :    
+				//#endif  
+					n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
+					p->work_com[n_s].s[n_mc].n_chan=2;
+					p->work_com[n_s].s[n_mc].n_com=90; //SVCH work
+					p->work_com[n_s].s[n_mc].status=0;		
+                    n_mc++; //kol-vo mini komand + 1
+					
+					if (p->cvs==10)
+					{
+						p->work_com[n_s].s[n_mc].n_chan=3; //rele
+						if (p->inbufMN3.a_params[0]) p->work_com[n_s].s[n_mc].n_com=51;
+						else	p->work_com[n_s].s[n_mc].n_com=50;						
+						n_mc++; //kol-vo mini komand + 1
+					}
+					//---------------------------------------------
+					p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+					p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+                    p->work_com[n_s].t_start=p->sys_timer;                        
+                    p->work_com[n_s].t_stop =p->sys_timer+100;
+						
+ 						break;
+				case 92 : //FK SPIAK
+						switch (p->inbufMN3.a_params[0])
+						{
+						case 1:	
+							if (p->cvs==11) 
+							{
+								n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=2;
+								p->work_com[n_s].s[n_mc].n_com=65;   //FK
+								p->work_com[n_s].s[n_mc].status=0;		
+								n_mc++; //kol-vo mini komand + 1
+							
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+								p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
+								p->work_com[n_s].t_start=p->sys_timer;                        
+								p->work_com[n_s].t_stop =p->sys_timer+300;  
+								p->kol_step=n_s; //obwee kol-vo wagov na dannom wage  
+							}
+						
+						}
  						break;
 				case 100 : //rele_off
 						if ((p->inbufMN3.a_params[0]>=0)&&(p->inbufMN3.a_params[0]<9))
@@ -731,7 +771,7 @@ main(int argc, char **argv)
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
 						p->work_com[n_s].t_start=p->sys_timer;                        
-						p->work_com[n_s].t_stop =p->sys_timer+100;   
+						p->work_com[n_s].t_stop =p->sys_timer+300;   
 						break;
 				//	case 111 : //t625 rqst
 				//		n_s=1;  //nomer waga
@@ -804,7 +844,7 @@ main(int argc, char **argv)
 			}
 			if ((p->cur_step > p->kol_step) && (p->kol_step!=0)) //vse wagi proideni, komanda vopolnena
 			{
-				printf("Command %d complete , time=%d \n",p->fromMN3.num_com,p->sys_timer);
+				printf("\n-------------------   Command %d complete , time=%d   -------------------\n",p->fromMN3.num_com,p->sys_timer);
 				// NADO GOTOVIT' DANNIE DL9 MN3 ------------------------
 				//------------------------------------------------------
 				//------------------------------------------------------	

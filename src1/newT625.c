@@ -89,7 +89,7 @@ main(int argc, char *argv[])
 	p->cmd_625.count625_cmd=0;
     p->cmd_625.T625_on_off=0;
     p->komanda625=0;
-    time625=100;    // что это?
+    time625=50;    // что это?
 	
 	printf("START MO3A<->T625 \n\n");
 //---------------------------------------------------------------------	
@@ -113,7 +113,6 @@ main(int argc, char *argv[])
 							case 1: switch(p->inbufMN3.a_params[0])
 									{
 										case 0:	send_zapros(); break;
-
 									}
 									
 									Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
