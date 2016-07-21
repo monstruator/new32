@@ -136,7 +136,6 @@ main(int argc, char **argv)
 					//---------------------------------------------
 					p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 					p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-                    p->work_com[n_s].t_start=p->sys_timer;                        
                     p->work_com[n_s].t_stop =p->sys_timer+100;
 						
  						break;
@@ -218,7 +217,6 @@ main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;
 							//p->kol_step=n_s; //obwee kol-vo wagov na dannom wage  
 						}
@@ -236,8 +234,6 @@ main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-							
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage   
 						}
@@ -257,7 +253,6 @@ main(int argc, char **argv)
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-						p->work_com[n_s].t_start=p->sys_timer;                        
 						p->work_com[n_s].t_stop =p->sys_timer+100;
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage   
 					}
@@ -274,7 +269,6 @@ main(int argc, char **argv)
 								n_mc++; //kol-vo mini komand + 1
 								//---------------------------------------------
 								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-								p->work_com[n_s].t_start=p->sys_timer;                        
 								p->work_com[n_s].t_stop =p->sys_timer+100; 
 								
 								n_s=2;  n_mc=0; //s4et4ik mini komamdi
@@ -304,7 +298,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+300;   
 						}
 						else 
@@ -325,7 +318,6 @@ main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;  }
 							
 							else {
@@ -338,7 +330,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;  
 							}
 							/*
@@ -350,7 +341,6 @@ main(int argc, char **argv)
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+200;  					
 							*/
 						}
@@ -364,17 +354,17 @@ main(int argc, char **argv)
 					case 15 : 
 						if ((p->fromMN3.a_params[0]>=0)&&(p->fromMN3.a_params[0]<2))
 						{
-							if (p->cvs==11) {
-							n_s=1;  //nomer waga
-							n_mc=0; //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=2;
-							p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com;
-							n_mc++; //kol-vo mini komand + 1
-
-							//---------------------------------------------
-							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-							p->work_com[n_s].t_start=p->sys_timer;                        
-							p->work_com[n_s].t_stop =p->sys_timer+100;  }
+							if (p->cvs==11) 
+							{
+								n_s=1;  //nomer waga
+								n_mc=0; //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=2;
+								p->work_com[n_s].s[n_mc].n_com=p->fromMN3.num_com;
+								n_mc++; //kol-vo mini komand + 1
+								//---------------------------------------------
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+								p->work_com[n_s].t_stop =p->sys_timer+100;  
+							}
 							
 							else {
 							n_s=1;  //nomer waga
@@ -384,7 +374,6 @@ main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;  }
 
 							/*n_s=2;  //nomer waga
@@ -395,7 +384,6 @@ main(int argc, char **argv)
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+200;  
 							*/
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage							
@@ -415,7 +403,6 @@ main(int argc, char **argv)
 						else p->work_com[n_s].s[n_mc].n_com=20; //! 20
 						n_mc++; //kol-vo mini komand + 1
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-						p->work_com[n_s].t_start=p->sys_timer;                        
 						p->work_com[n_s].t_stop =p->sys_timer+100; 
 						//---------------------------------------------
 						  
@@ -437,7 +424,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;   
 						}
 						else 
@@ -456,7 +442,6 @@ main(int argc, char **argv)
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
-						p->work_com[n_s].t_start=p->sys_timer;                        
 						p->work_com[n_s].t_stop =p->sys_timer+100;
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage  
 					}  
@@ -472,7 +457,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;   
 						}
 						else 
@@ -493,7 +477,6 @@ main(int argc, char **argv)
 					//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-                        p->work_com[n_s].t_start=p->sys_timer;                        
                         p->work_com[n_s].t_stop =p->sys_timer+100;                        
  						break;
 						
@@ -506,7 +489,6 @@ main(int argc, char **argv)
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-						p->work_com[n_s].t_start=p->sys_timer;                        
 						p->work_com[n_s].t_stop =p->sys_timer+100;   
 						break;
 						
@@ -519,11 +501,8 @@ main(int argc, char **argv)
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-						p->work_com[n_s].t_start=p->sys_timer;                        
 						p->work_com[n_s].t_stop =p->sys_timer+100;   
 						break;
-						
-						
 				case 64 : case 65 : case 75 :
 						if (p->cvs==10) {
 							n_s=1;  //nomer waga
@@ -541,7 +520,6 @@ main(int argc, char **argv)
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 						}
 						else
@@ -552,7 +530,6 @@ main(int argc, char **argv)
 							p->work_com[n_s].s[n_mc].n_com=65;   //FK
 							n_mc++; //kol-vo mini komand + 1
 						
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;          
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						}
@@ -567,7 +544,6 @@ main(int argc, char **argv)
 						p->work_com[n_s].s[n_mc].n_chan=1;
 						p->work_com[n_s].s[n_mc].n_com=2;
 						n_mc++; //kol-vo mini komand + 1						
-                        p->work_com[n_s].t_start=p->sys_timer;                        
                         p->work_com[n_s].t_stop =p->sys_timer+100;                        
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 
@@ -577,7 +553,6 @@ main(int argc, char **argv)
 						p->work_com[n_s].s[n_mc].n_chan=1;
 						p->work_com[n_s].s[n_mc].n_com=2;
 						n_mc++; //kol-vo mini komand + 1						
-                        p->work_com[n_s].t_start=p->sys_timer;                        
                         p->work_com[n_s].t_stop =p->sys_timer+200;                        
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 					
@@ -615,10 +590,8 @@ main(int argc, char **argv)
 					//---------------------------------------------
 					p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 					p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-                    p->work_com[n_s].t_start=p->sys_timer;                        
-                    p->work_com[n_s].t_stop =p->sys_timer+100;
-						
- 						break;
+                    p->work_com[n_s].t_stop =p->sys_timer+100;	
+ 					break;
 				case 92 : //FK SPIAK
 					switch (p->fromMN3.a_params[0])
 					{
@@ -632,7 +605,6 @@ main(int argc, char **argv)
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage  
 						}
@@ -648,7 +620,6 @@ main(int argc, char **argv)
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage  
 						}
@@ -664,7 +635,6 @@ main(int argc, char **argv)
 							
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage  
 						}
@@ -683,7 +653,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;   
 						}
 						else 
@@ -704,7 +673,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;   
 						}
 						else 
@@ -725,7 +693,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;   
 						}
 						else 
@@ -746,7 +713,6 @@ main(int argc, char **argv)
 							//---------------------------------------------
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-							p->work_com[n_s].t_start=p->sys_timer;                        
 							p->work_com[n_s].t_stop =p->sys_timer+100;   
 						}
 						else 
@@ -765,7 +731,6 @@ main(int argc, char **argv)
 						//---------------------------------------------
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-						p->work_com[n_s].t_start=p->sys_timer;                        
 						p->work_com[n_s].t_stop =p->sys_timer+300;   
 						break;
 				//	case 111 : //t625 rqst
@@ -777,7 +742,6 @@ main(int argc, char **argv)
 						//---------------------------------------------
 				//		p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 				//		p->kol_step=n_s; //obwee kol-vo wagov na dannom wage
-				//		p->work_com[n_s].t_start=p->sys_timer;                        
 				//		p->work_com[n_s].t_stop =p->sys_timer+100;   
 				//		break;
 					default:    
