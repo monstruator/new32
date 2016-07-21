@@ -110,7 +110,7 @@ main(int argc, char *argv[])
 						switch(p->work_com[c_step].s[i].n_com)
 						{
 							p->work_com[c_step].s[i].status=1;
-							case 1: switch(p->inbufMN3.a_params[0])
+							case 1: switch(p->fromMN3.a_params[0])
 									{
 										case 0:	send_zapros(); break;
 									}
@@ -168,7 +168,7 @@ main(int argc, char *argv[])
 									break;
 									
 									
-									case 2: switch(p->inbufMN3.a_params[0])
+									case 2: switch(p->fromMN3.a_params[0])
 									{
 										case 0:	send_SVCH(); break;
 										case 1:	send_DMW(); break;
@@ -226,7 +226,7 @@ main(int argc, char *argv[])
 									}
 									break;
 									
-							case 3: switch(p->inbufMN3.a_params[0])
+							case 3: switch(p->fromMN3.a_params[0])
 									{
 										case 193:	
 											 read_data.Read_inf.Sach.ps = 1;

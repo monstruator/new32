@@ -133,14 +133,14 @@ main(int argc, char *argv[])
 						switch(p->work_com[c_step].s[i].n_com)
 						{
 							/*case 1: p->work_com[c_step].s[i].status=1;
-									rele|=(1<<p->inbufMN3.a_params[0]);
+									rele|=(1<<p->fromMN3.a_params[0]);
 									*(unsigned int*)(addr1 +0x2C00)=rele;
                                     if(p->verbose>1) printf("WRITE OUT DATA 0x2C00 %x\n",rele);
 									if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
 									p->work_com[c_step].s[i].status=2;
 									break;
 							case 2: p->work_com[c_step].s[i].status=1;
-									rele &= ~(1 << p->inbufMN3.a_params[0]);
+									rele &= ~(1 << p->fromMN3.a_params[0]);
 									*(unsigned int*)(addr1 +0x2C00)=rele;
                                     if(p->verbose>1) printf("WRITE OUT DATA 0x2C00 %x\n",rele);
 									if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
@@ -209,7 +209,7 @@ main(int argc, char *argv[])
 									}
 									if (p->work_com[c_step].s[i].status==1)
 									{
-										if ((p->inbufMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
+										if ((p->fromMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
 										if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
 									}
 									break;
@@ -226,7 +226,7 @@ main(int argc, char *argv[])
 									if (p->work_com[c_step].s[i].status==1)
 									{
 										if (*(unsigned int*)(addr1 + 0x4C00)&0x04) p->work_com[c_step].s[i].status=2;
-										//if ((p->inbufMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
+										//if ((p->fromMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
 										if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
 									}
 									break;
@@ -291,7 +291,7 @@ main(int argc, char *argv[])
 									}
 									break;		
 							case 25: p->work_com[c_step].s[i].status=1;
-									if (p->inbufMN3.a_params[0]) rele|=2;
+									if (p->fromMN3.a_params[0]) rele|=2;
 									else rele &= ~2;
 									*(unsigned int*)(addr1 +0x2C00)=rele;
                                     if(p->verbose>1) printf("WRITE OUT DATA  %x\n",rele);
@@ -310,10 +310,10 @@ main(int argc, char *argv[])
 							case 104: //Ogidanie Ispravnosti R999
 									//p->work_com[c_step].s[i].status=1;
 									//if(p->verbose>1) 
-									if (p->inbufMN3.a_params[0]&&(*(unsigned int*)(addr1 + 0x4C00)&0x04)) p->work_com[c_step].s[i].status=2;
-									if ((p->inbufMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
+									if (p->fromMN3.a_params[0]&&(*(unsigned int*)(addr1 + 0x4C00)&0x04)) p->work_com[c_step].s[i].status=2;
+									if ((p->fromMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
 									
-									//if ((*(unsigned int*)(addr1 + 0x4C00)&0x04)&&(p->inbufMN3.a_params[0])) p->work_com[c_step].s[i].status=2;
+									//if ((*(unsigned int*)(addr1 + 0x4C00)&0x04)&&(p->fromMN3.a_params[0])) p->work_com[c_step].s[i].status=2;
 									printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
 									//p->work_com[c_step].s[i].status=2;
 									break;		
