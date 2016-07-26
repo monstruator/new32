@@ -554,7 +554,7 @@ main(int argc, char *argv[])
 			timer1++;
 			
 			if (timer1 == 50) {
-			printf("Hello %d\n", timer1);
+			//printf("Hello %d\n", timer1);
 			timer1 = 0;
 			f11.zag.marker1=0xFFFF;
 			f11.zag.marker2=0xFFFF;
@@ -566,8 +566,8 @@ main(int argc, char *argv[])
 						
 			col = sizeof(f11);
 			
-			p->work_com[c_step].s[i].status=1;
-            if(p->verbose) printf("			SVCH status \n");
+			//p->work_com[c_step].s[i].status=1;
+            //if(p->verbose) printf("			SVCH status \n");
 			f11.zag.KSS=0;
 			col = sizeof(struct zag_CPP);
 			col=tcp_reqest(col);
@@ -575,9 +575,9 @@ main(int argc, char *argv[])
 			if (col==0x14) //esli otet=sosto9nie 
 			{
 			//if (f12->data.SS0_all) 
-			p->work_com[c_step].s[i].status=2; // ispravnost'
+			//p->work_com[c_step].s[i].status=2; // ispravnost'
 			}
-			else p->work_com[c_step].s[i].status=3;
+			//else //p->work_com[c_step].s[i].status=3;
 			}			
 }			
 		}//timer
