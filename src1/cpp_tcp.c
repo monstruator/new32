@@ -556,18 +556,28 @@ main(int argc, char *argv[])
 			if (timer1 == 50) {
 			printf("Hello %d\n", timer1);
 			timer1 = 0;
+			f11.zag.marker1=0xFFFF;
+			f11.zag.marker2=0xFFFF;
+			if (p->cvs==11) f11.zag.II=2; else f11.zag.II=3;
+			f11.zag.TS=3;
+			f11.zag.PS=1;
+			f11.zag.KSS=sizeof(struct form11)/2;
+			f11.data.nf=11;
+						
+			col = sizeof(f11);
 			
 			p->work_com[c_step].s[i].status=1;
-                                    if(p->verbose) printf("			SVCH status \n");
-									f11.zag.KSS=0;
-									col = sizeof(struct zag_CPP);
-									col=tcp_reqest(col);
-									if (col==0x14) //esli otet=sosto9nie 
-									{
-										//if (f12->data.SS0_all) 
-										p->work_com[c_step].s[i].status=2; // ispravnost'
-									}
-									else p->work_com[c_step].s[i].status=3;
+            if(p->verbose) printf("			SVCH status \n");
+			f11.zag.KSS=0;
+			col = sizeof(struct zag_CPP);
+			col=tcp_reqest(col);
+									
+			if (col==0x14) //esli otet=sosto9nie 
+			{
+			//if (f12->data.SS0_all) 
+			p->work_com[c_step].s[i].status=2; // ispravnost'
+			}
+			else p->work_com[c_step].s[i].status=3;
 			}			
 }			
 		}//timer
