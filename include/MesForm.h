@@ -152,20 +152,25 @@ struct form14
 {
 	char nCPP;
 	char nf;//=14; //nomer formul9ra
+	
 	char SS1; // 0 - rabota, 1 - FK, 2 - SR	
 	unsigned char SS0_r : 4; //reserv
 	unsigned char SS0_prd : 1; // 0 - neispr , 1 - ispr
 	unsigned char SS0_prm : 1; // 0 - neispr , 1 - ispr
 	unsigned char SS0_cpp : 1; // 0 - neispr , 1 - ispr
 	unsigned char SS0_all : 1; // 0 - neispr , 1 - ispr
+	
 	char SS2_0; // vid raboti : 0 - prm, 1 - prd
 	char SS2_1; // tip raboti : 0 - tki, 1 - rli
+	
 	char rezerv; // rezerv
 	char SS3; // 0 - FM1, 1 - FM2
+	
 	char SS5; // nomer RT PRM 7-12
 	char SS4; // nomer RT PRD 7-12
-	char SS7; // oslablenie PRD 0-25
-	char SS6; // nomer FK 1-10
+	
+	char SS7; // nomer FK 1-10 
+	char SS6; // oslablenie PRD 0-25
 	char SS9; // PZ IB v PRD : 0 - net zarguzki, 1 - IB zagruzen, 2 - IS peredano 
 	char SS8; // priznak priema IS (TKI) 0 - net priema, 1 - priem IS
 	short SS10; // dlina preambuli : 1 - 255

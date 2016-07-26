@@ -32,8 +32,8 @@
 				  open_shmem();
 				  delay(1000);
 				  printf("cvs=%d\n", p->cvs);
-				  if (p->cvs==10) i=6;				//cvs test
-								else if (p->cvs==11) i=6;								
+				  if (p->cvs==10) i=8;				//cvs test
+								else if (p->cvs==11) i=8;								
 									else {printf("CVS!=10,11. ERROR\n");exit(1);}
 				  printf("cvs=%d\n", p->cvs);
                   /* Create socket */

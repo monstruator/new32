@@ -231,7 +231,8 @@ main(int argc, char **argv)
 							p->work_com[n_s].s[n_mc].n_com=5;//SVCH PRD-PRM CHAN
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
-							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage   
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+							p->work_com[n_s].t_stop =p->sys_timer+100; 
 						}
 						else 
 						{
@@ -460,7 +461,8 @@ main(int argc, char **argv)
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=6; //t625
-						p->work_com[n_s].s[n_mc].n_com=2;
+						p->work_com
+						[n_s].s[n_mc].n_com=2;
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].t_stop =p->sys_timer+100;   
@@ -557,7 +559,6 @@ main(int argc, char **argv)
 							p->fromMN3.a_params[0]=1; //FK 1 CPP
 							p->work_com[n_s].s[n_mc].n_com=65;   //FK
 							n_mc++; //kol-vo mini komand + 1
-							
 							p->work_com[n_s].t_stop =p->sys_timer+300;
 						}
 						break;
@@ -566,8 +567,27 @@ main(int argc, char **argv)
 						{
 							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2;
-							p->fromMN3.a_params[0]=1; //FK 1 CPP
 							p->work_com[n_s].s[n_mc].n_com=66;   //FK
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+300;  
+						}
+						break;	
+						case 6 : //FK 3	
+						if (p->cvs==10) 
+						{
+							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=2;
+							
+							p->work_com[n_s].s[n_mc].n_com=68;   //FK
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+300;
+						}
+						if (p->cvs==11) 
+						{
+							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=2;
+							
+							p->work_com[n_s].s[n_mc].n_com=67;   //FK
 							n_mc++; //kol-vo mini komand + 1
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 						}
@@ -701,8 +721,8 @@ main(int argc, char **argv)
 						p->work_com[c_step].done_mini_com++; //zanovo s4itaem kol-vo vopolnennih
 					if(p->work_com[c_step].s[i].status==3) //esli owibka
 					{
-						printf("Command %d error , time=%d . ",p->fromMN3.num_com,p->sys_timer);
-						printf("Step=%d Interf=%d . \n",c_step,p->work_com[c_step].s[i].n_chan);
+						printf("\n-------------------   Command %d error , time=%d . ",p->fromMN3.num_com,p->sys_timer);
+						printf("Step=%d Interf=%d .    -------\n",c_step,p->work_com[c_step].s[i].n_chan);
 						// NADO GOTOVIT' AVARIINOE ZAVERW KOMANDI---------------
 						//------------------------------------------------------
 						//------------------------------------------------------	
