@@ -174,7 +174,7 @@ main(int argc, char *argv[])
 									//printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
 									//p->work_com[n_s].t_stop =p->sys_timer+100;
 									//col=tcp_send_read(col);
-									if (/*(col==0x14)&&*/(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
+									if ((col==0x14)&&(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
 									{
 										//if(p->verbose>1) printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
 										p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -566,7 +566,7 @@ main(int argc, char *argv[])
 			else	{
 //--------------------------reqets timer start----------------------------------------------------
 			timer1++;
-			if (timer1 == 9999999) {
+			if (timer1 == 100) {
 			
 			timer1 = 0;
 			f11.zag.marker1=0xFFFF;
@@ -584,7 +584,7 @@ main(int argc, char *argv[])
 			f11.zag.KSS=0;
 			col = sizeof(struct zag_CPP);
 			col=tcp_reqest(col);
-			printf("SS10 %d\n", f12->data.SS10);						
+			printf("SS10 %d\n SS20 %d\n", f12->data.SS10,f12->data.SS20);						
 			if (col==0x14) //esli otet=sosto9nie 
 			{
 			//if (f12->data.SS0_all) 
