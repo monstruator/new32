@@ -62,7 +62,7 @@ pid_t far handler_time()
 void SigHandler ( int signal_number )	
 {
 	if (p->verbose>2) printf("\n%s.    seanse: %d error",Host,Seans);
-	T_ALRM=1; 
+	//T_ALRM=1; 
 }
 
 short tcp_send_read(int );
@@ -142,9 +142,15 @@ main(int argc, char *argv[])
 						{
 							case 1: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			SVCH work \n");
-									if (p->fromMN3.a_params[0]==1) f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
-									else f11.data.KU0=ustSS=2;
-									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									if (p->fromMN3.a_params[0]==1) 
+										{
+										f11.data.KU0=ustSS=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+										f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										}
+									else {
+										f11.data.ustKU0=1;
+										f11.data.KU0=ustSS=1;
+										}
 									//col = sizeof(f11);
 									col=tcp_send_read(col);
 									if ((f12->data.SS1==ustSS)&&(col==0x14)&&(f12->data.SS0_all==1)) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->fromMN3.a_params[0]==1)) //esli otet=sosto9nie 
@@ -153,8 +159,8 @@ main(int argc, char *argv[])
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}
 									else p->work_com[c_step].s[i].status=3;
-									//printf("SS1 =  %d     col %d    SSo_all %d ustSS %d \n", f12->data.SS1, col , f12->data.SS0_all, ustSS);
-                                    //printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
+									printf("param = %d SS1 =  %d     col %d    SSo_all %d ustSS %d \n", p->fromMN3.a_params[0] , f12->data.SS1, col , f12->data.SS0_all, ustSS);
+                                    printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 									break;
 							case 5: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			SVCH PRD-PRM CHAN \n");
@@ -163,13 +169,20 @@ main(int argc, char *argv[])
 									//f11.data.KU6=p->fromMN3.a_params[0]+6; //// RT PRM 7 - 13
 									f11.data.ustKU6=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									col=tcp_send_read(col);
+									printf("ustKU6 = %d  ustKU5 = %d \n",f11.data.ustKU6, f11.data.ustKU5);
+									printf("status = %d  SSoprm = %d \n",p->work_com[c_step].s[i].status, f12->data.SS0_prm);
 									//printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
-									if ((col==0x14)&&(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
+									//p->work_com[n_s].t_stop =p->sys_timer+100;
+									//col=tcp_send_read(col);
+									if (/*(col==0x14)&&*/(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
 									{
 										//if(p->verbose>1) printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}
+									
 									else p->work_com[c_step].s[i].status=3;
+									printf("T_ALRM = %d n = %d col = %d param = %d  ss4 = %d \n",T_ALRM, n , col, p->fromMN3.a_params[0], f12->data.SS4);
+									
                                     break;
 							case 8: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			FM SHPS\n");
@@ -551,10 +564,10 @@ main(int argc, char *argv[])
 					//-----------------------------------------------------------			
 			}  //step>0
 			else	{
+//--------------------------reqets timer start----------------------------------------------------
 			timer1++;
+			if (timer1 == 9999999) {
 			
-			if (timer1 == 50) {
-			//printf("Hello %d\n", timer1);
 			timer1 = 0;
 			f11.zag.marker1=0xFFFF;
 			f11.zag.marker2=0xFFFF;
@@ -571,7 +584,7 @@ main(int argc, char *argv[])
 			f11.zag.KSS=0;
 			col = sizeof(struct zag_CPP);
 			col=tcp_reqest(col);
-									
+			printf("SS10 %d\n", f12->data.SS10);						
 			if (col==0x14) //esli otet=sosto9nie 
 			{
 			//if (f12->data.SS0_all) 
@@ -646,6 +659,7 @@ short tcp_send_read(int col)
 			if(p->verbose>2) printf("CKH_SUM=%04x \n",sum);
 			if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
 			write(sock1, bbb, col);	Seans++;
+			//sleep(500);
 			//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
 			//write(sock1, ccc, 54);	Seans++;
 			n=read(sock1,bbb,1400);
@@ -709,6 +723,10 @@ short tcp_send_read(int col)
 	return 0;
 }
 
+
+
+//--------------------------------reqests---------------------------------------------------------------
+//--------------------------------timer-----------------------------------------------------------------
 short tcp_reqest(int col)
 {
 	int sock1;
