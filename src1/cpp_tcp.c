@@ -584,7 +584,7 @@ main(int argc, char *argv[])
 			f11.zag.KSS=0;
 			col = sizeof(struct zag_CPP);
 			col=tcp_reqest(col);
-			printf("SS10 %d\n SS20 %d\n", f12->data.SS10,f12->data.SS20);						
+			printf("SS10 %d SS19 %d SS20 %d\n", f12->data.SS10, f12->data.SS19,f12->data.SS20);						
 			if (col==0x14) //esli otet=sosto9nie 
 			{
 			//if (f12->data.SS0_all) 
