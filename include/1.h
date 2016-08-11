@@ -54,38 +54,44 @@ int  initinf (unsigned short *buf,unsigned short size)
 	 //read_data.buffer[8] = 0x8888; //sach 5
 	 //read_data.buffer[9] = 0x8888; //sach 6
 	 
-	 read_data.Read_inf.Sach.ps = 1;
-     read_data.Read_inf.Sach.vr = 1;
-     read_data.Read_inf.Sach.rez1 = 0;
-     read_data.Read_inf.Sach.kvi = 5;
-     read_data.Read_inf.Sach.rez2 = 0;
-     read_data.Read_inf.Sach.nf = 193;
+	 //read_data.Read_inf.Sach.ps = 1;
+     //read_data.Read_inf.Sach.vr = 1;
+     //read_data.Read_inf.Sach.rez1 = 0;
+     //read_data.Read_inf.Sach.kvi = 5;
+     //read_data.Read_inf.Sach.rez2 = 0;
+     //read_data.Read_inf.Sach.nf = 193;
 
-     read_data.Read_inf.Sach.a0 = 3;
-     read_data.Read_inf.Sach.a1 = 2;
-     read_data.Read_inf.Sach.a2 = 1;
-     read_data.Read_inf.Sach.a3 = 0;
+     //read_data.Read_inf.Sach.a0 = 3;
+     //read_data.Read_inf.Sach.a1 = 2;
+     //read_data.Read_inf.Sach.a2 = 1;
+    // read_data.Read_inf.Sach.a3 = 0;
 
-     read_data.Read_inf.Sach.a4 = 0;
-     read_data.Read_inf.Sach.a5 = 0;
-     read_data.Read_inf.Sach.p0 = 6;
-     read_data.Read_inf.Sach.p1 = 5;
+     //read_data.Read_inf.Sach.a4 = 0;
+     //read_data.Read_inf.Sach.a5 = 0;
+     //read_data.Read_inf.Sach.p0 = 6;
+     //read_data.Read_inf.Sach.p1 = 5;
 
-     read_data.Read_inf.Sach.p2 = 4;
-     read_data.Read_inf.Sach.p3 = 0;
-     read_data.Read_inf.Sach.p4 = 0;
-     read_data.Read_inf.Sach.p5 = 0;
+     //read_data.Read_inf.Sach.p2 = 4;
+     //read_data.Read_inf.Sach.p3 = 0;
+     //read_data.Read_inf.Sach.p4 = 0;
+     //read_data.Read_inf.Sach.p5 = 0;
 
-     read_data.Read_inf.Sach.r0 = 9;
-     read_data.Read_inf.Sach.r1 = 8;
-     read_data.Read_inf.Sach.r2 = 9;
-     read_data.Read_inf.Sach.r3 = 7;
+     //read_data.Read_inf.Sach.r0 = 9;
+     //read_data.Read_inf.Sach.r1 = 8;
+     //read_data.Read_inf.Sach.r2 = 9;
+     //read_data.Read_inf.Sach.r3 = 7;
 
 
-     read_data.Read_inf.Sach.v0 = 5;
-     read_data.Read_inf.Sach.v1 = 5;
-     read_data.Read_inf.Sach.v2 = 4;
-     read_data.Read_inf.Sach.v3 = 3; 
+     //read_data.Read_inf.Sach.v0 = 5;
+     //read_data.Read_inf.Sach.v1 = 5;
+     //read_data.Read_inf.Sach.v2 = 4;
+     //read_data.Read_inf.Sach.v3 = 3;
+	 read_data.Read_inf.Sach.1 = 0x80C1;
+	 read_data.Read_inf.Sach.2 = 0x0123;
+	 read_data.Read_inf.Sach.3 = 0x5600;
+	 read_data.Read_inf.Sach.4 = 0x0004;
+	 read_data.Read_inf.Sach.5 = 0x8888;
+	 read_data.Read_inf.Sach.6 = 0x8888;
 	 //------------------DATA--------------------------------------------------
 	 read_data.Read_inf.Data[1] = 0x1D00; //data 7 tip upakovku/reserv !bin!
 	 read_data.Read_inf.Data[2] = 0x2300; //data 8 kod formalizovannogo soobsheniya/priznak napravleniya !bin!
@@ -138,10 +144,12 @@ int  send_zapros()
 int send_SVCH()
 {    read_7118.Read_com.Dlina=20;
 	 read_7118.Read_com.Ident=17;
-     read_7118.Read_com.Parol_ml=0;
-     read_7118.Read_com.Zapros=2;
-     read_7118.Read_com.Protokol=0x30;
+     read_7118.Read_com.Parol_ml=0x0;
+     read_7118.Read_com.Zapros=0x2;
+	 read_7118.Read_com.Error=0x0;
+     read_7118.Read_com.Protokol=0x0030;
      read_7118.Read_com.Tip=0x110;
+	 read_7118.Read_com.Parol_st=0x00;
      read_7118.Read_com.T625=0x40;
 	 read_7118.Read_com.Reserv=0;
      read_7118.Read_com.CVM_A=0x60;

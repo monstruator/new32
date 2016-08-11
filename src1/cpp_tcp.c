@@ -439,6 +439,80 @@ main(int argc, char *argv[])
 									else p->work_com[c_step].s[i].status=3;
 								}
 								break;
+								
+							case 93: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.II=2;
+									f11.zag.KSS=15;
+									f11.zag.PS=1;
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU2=1;
+									f11.data.ustKU2=1;
+									f11.data.KU3=0;
+									f11.data.ustKU3=1;
+									f11.data.KU7=0;
+									f11.data.ustKU7=1;
+									f11.data.KU8=13;
+									f11.data.ustKU8=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS0==1111)&&(f12->data.SS1==1)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+								}
+								break;
+								
+							case 93: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=15;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU2=0;
+									f11.data.ustKU2=1;
+									f11.data.KU3=1;
+									f11.data.ustKU3=1;
+									f11.data.KU7=0;
+									f11.data.ustKU7=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS0==1111)&&(f12->data.SS1==0)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+								}
+								break;
+								
+								case 931: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=20;
+									f11.zag.PS=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS8==1))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+									{
+									p->work_com[c_step].s[i].status=3;
+									printf(" SS13 = %d SS14 = %d SS15 = %d SS16 = %d SS17 = %d SS18 = %d\n SS19 = %d SS20 = %d SS21 = %d\n", f12->data.SS13,f12->data.SS14,f12->data.SS15,f12->data.SS16,f12->data.SS17,f12->data.SS18,f12->data.SS19,f12->data.SS20,f12->data.SS21);
+								}
+								break;
+								
 							case 103: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
                                     {   
                                         printf("Send to 1 chan\n");

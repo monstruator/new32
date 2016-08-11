@@ -26,6 +26,7 @@ main(int argc, char **argv)
 		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0 , j;
 		static Udp_Client_t Uc42;
 		short c_step=0,TC10=0;	
+		short sen;
 		char bufi[1024];
 		char bufo[1024];
 		char out_buf[1024];
@@ -551,7 +552,7 @@ main(int argc, char **argv)
 							p->work_com[n_s].t_stop =p->sys_timer+300;
 						}
 						break;
-					case 3 : //FK 1-2	
+					case 2 : //FK 1-2	
 						if (p->cvs==10) 
 						{
 							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
@@ -562,7 +563,7 @@ main(int argc, char **argv)
 							p->work_com[n_s].t_stop =p->sys_timer+300;
 						}
 						break;
-					case 5 : //FK 2	
+					case 3 : //FK 2	
 						if (p->cvs==11) 
 						{
 							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
@@ -572,7 +573,7 @@ main(int argc, char **argv)
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 						}
 						break;	
-						case 6 : //FK 3	
+						case 4 : //FK 3	
 						if (p->cvs==10) 
 						{
 							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
@@ -591,7 +592,24 @@ main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
 						}
-						break;	
+						break;
+					case 6 : //FK 5	
+						
+							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=2;
+							p->work_com[n_s].s[n_mc].n_com=921;   //FK
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+300;
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+					//---------------------------------------------
+							n_s=2;  //nomer waga
+							n_mc=0; //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=6; //T625
+							p->work_com[n_s].s[n_mc].n_com=921;
+							n_mc++; //kol-vo mini komand + 1						
+							p->work_com[n_s].t_stop =p->sys_timer+200;
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+						break;						
 					default : 
 						printf("Bad param0 : %d\n",p->fromMN3.a_params[0]);
 						p->toMN3.kzv=1;
@@ -671,14 +689,50 @@ main(int argc, char **argv)
 							p->toMN3.cr_com++;
 						}
  						break;
-					case 93 : //t625 inf
+					case 93 : //ust svyaz' s AK
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
-						p->work_com[n_s].s[n_mc].n_chan=6; //t625
-						p->work_com[n_s].s[n_mc].n_com=3;
+						p->work_com[n_s].s[n_mc].n_chan=2; //cpp_tcp
+						p->work_com[n_s].s[n_mc].n_com=93;
 						n_mc++; //kol-vo mini komand + 1
+						p->work_com[n_s].t_stop =p->sys_timer+200;   
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+					//---------------------------------------------
+						n_s=2;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=6; //T625
+						p->work_com[n_s].s[n_mc].n_com=93;
+						n_mc++; //kol-vo mini komand + 1						
+                        p->work_com[n_s].t_stop =p->sys_timer+200;
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s 
+					//---------------------------------------------
+						n_s=3;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=6; //T625
+						p->work_com[n_s].s[n_mc].n_com=931;
+						n_mc++; //kol-vo mini komand + 1						
+                        p->work_com[n_s].t_stop =p->sys_timer+200;
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+					//---------------------------------------------						
+						n_s=1;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=2; //cpp_tcp
+						p->work_com[n_s].s[n_mc].n_com=931;
+						n_mc++; //kol-vo mini komand + 1
+						p->work_com[n_s].t_stop =p->sys_timer+200;   
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 						//---------------------------------------------
-						p->work_com[n_s].t_stop =p->sys_timer+300;   
+						n_s=3;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=6; //T625
+						p->work_com[n_s].s[n_mc].n_com=932;
+						n_mc++; //kol-vo mini komand + 1						
+                        p->work_com[n_s].t_stop =p->sys_timer+200;
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+						if (p->work_com[c_step].s[i].status==3)
+						{
+						sen = Udp_Client_Send(&Uc42,&form12,sizeof(form12));
+						}
 						break;
 				//	case 111 : //t625 rqst
 				//		n_s=1;  //nomer waga

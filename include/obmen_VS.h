@@ -2,38 +2,12 @@
 #define CPP	2 //nomer interfeisa
 
 struct sac {
-      unsigned short ps: 1;
-      unsigned short vr: 1;
-      unsigned short rez1: 1;
-      unsigned short kvi: 4;
-      unsigned short rez2: 1;
-      unsigned short nf: 8;
-
-      unsigned short a0: 4;
-      unsigned short a1: 4;
-      unsigned short a2: 4;
-      unsigned short a3: 4;
-
-      unsigned short a4: 4;
-      unsigned short a5: 4;
-      unsigned short p0: 4;
-      unsigned short p1: 4;
-
-      unsigned short p2: 4;
-      unsigned short p3: 4;
-      unsigned short p4: 4;
-      unsigned short p5: 4;
-
-      unsigned short r0: 4;
-      unsigned short r1: 4;
-      unsigned short r2: 4;
-      unsigned short r3: 4;
-
-
-      unsigned short v0: 4;
-      unsigned short v1: 4;
-      unsigned short v2: 4;
-      unsigned short v3: 4;
+      unsigned short 1: 0x80C1;
+      unsigned short 2: 0x0123;
+      unsigned short 3: 0x5600;
+      unsigned short 4: 0x0004;
+      unsigned short 5: 0x8888;
+      unsigned short 6: 0x8888;
    }; 
 
 struct sostSPIAK {
@@ -317,7 +291,7 @@ typedef   struct  {
       short kzv; //kod zaverweni9 (0 - norma)
       int k_o; //kod owibki
       short fk; //kod FK (0 - norma / 1 - ne norma)
-      short link; 
+      short link; //?
 
       unsigned int sost_kasrt[9];
       struct sostSPIAK sost_spiak  ;
