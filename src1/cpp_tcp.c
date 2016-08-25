@@ -119,7 +119,7 @@ main(int argc, char *argv[])
 				c_step=p->cur_step;
 				for (i=0;i<p->work_com[c_step].num_mini_com;i++) //prosmotrim vse minicomandi na wage 
 					//if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&((p->work_com[c_step].s[i].status==0)||(p->work_com[c_step].s[i].status==1))) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas		
-					if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&(p->work_com[c_step].s[i].status!=2)) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas
+					if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&(p->work_com[c_step].s[i].status!=2)&&(p->work_com[c_step].s[i].status!=3)) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas
 					{
 						if((p->verbose>1)&&(p->work_com[c_step].s[i].status==0)) printf("\nSTEP=%d    minicom for CPP : %d      status=%d time %d \n", p->cur_step,  p->work_com[c_step].s[i].n_com, p->work_com[c_step].s[i].status, p->sys_timer);
 						memset((char *)&f11, 0, sizeof(struct to_cpp11));
@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 									//f11.data.KU6=p->fromMN3.a_params[0]+6; //// RT PRM 7 - 13
 									f11.data.ustKU6=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									col=tcp_send_read(col);
-									printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
+									//printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
 									if ((col==0x14)&&(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
 									{
 										if(p->verbose>1) printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
@@ -527,7 +527,7 @@ short tcp_send_read(int col)
 	for(i1=0;i1<3;i1++)
 	{
 		T_ALRM =0;
-		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*5; //5*10ms
+		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*20; //20*10ms
 		rez=timer_settime( tm10, 0, &timer_sig,NULL); //start timer
 		if (rez==-1)    printf("%s. seanse %d. start timer error\n",Host,Seans);     
 
@@ -537,7 +537,7 @@ short tcp_send_read(int col)
 		rez=1;
 		if ((T_ALRM !=0)||(sock1==-1)) 
 		{
-			if (p->verbose>1) printf("error\n",Host,Seans);
+			//if (p->verbose>1) printf("error\n",Host,Seans);
 			rez=0;
 			//goto EndCeanc;
 		}
@@ -547,7 +547,8 @@ short tcp_send_read(int col)
 			i1=3; //exit from "for"
 		}
 		timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // stop timer
-		delay(100);
+		delay(200);
+		//printf("\ni1=%d\n",i1);
 	}
 	if (rez) //send message
 	{

@@ -231,7 +231,8 @@ main(int argc, char **argv)
 							p->work_com[n_s].s[n_mc].n_com=5;//SVCH PRD-PRM CHAN
 							n_mc++; //kol-vo mini komand + 1
 							//---------------------------------------------
-							p->kol_step=n_s; //obwee kol-vo wagov na dannom wage   
+							//p->kol_step=n_s; //obwee kol-vo wagov na dannom wage 
+							
 						}
 						else 
 						{
@@ -248,8 +249,8 @@ main(int argc, char **argv)
 						p->work_com[n_s].s[n_mc].n_com=101;//all ok status=2
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
-						p->work_com[n_s].t_stop =p->sys_timer+100;
 					}
+					p->work_com[n_s].t_stop =p->sys_timer+100;
 						break;
 				case 10 : case 11 :
 							if ((p->fromMN3.a_params[0]>=0)&&(p->fromMN3.a_params[0]<40)&&
