@@ -36,6 +36,7 @@
 	char bufo[1024];
     unsigned char buf625[31];
 	char out_buf[1024];
+	int timer2=0;
 
 	int verbose;
 	char name[30] = "192.168.4.2";
@@ -312,6 +313,289 @@ main(int argc, char *argv[])
 										//break;
 									}
 									break;
+						//--------------FK5 StART-------------------------------------------------			
+							case 921:  //FK5 vibor SVCH
+									send_SVCH();
+									Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
+									p->SOST625=1;
+									for (ii=0;ii<sizeof(read_7118);ii++) read_7118.bufcom[ii]=0;
+									local_timer=p->sys_timer;
+									bytes=0;
+									while  ((( bytes = Udp_Client_Read(&Uc41,&read_7118,sizeof(read_7118)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									if (bytes>0)
+									{
+										p->SOST625=2; 
+										p->cmd_625.count625_cmd++;
+										/*if(read_7118.O_na_zapros.Tip==0x2)
+										{
+											p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
+											p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
+											printf (" Otvet na zapros   :   sostoyanie-  %d   rshim raboti- %d   dlina-  %d  schetchik komand-  %d\n",
+											p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
+											p->cmd_625.T625_Result, // reshim raboti
+											read_7118.O_na_zapros.Dlina, //dlina
+											p->cmd_625.count625_cmd);
+											if (p->cmd_625.T625_Result == 0) printf (" work");
+											if (p->cmd_625.T625_Result == 1) printf (" reboot");
+											if (p->cmd_625.T625_Result == 2) printf (" reglament");
+											if (p->cmd_625.T625_Result == 3) printf (" finish");
+											if (p->cmd_625.T625_Result == 4) printf (" control");
+											fflush (stdout);
+											
+										} */
+										if(read_7118.O_na_kom.N_kan==5)
+										{ 
+											p->cmd_625.T625_SV_Result=read_7118.O_na_kom.Result;
+											printf (" Otvet na vybor SVC:  %d   %d  %d  %d\n",
+											read_7118.O_na_kom.Tip,
+											p->cmd_625.T625_SV_Result,read_7118.O_na_kom.Result,p->cmd_625.count625_cmd);
+										}
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+									{
+										printf("T-625-Rqst no answer\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+										p->toMN3.k_o = 1;
+									}
+									break;
+									
+							case 922: 	// FK5 800bit
+									read_data.Read_inf.Sach.ps = 1;
+									read_data.Read_inf.Sach.vr = 1;
+									read_data.Read_inf.Sach.rez1 = 0;
+									read_data.Read_inf.Sach.kvi = 5;
+									read_data.Read_inf.Sach.rez2 = 0;
+									read_data.Read_inf.Sach.nf = 193;
+
+									read_data.Read_inf.Sach.a0 = 3;
+									read_data.Read_inf.Sach.a1 = 2;
+									read_data.Read_inf.Sach.a2 = 1;
+									read_data.Read_inf.Sach.a3 = 0;
+
+									read_data.Read_inf.Sach.a4 = 0;
+									read_data.Read_inf.Sach.a5 = 0;
+									read_data.Read_inf.Sach.p0 = 6;
+									read_data.Read_inf.Sach.p1 = 5;
+
+									read_data.Read_inf.Sach.p2 = 4;
+									read_data.Read_inf.Sach.p3 = 0;
+									read_data.Read_inf.Sach.p4 = 0;
+									read_data.Read_inf.Sach.p5 = 0;
+
+									read_data.Read_inf.Sach.r0 = 9;
+									read_data.Read_inf.Sach.r1 = 8;
+									read_data.Read_inf.Sach.r2 = 9;
+									read_data.Read_inf.Sach.r3 = 7;
+
+									read_data.Read_inf.Sach.v0 = 5;
+									read_data.Read_inf.Sach.v1 = 5;
+									read_data.Read_inf.Sach.v2 = 4;
+									read_data.Read_inf.Sach.v3 = 3;
+								//------------------DATA--------------------------------------------------
+									for (i=0; i<50; i++) 
+									{
+									read_data.Read_inf.Data[i] = 0x5555; //data 7 tip upakovku/reserv !bin!
+									}
+							
+									p->work_com[c_step].s[i].status=1;
+									//for(ii=0; ii<62; ii++) buffer[ii] =0;
+									for(ii=0;ii<6;ii++) buffer[ii]=ii;
+									initinf(buffer,ii);
+									
+									sen = Udp_Client_Send(&Uc42,&read_data,sizeof(read_data));
+									p->SOST625=1;
+									local_timer=p->sys_timer;
+									bytes=0;
+									while  ((( bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									//	if( (p->sys_timer-local_timer)>time625)
+									if (bytes>0)
+									{
+										p->SOST625=2; 
+										memcpy(&p->inf_625,&read_data,sizeof(read_data));
+										p->cmd_625.count625_inf++;
+										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	read_data.buffer[4],	p->cmd_625.count625_inf);
+										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", read_data.buffer[ii]);
+										for (ii=0; ii<10; ii++) printf ("%04x  ",read_data.buffer[ii]); 
+										printf("\n"); 
+										p->cmd_625.T625_on_off=0;
+										
+									}
+									else 
+									{
+										printf("T-625-Inf no answer\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+										//break;
+									}
+									break;
+									
+							case 923: 	// FK5 800bit
+										for (i=0; i<50; i++)
+										{
+										if (read_data.buffer[7+i]==read_data.Read_inf.Data[i])
+										{
+										}
+										else 
+											{
+										printf("error 800bit\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+										break;
+											}
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										break;
+						//------------FK5 END-----------------------------------------------------
+						//------------Ustanovit' svyaz' s AK START--------------------------------
+							case 93:  //ust svyaz' s AK
+									send_SVCH();
+									Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
+									p->SOST625=1;
+									for (ii=0;ii<sizeof(read_7118);ii++) read_7118.bufcom[ii]=0;
+									local_timer=p->sys_timer;
+									bytes=0;
+									while  ((( bytes = Udp_Client_Read(&Uc41,&read_7118,sizeof(read_7118)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									if (bytes>0)
+									{
+										p->SOST625=2; 
+										p->cmd_625.count625_cmd++;
+										/*if(read_7118.O_na_zapros.Tip==0x2)
+										{
+											p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
+											p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
+											printf (" Otvet na zapros   :   sostoyanie-  %d   rshim raboti- %d   dlina-  %d  schetchik komand-  %d\n",
+											p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
+											p->cmd_625.T625_Result, // reshim raboti
+											read_7118.O_na_zapros.Dlina, //dlina
+											p->cmd_625.count625_cmd);
+											if (p->cmd_625.T625_Result == 0) printf (" work");
+											if (p->cmd_625.T625_Result == 1) printf (" reboot");
+											if (p->cmd_625.T625_Result == 2) printf (" reglament");
+											if (p->cmd_625.T625_Result == 3) printf (" finish");
+											if (p->cmd_625.T625_Result == 4) printf (" control");
+											fflush (stdout);
+											
+										} */
+										if(read_7118.O_na_kom.N_kan==5)
+										{ 
+											p->cmd_625.T625_SV_Result=read_7118.O_na_kom.Result;
+											printf (" Otvet na vybor SVC:  %d   %d  %d  %d\n",
+											read_7118.O_na_kom.Tip,
+											p->cmd_625.T625_SV_Result,read_7118.O_na_kom.Result,p->cmd_625.count625_cmd);
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+									}
+									else 
+									{
+										printf("T-625-Rqst no answer\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+									}
+									break;
+									
+							case 931: 	// t625  po lvs 
+						
+									read_data.Read_inf.Sach.ps = 1;
+									read_data.Read_inf.Sach.vr = 1;
+									read_data.Read_inf.Sach.rez1 = 0;
+									read_data.Read_inf.Sach.kvi = 5;
+									read_data.Read_inf.Sach.rez2 = 0;
+									read_data.Read_inf.Sach.nf = 193;
+
+									read_data.Read_inf.Sach.a0 = 3;
+									read_data.Read_inf.Sach.a1 = 2;
+									read_data.Read_inf.Sach.a2 = 1;
+									read_data.Read_inf.Sach.a3 = 0;
+
+									read_data.Read_inf.Sach.a4 = 0;
+									read_data.Read_inf.Sach.a5 = 0;
+									read_data.Read_inf.Sach.p0 = 6;
+									read_data.Read_inf.Sach.p1 = 5;
+
+									read_data.Read_inf.Sach.p2 = 4;
+									read_data.Read_inf.Sach.p3 = 0;
+									read_data.Read_inf.Sach.p4 = 0;
+									read_data.Read_inf.Sach.p5 = 0;
+
+									read_data.Read_inf.Sach.r0 = 9;
+									read_data.Read_inf.Sach.r1 = 8;
+									read_data.Read_inf.Sach.r2 = 9;
+									read_data.Read_inf.Sach.r3 = 7;
+
+									read_data.Read_inf.Sach.v0 = 5;
+									read_data.Read_inf.Sach.v1 = 5;
+									read_data.Read_inf.Sach.v2 = 4;
+									read_data.Read_inf.Sach.v3 = 3;
+								//------------------DATA--------------------------------------------------
+									read_data.Read_inf.Data[0] = 0x1D00; //data 7 tip upakovku/reserv !bin!
+									read_data.Read_inf.Data[1] = 0x2300; //data 8 kod formalizovannogo soobsheniya/priznak napravleniya !bin!
+									read_data.Read_inf.Data[2] = 0x2400; //data 9 koordinata X !bin!
+									read_data.Read_inf.Data[3] = 0x2500; //data 10 koordinata Y !bin!
+									read_data.Read_inf.Data[4] = 0x1D00; //data 11 kurs grad !bin!
+									read_data.Read_inf.Data[5] = 0x001E; //data 12 skorost' m/s !bin!
+									read_data.Read_inf.Data[6] = 0x1248; //data 13 vstavka 1 !bin!
+									read_data.Read_inf.Data[7] = 0x1249; //data 14 vstavka 2 !bin!
+									read_data.Read_inf.Data[8] = 0x1250; //data 15 vstavka 3 !bin!
+									read_data.Read_inf.Data[9] = 0x1251; //data 16 vstavka 3 !bin!
+									read_data.Read_inf.Data[10] = 0x0000; //data 17 reserv
+									read_data.Read_inf.Data[11] = 0x0000; //data 18 reserv
+									read_data.Read_inf.Data[12] = 0x0000; //data 19 reserv
+									read_data.Read_inf.Data[13] = 0x0000; //data 20 reserv
+								
+							
+									
+									//for(ii=0; ii<62; ii++) buffer[ii] =0;
+									for(ii=0;ii<6;ii++) buffer[ii]=ii;
+									initinf(buffer,ii);
+									
+									sen = Udp_Client_Send(&Uc42,&read_data,sizeof(read_data));
+									p->SOST625=1;
+									local_timer=p->sys_timer;
+									bytes=0;
+									while  ((( bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									//	if( (p->sys_timer-local_timer)>time625)
+									if (bytes>0)
+									{
+										p->SOST625=2; 
+										memcpy(&p->inf_625,&read_data,sizeof(read_data));
+										p->cmd_625.count625_inf++;
+										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	read_data.buffer[4],	p->cmd_625.count625_inf);
+										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", read_data.buffer[ii]);
+										for (ii=0; ii<10; ii++) printf ("%04x  ",read_data.buffer[ii]); 
+										printf("\n"); 
+										p->cmd_625.T625_on_off=0;
+										
+									}
+									else 
+									{
+										printf("T-625-Inf no answer\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+										//break;
+									}
+									break;
+							
+							case 932: 	// t625  po lvs   
+									if ((read_data.buffer[7]==read_data.Read_inf.Data[0])&&(read_data.buffer[8]==read_data.Read_inf.Data[1])&&(read_data.buffer[9]==read_data.Read_inf.Data[2])&&(read_data.buffer[10]==read_data.Read_inf.Data[3])&&(read_data.buffer[11]==read_data.Read_inf.Data[3])&&(read_data.buffer[12]==read_data.Read_inf.Data[4])&&(read_data.buffer[13]==read_data.Read_inf.Data[5])&&(read_data.buffer[14]==read_data.Read_inf.Data[6])&&(read_data.buffer[15]==read_data.Read_inf.Data[7])&&(read_data.buffer[16]==read_data.Read_inf.Data[8])) 
+										{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else 
+										{
+										printf("T-625-Inf no answer\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+										}
+										break;
+						//------------Ustanovit' svyaz' s AK END-----------------------------------
 							
 							default: 
 									if(p->verbose) printf("Bad minicom %d for %d chan : %d",p->work_com[c_step].s[i].n_com,N_CHAN);					
@@ -330,6 +614,51 @@ main(int argc, char *argv[])
 					//-------VREMENNO PRIEM DANNIH-------------------------------
 					//-----------------------------------------------------------				
 			} //step>0
+				else {
+						timer2++;
+						if (timer2 == 200) // primerno 10 sec
+						{
+							send_zapros();
+							Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
+							p->SOST625=1;
+							for (ii=0;ii<sizeof(read_7118);ii++) read_7118.bufcom[ii]=0;
+							local_timer=p->sys_timer;
+							bytes=0;
+							while  ((( bytes = Udp_Client_Read(&Uc41,&read_7118,sizeof(read_7118)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+								if (bytes>0)
+								{
+									p->SOST625=2; 
+									p->cmd_625.count625_cmd++;
+										if(read_7118.O_na_zapros.Tip==0x2)
+										{
+											p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
+											p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
+											printf (" Otvet na zapros   :   sostoyanie-  %d   rshim raboti- %d   dlina-  %d  schetchik komand-  %d\n",
+											p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
+											p->cmd_625.T625_Result, // reshim raboti
+											read_7118.O_na_zapros.Dlina, //dlina
+											p->cmd_625.count625_cmd);
+											if (p->cmd_625.T625_Result == 0) printf (" work");
+											if (p->cmd_625.T625_Result == 1) printf (" reboot");
+											if (p->cmd_625.T625_Result == 2) printf (" reglament");
+											if (p->cmd_625.T625_Result == 3) printf (" finish");
+											if (p->cmd_625.T625_Result == 4) printf (" control");
+											fflush (stdout);
+											
+										}
+									p->work_com[c_step].s[i].status=2; // ispravnost'
+								}
+								else 
+								{
+									printf("T-625-Rqst no answer\n");
+									p->cmd_625.T625_on_off=1;
+									p->SOST625=3;
+									p->work_com[c_step].s[i].status=3;
+								}
+							printf("timer2 = %d \n", timer2);
+							timer2 =0;
+						}
+					}
 		}//timer
 	}//while
 	

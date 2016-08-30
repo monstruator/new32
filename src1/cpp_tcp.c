@@ -49,6 +49,7 @@ unsigned char work_point[6]={0x10,0x34,0x55,0x76,0x97,0xB8};
 
 int T_ALRM =0; //prizn srabativani9 taimera
 char *Host="CPP0_1",*port="4003";
+int timer1=0;
 
 int Seans=0; 
 //--------- timer 50ms -----------------------------
@@ -65,6 +66,7 @@ void SigHandler ( int signal_number )
 }
 
 short tcp_send_read(int );
+short tcp_reqest(int );
 //===============================================================================
 //			MAIN	MAIN	MAIN	MAIN 	MAIN
 main(int argc, char *argv[])
@@ -140,7 +142,7 @@ main(int argc, char *argv[])
 							case 1: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			SVCH work \n");
 									if (p->fromMN3.a_params[0]==1) f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
-									else f11.data.KU0=ustSS=2;
+									else f11.data.KU0=ustSS=0;
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									//col = sizeof(f11);
 									col=tcp_send_read(col);
@@ -352,6 +354,44 @@ main(int argc, char *argv[])
 								else p->work_com[c_step].s[i].status=3;
 								if(p->verbose>1) printf("SS7=%d ",f12->data.SS7);
 								break;
+							case 67 : //A1 cpp FK3
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									if(p->verbose) printf("		FK3 \n");
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									
+									col=tcp_send_read(col);
+								
+									if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS0_cpp==1)&&(f12->data.SS0_prm==1)&&(f12->data.SS0_prd==1)&&(f12->data.SS1==1)&&(f12->data.SS2_0==0)&&(f12->data.SS2_1==0)&&(f12->data.SS3==0)) //esli otet=sosto9nie 
+									{
+										//if (f12->data.SS0_prm==0) p->toMN3.fk=1;
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+									//if(p->verbose>1) printf(" ---- SS7=%d SS1=%d SS2_0=%d SS2_1=%d SS6=%d ----\n",f12->data.SS7,f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS6);
+								}
+								break;
+							case 68 : //A2 cpp FK3
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									if(p->verbose) printf("		FK3 \n");
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									
+									col=tcp_send_read(col);
+								
+									if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS0_cpp==1)&&(f12->data.SS0_prm==1)&&(f12->data.SS0_prd==0)&&(f12->data.SS1==1)&&(f12->data.SS2_0==0)&&(f12->data.SS2_1==0)&&(f12->data.SS3==0)) //esli otet=sosto9nie 
+									{
+										//if (f12->data.SS0_prm==0) p->toMN3.fk=1;
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+									//if(p->verbose>1) printf(" ---- SS7=%d SS1=%d SS2_0=%d SS2_1=%d SS6=%d ----\n",f12->data.SS7,f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS6);
+								}
+								break;
 							case 90:
 								if(p->work_com[c_step].s[i].status==0)
 								{
@@ -377,6 +417,230 @@ main(int argc, char *argv[])
 								else p->work_com[c_step].s[i].status=3;
                                 //printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 								break;
+							case 921: //FK 5
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.II=2;
+									f11.zag.KSS=15;
+									f11.zag.PS=1;
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU2=1;
+									f11.data.ustKU2=1;
+									f11.data.KU3=0;
+									f11.data.ustKU3=1;
+									f11.data.KU7=0;
+									f11.data.ustKU7=1;
+									f11.data.KU8=13;
+									f11.data.ustKU8=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS1==1)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+								}
+								break;
+								
+							case 922: //FK 5
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.II=2;
+									f11.zag.KSS=0;
+									for (i=0; i<3; i++) 
+									{
+									col=tcp_send_read(col);
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
+										{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+										i = 3;
+										}
+									else 
+										{
+									if (i==3)
+											{
+											p->work_com[c_step].s[i].status=3;
+											p->toMN3.k_o = 2;
+											}
+										}
+									}
+									
+								}
+								break;
+								
+							case 923: //FK 5
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=15;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									f11.data.KU1=1; 
+									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==2))  //esli otet pravilnii
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+										{
+										p->work_com[c_step].s[i].status=3;
+										p->toMN3.k_o = 3;
+										}
+								}
+								break;
+								
+							case 924: //FK 5
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=15;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									f11.data.KU1=0; 
+									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS8==1))  //esli otet pravilnii
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+										{
+										p->work_com[c_step].s[i].status=3;
+										p->toMN3.k_o = 4;
+										}
+								}
+								break;
+								
+							case 93: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=15;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU2=0;
+									f11.data.ustKU2=1;
+									f11.data.KU3=1;
+									f11.data.ustKU3=1;
+									f11.data.KU7=0;
+									f11.data.ustKU7=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS1==0)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+								}
+								break;
+								
+							case 931: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=0;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+									{
+									p->work_com[c_step].s[i].status=3;
+									//printf(" SS13 = %d SS14 = %d SS15 = %d SS16 = %d SS17 = %d SS18 = %d\n SS19 = %d SS20 = %d SS21 = %d\n", f12->data.SS13,f12->data.SS14,f12->data.SS15,f12->data.SS16,f12->data.SS17,f12->data.SS18,f12->data.SS19,f12->data.SS20,f12->data.SS21);
+									}
+								}
+								break;
+								
+							case 932: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=15;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									f11.data.KU1=1;
+									f11.data.ustKU1=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==0)&&(f12->data.SS0_prd==1)&&(f12->data.SS6==0)&&(f12->data.SS9==2))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+									{
+									p->work_com[c_step].s[i].status=3;
+									//printf(" SS13 = %d SS14 = %d SS15 = %d SS16 = %d SS17 = %d SS18 = %d\n SS19 = %d SS20 = %d SS21 = %d\n", f12->data.SS13,f12->data.SS14,f12->data.SS15,f12->data.SS16,f12->data.SS17,f12->data.SS18,f12->data.SS19,f12->data.SS20,f12->data.SS21);
+									}
+								}
+								break;
+								
+							case 933: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=15;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									f11.data.KU1=0;
+									f11.data.ustKU1=1;
+									f11.data.KU2=1;
+									f11.data.ustKU1=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS0_prm==0))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+									{
+									p->work_com[c_step].s[i].status=3;
+									//printf(" SS13 = %d SS14 = %d SS15 = %d SS16 = %d SS17 = %d SS18 = %d\n SS19 = %d SS20 = %d SS21 = %d\n", f12->data.SS13,f12->data.SS14,f12->data.SS15,f12->data.SS16,f12->data.SS17,f12->data.SS18,f12->data.SS19,f12->data.SS20,f12->data.SS21);
+									}
+								}
+								break;
+								
+							case 934: //ust svyaz' s AK
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									f11.zag.TS=3;
+									f11.zag.KSS=0;
+									f11.zag.II=2;
+									f11.zag.PS=1;
+									col=tcp_send_read(col);
+							
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS8==1))  //esli otet pravilnii 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else 
+									{
+									p->work_com[c_step].s[i].status=3;
+									//printf(" SS13 = %d SS14 = %d SS15 = %d SS16 = %d SS17 = %d SS18 = %d\n SS19 = %d SS20 = %d SS21 = %d\n", f12->data.SS13,f12->data.SS14,f12->data.SS15,f12->data.SS16,f12->data.SS17,f12->data.SS18,f12->data.SS19,f12->data.SS20,f12->data.SS21);
+								}
+								}
+								break;
+								
 							case 103: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
                                     {   
                                         printf("Send to 1 chan\n");
@@ -490,17 +754,39 @@ main(int argc, char *argv[])
 						//-------------------------------------------------------						
 					}//ewe ne vipoln9li
 		
-					//if (p->work_com[c_step].s[i].w_answ[0]==2) //esli nado gdat' otveta
-					//if (p->work_com[c_step].s[i].w_answ[1]=1)
-					//-------VREMENNO PRIEM DANNIH-------------------------------
-					T0++;
-					if (T0==30)
-					{
-						T0=0;	
-						data_read=1;
-					}		
-					//-----------------------------------------------------------				
-			} //step>0
+								
+			}//step>0
+			else
+			{
+				timer1++;
+				if (timer1 == 200) // primerno 10 sec
+				{
+					f11.zag.marker1=0xFFFF;
+					f11.zag.marker2=0xFFFF;
+					if (p->cvs==11) f11.zag.II=2; else f11.zag.II=3;
+					f11.zag.TS=3;
+					f11.zag.PS=1;
+					f11.zag.KSS=sizeof(struct form11)/2;
+					f11.data.nf=11;
+						
+					col = sizeof(f11);
+			
+					//p->work_com[c_step].s[i].status=1;
+					//if(p->verbose) printf("			SVCH status \n");
+					f11.zag.KSS=0;
+					col = sizeof(struct zag_CPP);
+					col=tcp_reqest(col);
+					printf("SS10 %d SS19 %d SS20 %d\n", f12->data.SS10, f12->data.SS19,f12->data.SS20);						
+					//if (col==0x14) //esli otet=sosto9nie 
+					//{
+					//if (f12->data.SS0_all) 
+					//p->work_com[c_step].s[i].status=2; // ispravnost'
+					//	}
+					//else //p->work_com[c_step].s[i].status=3;
+					printf("timer1 = %d \n", timer1);
+					timer1 =0;
+				}
+			}
 		}//timer
 	}//while
 	timer_delete(tm10);
@@ -554,7 +840,7 @@ short tcp_send_read(int col)
 	{
 			i1=3; //exit from "for"
 			T_ALRM =0;
-			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*10;  
+			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*50;  
 			timer_settime( tm10, 0, &timer_sig,NULL); ////start timer 
 //-----------------------------------------------------------------
 			bbb = (unsigned short *)&f11;
@@ -598,6 +884,131 @@ short tcp_send_read(int col)
 									for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
 									//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 
+									return 0x14;
+								}
+								//printf("nf=%d\n",f12->data.nf);
+								
+								break;
+					default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
+								break;
+			
+				}
+				
+				
+				if(p->verbose) printf("\n");
+				//printf("nf=%d\n",f12->data.nf);
+				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
+				return f12->zag.TS;
+			}
+			else 
+			{
+				p->toMN3.sost_spiak.Cpp=0; //neispavno CPP
+				return 0; //owibka soedineni9
+			}//owibka priema
+			T_ALRM=0;
+	} //send-recieve
+	else 
+	{
+		return 0; //owibka soedineni9
+	
+	}
+	//delay(100);
+	
+	return 0;
+}
+
+//--------------------------------reqests---------------------------------------------------------------
+//--------------------------------timer-----------------------------------------------------------------
+short tcp_reqest(int col)
+{
+	int sock1;
+	short rez;
+	int i,i1,n,j;
+	short status,sum;
+
+	//message
+	/*mes_cpp.marker1=0xFFFF;
+	mes_cpp.marker2=0xFFFF;
+	mes_cpp.KSS=0;
+	mes_cpp.II=0;
+	mes_cpp.TS=0;
+	mes_cpp.PS=1;
+	*/
+
+	//            starting connection
+	for(i1=0;i1<3;i1++)
+	{
+		T_ALRM =0;
+		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*5; //5*10ms
+		rez=timer_settime( tm10, 0, &timer_sig,NULL); //start timer
+		if (rez==-1)    printf("%s. seanse %d. start timer error\n",Host,Seans);     
+
+		//if (p->verbose>1) printf("Create Socket : %s", port);
+		sock1 = CrSocket(Host,port);
+		
+		rez=1;
+		if ((T_ALRM !=0)||(sock1==-1)) 
+		{
+			if (p->verbose>1) printf("error\n",Host,Seans);
+			rez=0;
+			//goto EndCeanc;
+		}
+		else 
+		{
+			//if (p->verbose>1) printf("ok\n",Host,Seans);
+			i1=3; //exit from "for"
+		}
+		timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // stop timer
+		delay(100);
+	}
+	if (rez) //send message
+	{
+			i1=3; //exit from "for"
+			T_ALRM =0;
+			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*10;  
+			timer_settime( tm10, 0, &timer_sig,NULL); ////start timer 
+//-----------------------------------------------------------------
+			bbb = (unsigned short *)&f11;
+			sum=0;
+			if (col>10) 
+			{
+				for(i=0;i<14;i++) sum^=bbb[i+5];
+				//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
+				bbb[col/2-1]=sum;
+			}
+			//if(p->verbose>2) printf("CKH_SUM=%04x \n",sum);
+			//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
+			write(sock1, bbb, col);	Seans++;
+			//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
+			//write(sock1, ccc, 54);	Seans++;
+			n=read(sock1,bbb,1400);
+			timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // останов таймера
+			close(sock1);
+//-----------------------------------------------------------------			
+			if ((n>0)&&(T_ALRM==0))
+			{			
+				//if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
+				//mes_fcpp = (struct zag_CPP *)bbb;
+				f12 = (struct from_cpp12 *)bbb;
+				//if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
+				switch(f12->zag.TS)
+				{
+					case 0x10 : if(p->verbose) printf("Check CPP link OK(TC=0x10)\n");
+								break;
+					case 0x11 : if(p->verbose) printf("Message loaded OK(TC=0x11)\n");
+								break;
+					case 0x12 : if(p->verbose) printf("Data recieved OK(TC=0x12)\n");
+								break;
+					case 0x13 : if(p->verbose) printf("No data from AK(TC=0x13)\n");
+								break;
+					case 0x14 : if(p->verbose) printf("CPP parameters (TC=0x14)\n");
+								//if (f12->data.nf==12)
+								{
+									//if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
+									//if(p->verbose>1) printf("SS1=%d SS2_0=%d SS2_1=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
+									for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
+									//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
+										
 									return 0x14;
 								}
 								//printf("nf=%d\n",f12->data.nf);
