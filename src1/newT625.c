@@ -110,11 +110,7 @@ main(int argc, char *argv[])
 						p->work_com[c_step].s[i].status=1;						
 						switch(p->work_com[c_step].s[i].n_com)
 						{
-							case 1: if (p->fromMN3.a_params[0]==0)
-									{
-										case 0:	send_zapros(); break;
-									}
-									
+							case 1: send_zapros();														
 									Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
 									p->SOST625=1;
 									for (ii=0;ii<sizeof(read_7118);ii++) read_7118.bufcom[ii]=0;
@@ -125,25 +121,39 @@ main(int argc, char *argv[])
 									{
 										p->SOST625=2; 
 										p->cmd_625.count625_cmd++;
+										p->toMN3.sost_spiak.T625=1;//ispravno T625
 										if(read_7118.O_na_zapros.Tip==0x2)
 										{
+											p->toMN3.sost_spiak.rabota=p->toMN3.sost_spiak.reset=p->toMN3.sost_spiak.regl=0;
+											p->toMN3.sost_spiak.konez=p->toMN3.sost_spiak.kontr=0; 
+											
 											p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
 											p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
-											printf (" Otvet na zapros   :   sostoyanie-  %d   rshim raboti- %d   dlina-  %d  schetchik komand-  %d\n",
-											p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
-											p->cmd_625.T625_Result, // reshim raboti
-											read_7118.O_na_zapros.Dlina, //dlina
-											p->cmd_625.count625_cmd);
-											switch (p->cmd_625.T625_Result) {
-												case 0: printf (" work"); break;
-												case 1: printf (" reboot"); break;
-												case 2: printf (" reglament"); break;
-												case 3: printf (" finish"); break;
-												case 4: printf (" control"); break;
+											printf (" T625 : ");
+											if (p->cmd_625.T625_ok_nok==0x40) p->toMN3.sost_spiak.ispr=1;
+											else p->toMN3.sost_spiak.ispr=0;
+											switch (p->cmd_625.T625_Result)
+											{
+												case 0: printf (" work");
+												p->toMN3.sost_spiak.rabota=1;
+												break;
+												case 1: printf (" reboot");
+												p->toMN3.sost_spiak.reset=1;
+												break;
+												case 2: printf (" reglament");
+												p->toMN3.sost_spiak.regl=1;
+												break;
+												case 3: printf (" finish");
+												p->toMN3.sost_spiak.konez=1;
+												break;
+												case 4: printf (" control");
+												p->toMN3.sost_spiak.kontr=1;
+												break;
 											}
-											fflush (stdout);
-											
+											printf("\n");
+											p->work_com[c_step].s[i].status=2; // ispravnost'	
 										}
+										else p->work_com[c_step].s[i].status=3;
 										/*if(read_7118.O_na_zapros.Tip==0x111)
 										{ 
 											p->cmd_625.T625_SV_Result=read_7118.O_na_kom.Result;
@@ -158,7 +168,6 @@ main(int argc, char *argv[])
 											read_7118.O_na_kom.Tip,
 											p->cmd_625.T625_DMW_Result,p->cmd_625.count625_cmd);
 										} */
-										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}
 									else 
 									{
@@ -166,10 +175,9 @@ main(int argc, char *argv[])
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
+										p->toMN3.sost_spiak.T625=0;
 									}
 									break;
-									
-									
 							case 2: switch(p->fromMN3.a_params[0])
 									{
 										case 0:	send_SVCH(); break;
@@ -631,21 +639,20 @@ main(int argc, char *argv[])
 						{
 							p->SOST625=2; 
 							p->cmd_625.count625_cmd++;
+							p->toMN3.sost_spiak.T625=1;//ispravno T625
 							if(read_7118.O_na_zapros.Tip==0x2)
 							{
-								p->toMN3.sost_spiak.rabota=0;
-								p->toMN3.sost_spiak.reset=0;
-								p->toMN3.sost_spiak.regl=0;
-								p->toMN3.sost_spiak.konez=0;
-								p->toMN3.sost_spiak.kontr=0;
-								p->toMN3.sost_spiak.T625=0; //ispravno T625
+								p->toMN3.sost_spiak.rabota=p->toMN3.sost_spiak.reset=p->toMN3.sost_spiak.regl=0;
+								p->toMN3.sost_spiak.konez=p->toMN3.sost_spiak.kontr=0; 
+								
 								p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
 								p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
-								printf (" Otvet na zapros   :   sostoyanie-  %d   rshim raboti- %d   dlina-  %d  schetchik komand-  %d\n",
-								p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
-								p->cmd_625.T625_Result, // reshim raboti
-								read_7118.O_na_zapros.Dlina, //dlina
-								p->cmd_625.count625_cmd);
+								//printf (" T625 : sostoyanie-0x%02x   rshim raboti-%d   dlina-  %d  schetchik komand-  %d\n",
+								//p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
+								//p->cmd_625.T625_Result, // reshim raboti
+								//read_7118.O_na_zapros.Dlina, //dlina
+								//p->cmd_625.count625_cmd);
+								printf (" T625 : ");
 								if (p->cmd_625.T625_ok_nok==0x40) p->toMN3.sost_spiak.ispr=1;
 								else p->toMN3.sost_spiak.ispr=0;
 								switch (p->cmd_625.T625_Result)
@@ -667,7 +674,7 @@ main(int argc, char *argv[])
 									break;
 								}
 								printf("\n");
-								fflush (stdout);	
+								//fflush (stdout);	
 							}
 						}
 						else 
@@ -677,7 +684,6 @@ main(int argc, char *argv[])
 							p->SOST625=3;
 							p->toMN3.sost_spiak.T625=0; //ne ispravno T625
 						}
-					//printf("timer2 = %d \n", timer2);
 					timer2 =0;
 				}
 			}

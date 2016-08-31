@@ -774,7 +774,7 @@ main(int argc, char *argv[])
 					f11.zag.KSS=0;
 					col = sizeof(struct zag_CPP);
 					col=tcp_reqest(col);
-					printf("SS10 %d SS19 %d SS20 %d\n", f12->data.SS10, f12->data.SS19,f12->data.SS20);						
+					printf("SS10 %d SS17 %d SS21 %d\n", f12->data.SS10, f12->data.SS17,f12->data.SS21);						
 					//if (col==0x14) //esli otet=sosto9nie 
 					//{
 					//if (f12->data.SS0_all) 
@@ -923,16 +923,6 @@ short tcp_reqest(int col)
 	short rez;
 	int i,i1,n,j;
 	short status,sum;
-
-	//message
-	/*mes_cpp.marker1=0xFFFF;
-	mes_cpp.marker2=0xFFFF;
-	mes_cpp.KSS=0;
-	mes_cpp.II=0;
-	mes_cpp.TS=0;
-	mes_cpp.PS=1;
-	*/
-
 	//            starting connection
 	for(i1=0;i1<3;i1++)
 	{
@@ -949,7 +939,6 @@ short tcp_reqest(int col)
 		{
 			if (p->verbose>1) printf("error\n",Host,Seans);
 			rez=0;
-			//goto EndCeanc;
 		}
 		else 
 		{
@@ -1000,7 +989,7 @@ short tcp_reqest(int col)
 					//case 0x13 : if(p->verbose) printf("No data from AK(TC=0x13)\n");
 					//			break;
 					case 0x14 : /*if(p->verbose) printf("CPP parameters (TC=0x14)\n")*/;
-								if (f12->data.nf==12)
+								//if (f12->data.nf==12)
 								{
 									//if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
 									//if(p->verbose>1) printf("SS1=%d SS2_0=%d SS2_1=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
@@ -1009,24 +998,17 @@ short tcp_reqest(int col)
 										
 									return 0x14;
 								}
-								//printf("nf=%d\n",f12->data.nf);
-								
-								
 								break;
 					default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
 								break;
 			
 				}
-				
-				
-				//if(p->verbose) printf("\n");
-				//printf("nf=%d\n",f12->data.nf);
 				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 				return f12->zag.TS;
 			}
 			else 
 			{
-				p->toMN3.sost_spiak.Cpp=0; //neispavno CPP
+				p->toMN3.sost_spiak.Cpp=0;
 				return 0; //owibka soedineni9
 			}//owibka priema
 			T_ALRM=0;

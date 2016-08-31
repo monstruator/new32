@@ -56,8 +56,8 @@ main(int argc, char **argv)
 	printf("START M03A<->PULT cvs=%d verbose=%d\n",p->cvs,p->verbose);
 	if (p->cvs==10) 
 	{
-		//name="SPIAK_N8_Eth2";// "192.168.3.1";
-		name="192.168.1.2";
+		name="192.168.3.1";// ;"SPIAK_N8_Eth2"
+		//name="192.168.1.2";
 		SRC_PORT=4001;
 		DST_PORT=4001;
 	}
@@ -96,8 +96,7 @@ main(int argc, char **argv)
 					pack_buf[1]=num_mess++;
 					pack_buf[2]=1;
 					pack_buf[3]=1;
-					if ((p->toMN3.sost_spiak.Cpp==1) && (p->toMN3.sost_spiak.T625==1)) p->toMN3.sost_spiak.Spiak=1;
-					else p->toMN3.sost_spiak.Spiak=0;
+		
 					//printf("cr_com->MO3 = %d \n",	p->toMN3.cr_com);
 					//for(j=0;j<9;j++) printf("%08x ",p->toMN3.sost_kasrt[j]);  printf("\n");
 					//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
@@ -459,7 +458,7 @@ main(int argc, char **argv)
 						p->work_com[n_s].s[n_mc].n_com=1;
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
-						p->work_com[n_s].t_stop =p->sys_timer+100;   
+						p->work_com[n_s].t_stop =p->sys_timer+300;   
 						break;
 				case 63 : //t625 SVCH/DMW
 						n_s=1;  //nomer waga
