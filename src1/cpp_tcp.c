@@ -133,10 +133,8 @@ main(int argc, char *argv[])
 						//f11.zag.reserv=sizeof(struct form11)/2;
 						f11.zag.KSS=sizeof(struct form11)/2;
 						f11.data.nf=11;
-						
-						//if(p->verbose) printf("		KSS=%d %x\n",f11.zag.KSS,f11.zag.KSS);
 						col = sizeof(f11);
-						
+						//p->work_com[c_step].s[i].status=1; // check
 						switch(p->work_com[c_step].s[i].n_com)
 						{
 							case 1: p->work_com[c_step].s[i].status=1;
@@ -783,7 +781,7 @@ main(int argc, char *argv[])
 					//p->work_com[c_step].s[i].status=2; // ispravnost'
 					//	}
 					//else //p->work_com[c_step].s[i].status=3;
-					printf("timer1 = %d \n", timer1);
+					//printf("timer1 = %d \n", timer1);
 					timer1 =0;
 				}
 			}
@@ -939,7 +937,7 @@ short tcp_reqest(int col)
 	for(i1=0;i1<3;i1++)
 	{
 		T_ALRM =0;
-		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*5; //5*10ms
+		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*20; //5*10ms
 		rez=timer_settime( tm10, 0, &timer_sig,NULL); //start timer
 		if (rez==-1)    printf("%s. seanse %d. start timer error\n",Host,Seans);     
 
@@ -965,7 +963,7 @@ short tcp_reqest(int col)
 	{
 			i1=3; //exit from "for"
 			T_ALRM =0;
-			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*10;  
+			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*50;  
 			timer_settime( tm10, 0, &timer_sig,NULL); ////start timer 
 //-----------------------------------------------------------------
 			bbb = (unsigned short *)&f11;
@@ -993,16 +991,16 @@ short tcp_reqest(int col)
 				//if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
 				switch(f12->zag.TS)
 				{
-					case 0x10 : if(p->verbose) printf("Check CPP link OK(TC=0x10)\n");
-								break;
-					case 0x11 : if(p->verbose) printf("Message loaded OK(TC=0x11)\n");
-								break;
-					case 0x12 : if(p->verbose) printf("Data recieved OK(TC=0x12)\n");
-								break;
-					case 0x13 : if(p->verbose) printf("No data from AK(TC=0x13)\n");
-								break;
-					case 0x14 : if(p->verbose) printf("CPP parameters (TC=0x14)\n");
-								//if (f12->data.nf==12)
+					//case 0x10 : if(p->verbose) printf("Check CPP link OK(TC=0x10)\n");
+					//			break;
+					//case 0x11 : if(p->verbose) printf("Message loaded OK(TC=0x11)\n");
+					//			break;
+					//case 0x12 : if(p->verbose) printf("Data recieved OK(TC=0x12)\n");
+					//			break;
+					//case 0x13 : if(p->verbose) printf("No data from AK(TC=0x13)\n");
+					//			break;
+					case 0x14 : /*if(p->verbose) printf("CPP parameters (TC=0x14)\n")*/;
+								if (f12->data.nf==12)
 								{
 									//if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
 									//if(p->verbose>1) printf("SS1=%d SS2_0=%d SS2_1=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
@@ -1013,6 +1011,7 @@ short tcp_reqest(int col)
 								}
 								//printf("nf=%d\n",f12->data.nf);
 								
+								
 								break;
 					default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
 								break;
@@ -1020,7 +1019,7 @@ short tcp_reqest(int col)
 				}
 				
 				
-				if(p->verbose) printf("\n");
+				//if(p->verbose) printf("\n");
 				//printf("nf=%d\n",f12->data.nf);
 				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 				return f12->zag.TS;

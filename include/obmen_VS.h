@@ -296,10 +296,14 @@ typedef struct
 //////////////////////////////////////
 
 typedef struct {
-	  unsigned char temp[4];
-      unsigned short cr_com;
-      short num_com;
-      int a_params[5];
+	  unsigned char temp[4];   //?????
+      unsigned short cr_com;  //poryadkoviy nomer posledney vidanoi komandi
+      short num_com;  //nomer poslednei komandi po perchnu
+      int a_params[5];  // parametri
+	  float x_hk;  // koordinata x hk
+	  float y_hk;  // koordinata y hk
+	  float kurs_hk;  // kurs hk
+	  float speed_hk;  //skorost' hk
       //short pr_bearing; 
       //float p;
       //float k;
