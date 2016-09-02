@@ -49,7 +49,7 @@ unsigned char work_point[6]={0x10,0x34,0x55,0x76,0x97,0xB8};
 
 int T_ALRM =0; //prizn srabativani9 taimera
 char *Host="CPP0_1",*port="4003";
-int timer1=0;
+int timer1=0,verbose=0;
 
 int Seans=0; 
 //--------- timer 50ms -----------------------------
@@ -436,15 +436,11 @@ main(int argc, char *argv[])
 									//printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 								}
 								break;
-							case 921: //FK 5
+							case 921: //FK 5 - FK13_CPP
 								if(p->work_com[c_step].s[i].status==0)
 								{
 									p->work_com[c_step].s[i].status=1;
-									f11.zag.TS=3;
-									f11.zag.II=2;
-									f11.zag.KSS=15;
-									f11.zag.PS=1;
-									f11.data.KU0=1 // rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.KU0=1;// rezim raboti 0 - rabota, 1 - FK, 2 - SR
 									f11.data.KU2=1;// priem : 1 - vkl, 0 - otkl 
 									f11.data.KU3=0;// 0 - TKI, 1 - RLI 
 									f11.data.KU7=0;// oslablenie 0 - 25
@@ -468,28 +464,31 @@ main(int argc, char *argv[])
 								if(p->work_com[c_step].s[i].status==0)
 								{
 									p->work_com[c_step].s[i].status=1;
-									f11.zag.TS=3;
-									f11.zag.II=2;
-									f11.zag.KSS=0;
-									col=tcp_send_read(col);
 									p->work_com[c_step].t_start = p->sys_timer;
+									verbose=p->verbose;
+									p->verbose=0;
 								}
-								printf("ss9=%d \n", f12->data.SS9);
 								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
-								{
-									if (tri<=3) p->work_com[c_step].s[i].status=1;
-									else 
+								{	
+									f11.zag.KSS=0;
+									col = sizeof(struct zag_CPP);
+									col=tcp_send_read(col);
+									if (tri>3) 
 									{
-										printf("error step4 \n");
+										printf("error step4 SS9=%d \n", f12->data.SS9);
 										p->work_com[c_step].s[i].status=3;
 										p->toMN3.k_o = 2;
 										tri=0;
+										p->verbose=verbose;
 									}
-									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
-									{
-										p->work_com[c_step].s[i].status=2; // ispravnost'
-										tri=0;
-									}
+									else 
+										if ((col==0x14)&&(f12->data.SS0_all)&&(f12->data.SS9==1))  //esli otet pravilnii 
+										{
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+											printf("SS9=%d \n", f12->data.SS9);
+											tri=0;
+											p->verbose=verbose;
+										}
 									tri++;
 								}	
 								break;	
@@ -778,7 +777,7 @@ main(int argc, char *argv[])
 					//if(p->verbose) printf("			SVCH status \n");
 					f11.zag.KSS=0;
 					col = sizeof(struct zag_CPP);
-					printf("f11.data.KU2 %x \n", f11.data.KU2);
+					//printf("f11.data.KU2 %x \n", f11.data.KU2);
 					col=tcp_reqest(col);		
 					//if (col==0x14) //esli otet=sosto9nie 
 					//{
@@ -819,17 +818,10 @@ short tcp_send_read(int col)
 		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*20; //20*10ms
 		rez=timer_settime( tm10, 0, &timer_sig,NULL); //start timer
 		if (rez==-1)    printf("%s. seanse %d. start timer error\n",Host,Seans);     
-
 		if (p->verbose>1) printf("Create Socket : %s", port);
 		sock1 = CrSocket(Host,port);
-		
 		rez=1;
-		if ((T_ALRM !=0)||(sock1==-1)) 
-		{
-			//if (p->verbose>1) printf("error\n",Host,Seans);
-			rez=0;
-			//goto EndCeanc;
-		}
+		if ((T_ALRM !=0)||(sock1==-1)) 	rez=0;
 		else 
 		{
 			if (p->verbose>1) printf("ok\n",Host,Seans);
@@ -841,63 +833,62 @@ short tcp_send_read(int col)
 	}
 	if (rez) //send message
 	{
-			i1=3; //exit from "for"
-			T_ALRM =0;
-			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*50;  
-			timer_settime( tm10, 0, &timer_sig,NULL); ////start timer 
+		T_ALRM =0;
+		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*50;  
+		timer_settime( tm10, 0, &timer_sig,NULL); ////start timer 
 //-----------------------------------------------------------------
-			bbb = (unsigned short *)&f11;
-			sum=0;
-			if (col>10) 
-			{
-				for(i=0;i<14;i++) sum^=bbb[i+5];
-				//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
-				bbb[col/2-1]=sum;
-			}
-			if(p->verbose>2) printf("CKH_SUM=%04x \n",sum);
-			if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
-			write(sock1, bbb, col);	Seans++;
-			//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
-			//write(sock1, ccc, 54);	Seans++;
-			n=read(sock1,bbb,1400);
-			timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // останов таймера
-			close(sock1);
+		bbb = (unsigned short *)&f11;
+		sum=0;
+		if (col>10) 
+		{
+			for(i=0;i<14;i++) sum^=bbb[i+5];
+			//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
+			bbb[col/2-1]=sum;
+		}
+		//if(p->verbose>2) printf("CKH_SUM=%04x \n",sum);
+		if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
+		write(sock1, bbb, col);	Seans++;
+		//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
+		//write(sock1, ccc, 54);	Seans++;
+		n=read(sock1,bbb,1400);
+		timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // останов таймера
+		close(sock1);
 //-----------------------------------------------------------------			
-			if ((n>0)&&(T_ALRM==0))
-			{			
-				if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
-				//mes_fcpp = (struct zag_CPP *)bbb;
-				f12 = (struct from_cpp12 *)bbb;
-				if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
-				switch(f12->zag.TS)
-				{
-					case 0x10 : if(p->verbose) printf("Check CPP link OK(TC=0x10)\n");
-								break;
-					case 0x11 : if(p->verbose) printf("Message loaded OK(TC=0x11)\n");
-								break;
-					case 0x12 : if(p->verbose) printf("Data recieved OK(TC=0x12)\n");
-								break;
-					case 0x13 : if(p->verbose) printf("No data from AK(TC=0x13)\n");
-								break;
-					case 0x14 : if(p->verbose) printf("CPP parameters (TC=0x14)\n");
-									p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
-									if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
-									for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
-									//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
-									return 0x14;
-					default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
-								break;
-			
-				}
-				if(p->verbose) printf("\n");
-				return f12->zag.TS;
-			}
-			else 
+		if ((n>0)&&(T_ALRM==0))
+		{			
+			if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
+			//mes_fcpp = (struct zag_CPP *)bbb;
+			f12 = (struct from_cpp12 *)bbb;
+			if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
+			switch(f12->zag.TS)
 			{
+				case 0x10 : if(p->verbose) printf("Check CPP link OK(TC=0x10)\n");
+							break;
+				case 0x11 : if(p->verbose) printf("Message loaded OK(TC=0x11)\n");
+							break;
+				case 0x12 : if(p->verbose) printf("Data recieved OK(TC=0x12)\n");
+							break;
+				case 0x13 : if(p->verbose) printf("No data from AK(TC=0x13)\n");
+							break;
+				case 0x14 : if(p->verbose) printf("CPP parameters (TC=0x14)\n");
+									p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
+								if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
+								for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
+								//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
+								return 0x14;
+				default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
+							break;
+		
+			}
+			if(p->verbose) printf("\n");
+			return f12->zag.TS;
+		}
+		else 
+		{
 				p->toMN3.sost_spiak.Cpp=0; //neispavno CPP
-				return 0; //owibka soedineni9
-			}//owibka priema
-			T_ALRM=0;
+			return 0; //owibka soedineni9
+		}//owibka priema
+		T_ALRM=0;
 	} //send-recieve
 	else 
 	{

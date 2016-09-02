@@ -39,48 +39,15 @@ int  initinf (unsigned short *buf,unsigned short size)
      read_data.Read_inf.Protokol=0x0400;
      read_data.Read_inf.N_Port=0;
      read_data.Read_inf.N_Can=0;
-	 if (size>=6)	for (i=6;i<size;i++) read_data.Read_inf.Data[i]=buf[i];
-	 size = size +4;
+	 if (size>=6)	for (i=0;i<size;i++) read_data.Read_inf.Data[i]=buf[i]; //???
 	 
-	 read_data.Read_inf.Sach.ps = 1;
-     read_data.Read_inf.Sach.vr = 1;
-     read_data.Read_inf.Sach.rez1 = 0;
-     read_data.Read_inf.Sach.kvi = 2;
-     read_data.Read_inf.Sach.rez2 = 0;
-     read_data.Read_inf.Sach.nf = 193;
-
-     read_data.Read_inf.Sach.a0 = 5;
-     read_data.Read_inf.Sach.a1 = 5;
-     read_data.Read_inf.Sach.a2 = 5;
-     read_data.Read_inf.Sach.a3 = 0;
-
-     read_data.Read_inf.Sach.a4 = 0;
-     read_data.Read_inf.Sach.a5 = 0;
-     read_data.Read_inf.Sach.p0 = 1;
-     read_data.Read_inf.Sach.p1 = 6;
-
-     read_data.Read_inf.Sach.p2 = 1;
-     read_data.Read_inf.Sach.p3 = 0;
-     read_data.Read_inf.Sach.p4 = 0;
-     read_data.Read_inf.Sach.p5 = 0;
-
-     read_data.Read_inf.Sach.r0 = 9;
-     read_data.Read_inf.Sach.r1 = 8;
-     read_data.Read_inf.Sach.r2 = 9;
-     read_data.Read_inf.Sach.r3 = 7;
-
-
-     read_data.Read_inf.Sach.v0 = 5;
-     read_data.Read_inf.Sach.v1 = 5;
-     read_data.Read_inf.Sach.v2 = 4;
-     read_data.Read_inf.Sach.v3 = 3; 
-	 //------------------DATA--------------------------------------------------
+	//------------------DATA--------------------------------------------------
 	if (size%2!=0)
 	{
 		size = size+1;
-		buf[size] = 0;
+		buf[size] = 0; //???
 	}
-	read_data.Read_inf.Summa = KSumPrm(read_data.buffer,size);
+	read_data.Read_inf.Summa = KSumPrm(read_data.buffer,size); //????
 	printf("\nsum=%d k=%d\n",buf[size],read_data.Read_inf.Summa);
 	for (i=0; i<size; i++) printf ("%04x  ",read_data.buffer[i]); 
 	printf("\n"); 
@@ -102,16 +69,17 @@ int  send_zapros()
      return 1;
     }
 int send_SVCH()
-{    read_7118.Read_com.Dlina=20;
-	 read_7118.Read_com.Ident=17;
-     read_7118.Read_com.Parol_ml=0;
-     read_7118.Read_com.Zapros=2;
-     read_7118.Read_com.Protokol=0x30;
-     read_7118.Read_com.Tip=0x110;
-     read_7118.Read_com.T625=0x40;
-	 read_7118.Read_com.Reserv=0;
-     read_7118.Read_com.CVM_A=0x60;
-     return 1;
+{   
+	read_7118.Read_com.Dlina=20;
+	read_7118.Read_com.Ident=17;
+    read_7118.Read_com.Parol_ml=0;
+    read_7118.Read_com.Zapros=2;
+    read_7118.Read_com.Protokol=0x30;
+    read_7118.Read_com.Tip=0x110;
+    read_7118.Read_com.T625=0x40;
+	read_7118.Read_com.Reserv=0;
+    read_7118.Read_com.CVM_A=0x60;
+    return 1;
  }
 int send_DMW()
 {    read_7118.Read_com.Dlina=20;
