@@ -317,9 +317,9 @@ typedef   struct  {
 	  unsigned char temp[4];
       unsigned short cr_com; //por9dkovii nomer
       short num_com; //nomer poslednei
-      int lp2_param; //1 parametr komandi
+      unsigned int lp2_param; //1 parametr komandi
       short kzv; //kod zaverweni9 (0 - norma)
-      int k_o; //kod owibki
+      short k_o; //kod owibki
       short fk; //kod FK (0 - norma / 1 - ne norma)
       short link; 
 
