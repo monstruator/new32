@@ -325,6 +325,7 @@ main(int argc, char *argv[])
 									break;
 							case 922: 	// FK5 800bit
 									p->work_com[c_step].s[i].status=1;
+									
 									read_data.Read_inf.Sach.ps = 1;
 									read_data.Read_inf.Sach.vr = 1;
     								read_data.Read_inf.Sach.rez1 = 0;
@@ -358,7 +359,7 @@ main(int argc, char *argv[])
     								read_data.Read_inf.Sach.v2 = 4;
      								read_data.Read_inf.Sach.v3 = 3; 
 									
-									for(ii=0;ii<50;ii++) buffer[ii]=0x5555;
+									for(ii=0;ii<50;ii++)read_data.Read_inf.Data[ii]=0x5555;
 									initinf(buffer,50+6); //dobavit' SAC
 									
 									sen = Udp_Client_Send(&Uc42,&read_data,sizeof(read_data));

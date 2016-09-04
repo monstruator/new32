@@ -578,6 +578,9 @@ main(int argc, char **argv)
 					//---------------------------------------------
 							n_s=3;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=6; //T625
+							p->fromMN3.a_params[1]=0; //vrem9
+							p->fromMN3.a_params[2]=555;
+							p->fromMN3.a_params[3]=161;
 							p->work_com[n_s].s[n_mc].n_com=922;
 							n_mc++; //kol-vo mini komand + 1						
 							p->work_com[n_s].t_stop =p->sys_timer+600;

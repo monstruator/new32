@@ -39,9 +39,7 @@ int  initinf (unsigned short *buf,unsigned short size)
      read_data.Read_inf.Protokol=0x0400;
      read_data.Read_inf.N_Port=0;
      read_data.Read_inf.N_Can=0;
-	 if (size>=6)	for (i=0;i<size;i++) read_data.Read_inf.Data[i]=buf[i]; //???
-	 
-	//------------------DATA--------------------------------------------------
+	
 	if (size%2!=0)
 	{
 		size = size+1;
