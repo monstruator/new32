@@ -578,7 +578,7 @@ main(int argc, char **argv)
 					//---------------------------------------------
 							n_s=3;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=6; //T625
-							p->fromMN3.a_params[1]=0; //vrem9
+							p->fromMN3.a_params[1]=48900; //vrem9
 							p->fromMN3.a_params[2]=555;
 							p->fromMN3.a_params[3]=161;
 							p->work_com[n_s].s[n_mc].n_com=922;
@@ -589,13 +589,15 @@ main(int argc, char **argv)
 							n_s=4;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
 							p->work_com[n_s].s[n_mc].n_com=922;
+							p->fromMN3.a_params[4]=1;
 							n_mc++; //kol-vo mini komand + 1						
 							p->work_com[n_s].t_stop =p->sys_timer+600;
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					//---------------------------------------------
 							n_s=5;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 							p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
-							p->work_com[n_s].s[n_mc].n_com=923;
+							p->work_com[n_s].s[n_mc].n_com=922;
+							p->fromMN3.a_params[4]=2;
 							n_mc++; //kol-vo mini komand + 1						
 							p->work_com[n_s].t_stop =p->sys_timer+600;
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s

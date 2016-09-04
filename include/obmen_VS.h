@@ -122,8 +122,8 @@ struct sostSPIAK {
         unsigned short N_Port;
         unsigned short N_Can;
         struct sac Sach;
-        unsigned short Data[50];
-        unsigned int Summa;
+        unsigned short Data[52];
+        //unsigned int Summa; //?? nuzhna li ona? v 193 formulyare netu kontrol'noy summi
         } Read_inf;
 
        union  {

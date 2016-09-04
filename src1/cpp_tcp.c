@@ -482,7 +482,7 @@ main(int argc, char *argv[])
 										p->verbose=verbose;
 									}
 									else 
-										if ((col==0x14)&&(f12->data.SS0_all)&&(f12->data.SS9==1))  //esli otet pravilnii 
+										if ((col==0x14)&&(f12->data.SS0_all)&&(f12->data.SS9==p->fromMN3.a_params[4]))  //esli otet pravilnii 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 											printf("SS9=%d \n", f12->data.SS9);
@@ -492,31 +492,6 @@ main(int argc, char *argv[])
 									tri++;
 								}	
 								break;	
-							case 923: //FK 5
-								if(p->work_com[c_step].s[i].status==0)
-								{
-									printf("step5 \n");
-									p->work_com[c_step].s[i].status=1;
-									f11.zag.TS=3;
-									f11.zag.KSS=15;
-									f11.zag.II=2;
-									f11.zag.PS=1;
-									f11.data.KU1=1; 
-									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send_read(col);
-							
-									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==2))  //esli otet pravilnii
-									{
-										p->work_com[c_step].s[i].status=2; // ispravnost'
-									}
-									else 
-										{
-										printf("error step5 \n");
-										p->work_com[c_step].s[i].status=3;
-										p->toMN3.k_o = 3;
-										}
-								}
-								break;
 								
 							case 924: //FK 5
 								if(p->work_com[c_step].s[i].status==0)
