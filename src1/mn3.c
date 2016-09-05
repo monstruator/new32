@@ -454,7 +454,8 @@ main(int argc, char **argv)
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=6; //t625
-						p->work_com[n_s].s[n_mc].n_com=1;
+						if (p->cvs==11) p->work_com[n_s].s[n_mc].n_com=1;
+						else p->work_com[n_s].s[n_mc].n_com=101;
 						n_mc++; //kol-vo mini komand + 1
 						//---------------------------------------------
 						p->work_com[n_s].t_stop =p->sys_timer+300;   

@@ -736,7 +736,7 @@ main(int argc, char *argv[])
 			else
 			{
 				timer1++;
-				if (timer1 == 400) // primerno 10 sec
+				if (timer1 == 200) // primerno 10 sec
 				{
 					f11.zag.marker1=0xFFFF;
 					f11.zag.marker2=0xFFFF;

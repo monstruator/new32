@@ -329,6 +329,7 @@ main(int argc, char *argv[])
 							case 922: 	// FK5 800bit
 									p->work_com[c_step].s[i].status=1;
 									for(ii=0;ii<50;ii++) read_data.Read_inf.Data[ii]=0x5555;
+									
 									sen = Udp_Client_Send(&Uc42,&read_data,Initinf(50));
 									p->SOST625=1;
 									local_timer=p->sys_timer;
@@ -446,6 +447,11 @@ main(int argc, char *argv[])
 										}
 										break;
 						//------------Ustanovit' svyaz' s AK END-----------------------------------
+						case 101: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
+                                    {    
+                                        p->work_com[c_step].s[i].status=2;
+                                    }
+                                    break;
 							
 							default: 
 									if(p->verbose) printf("Bad minicom %d for %d chan : %d",p->work_com[c_step].s[i].n_com,N_CHAN);					
@@ -538,7 +544,7 @@ main(int argc, char *argv[])
     void  KSumPrm(int size_all)
 {   int i;
 	unsigned int ksum=0;
-	for( i=0;i < size_all;i++)			ksum=ksum*3+read_data.buffer[i];
+	for( i=0;i < (size_all-2);i++)			ksum=ksum*3+read_data.buffer[i];
 	read_data.buffer[size_all-2] = ksum;
 	read_data.buffer[size_all-1] = ksum>>16;
 }
@@ -596,7 +602,8 @@ int  Initinf (unsigned short size) // 0<=size<=50
 	
 	KSumPrm(size+virav+12);
 	printf("size = %d virav = %d \n", size, virav);
-	for (y=0; y<size+virav+12; y++) 
+	printf(" return %d \n", (2*(size+virav+12)));
+	for (y=0; y<size+virav+12; y++)	
 	{
 		printf("%04x ", read_data.buffer[y]);
 		if (y==3) printf("\n");
@@ -604,7 +611,7 @@ int  Initinf (unsigned short size) // 0<=size<=50
 		if (y==(size+virav+9)) printf("\n");
 	}
 	printf("\n");
-	return (size+virav+12);
+	return (2*(size+virav+12));
 }
 
 int  send_zapros()
