@@ -16,9 +16,6 @@
 			int rez_tst;
 			};
           
-
-		   
-		
           main()
           {
                   int sock, length;
@@ -28,7 +25,7 @@
                   int rval;
 				  struct my_elt mass[6];
 
-				  delay(1500);
+				  delay(2500);
 				  open_shmem();
 				  delay(1000);
 				  printf("cvs=%d\n", p->cvs);

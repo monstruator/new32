@@ -185,6 +185,14 @@ struct form14
 	short KSS; //kontrol'na9 summa
 };
 
+struct form18 
+{
+	struct sac Sach;
+	short n_word;
+	short form5[9]; 
+	short form6[203]; 
+};
+
 struct from_cpp12
 {
 	struct zag_CPP zag;
@@ -197,6 +205,16 @@ struct from_cpp12
 			unsigned int data_int[9]; //9
 			short KS;
 		} i;
+	};
+};
+
+struct from_cpp18
+{
+	struct zag_CPP zag;
+	union
+	{
+		struct form18 data;
+		short mass[219];
 	};
 };
 

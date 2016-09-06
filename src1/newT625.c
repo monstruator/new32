@@ -40,6 +40,7 @@
     unsigned char buf625[31];
 	char out_buf[1024];
 	int timer2=0;
+	int timer3=0;
 	int iii;
 
 	int verbose;
@@ -51,7 +52,7 @@
   # define DST_PORT42 4000
 
 	short MK2[15],buf;
-	short byta2,T,len_OUT,sen,j;
+	short byta2,T,len_OUT,sen,red,j;
     div_t   vol;    // vol.quot - количество полных томов
     char          pack_buf[1500];  // буфер задачи obm_41_31. Выходные данные в Socket
     char                 numb_pack,     // текущий номер пакета
@@ -337,21 +338,35 @@ main(int argc, char *argv[])
 									p->work_com[c_step].s[i].status=2;
 									break;
 							case 923: 	// FK5 800bit
-										for (i=0; i<50; i++)
+									while  ((( bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									if (bytes>0)
+									{
+										p->SOST625=2; 
+										memcpy(&p->inf_625,&read_data,sizeof(read_data));
+										p->cmd_625.count625_inf++;
+										for(ii=0;ii<50;ii++) 
 										{
-											if (read_data.buffer[7+i]==read_data.Read_inf.Data[i])
+											if(read_data.Read_inf.Data[ii]==0x5555) printf("STEP 7 800 bit ok\n");
+											else
 											{
+											printf("800 bit error\n");
+											p->cmd_625.T625_on_off=1;
+											p->SOST625=3;
+											p->work_com[c_step].s[i].status=3;
 											}
-											else 
-											{
-												printf("error 800bit\n");
-												p->cmd_625.T625_on_off=1;
-												p->SOST625=3;
-												p->work_com[c_step].s[i].status=3;
-												break;
-											}
-											p->work_com[c_step].s[i].status=2; // ispravnost'
+										printf("\n"); 
+										p->cmd_625.T625_on_off=0;
+										p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
+									}
+									else 
+									{
+										printf("T-625-Inf no answer\n");
+										p->cmd_625.T625_on_off=1;
+										p->SOST625=3;
+										p->work_com[c_step].s[i].status=3;
+										//break;
+									}
 										break;
 						//------------FK5 END-----------------------------------------------------
 						//------------Ustanovit' svyaz' s AK START--------------------------------
@@ -473,8 +488,15 @@ main(int argc, char *argv[])
 			else 
 			{
 				timer2++;
+				timer3++;
+				if (timer3 == 10) 
+				{
+				bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data);
+				timer3 = 0;
+				}
 				if (timer2 == 200) // primerno 10 sec
 				{
+					
 					send_zapros();
 					Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
 					p->SOST625=1;
@@ -601,8 +623,8 @@ int  Initinf (unsigned short size) // 0<=size<=50
 	//------------------------CHECK SUMM-----------------------------------------------------
 	
 	KSumPrm(size+virav+12);
-	printf("size = %d virav = %d \n", size, virav);
-	printf(" return %d \n", (2*(size+virav+12)));
+	//printf("size = %d virav = %d \n", size, virav);
+	//printf(" return %d \n", (2*(size+virav+12)));
 	for (y=0; y<size+virav+12; y++)	
 	{
 		printf("%04x ", read_data.buffer[y]);

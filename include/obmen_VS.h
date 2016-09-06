@@ -131,6 +131,21 @@ struct sostSPIAK {
        unsigned char byte_bufer[124];
 	   struct Tabl_2 Read_inf;}
 	   read_data;
+	   
+	typedef            struct RLI_data
+			{
+			unsigned short OICH;  //oich formulyara 18
+			unsigned short kolvo_slov; // kolichestvo informacionnih slov v aormulyare
+			unsigned short form_5; // chastniy formulyar 5
+			unsigned short form_6; // chastniy formulyar 6
+			unsigned short nomer_str; // nomer stroki 0
+			} Read_rli;
+			
+			union  {
+			unsigned short buffer[219][20];
+			unsigned char byte_bufer[8760];
+			struct RLI_data Read_rli;}
+			read_rli;
    
 typedef   struct 
 {   
@@ -205,17 +220,16 @@ typedef struct {
 typedef struct {
 	unsigned short cr_data_pac;
 	short	SVCH_FORM_SACH[6];
-	unsigned short cr_transm_takt;
 	unsigned short num_words;
-
-	short	SVCH_FORM_5[5];
+	short	SVCH_FORM_5[8];
 	short	SVCH_FORM_6[606];
+	unsigned short cr_transm_takt;
 
 
 } Mem_Region23_RLI_t;	//1240 б.инф.
 
 typedef	union {
-	short buf[620];
+	short buf[627];
 
 	Mem_Region23_NO_t 		Mem_Region_NO;		//Освещение НО	(kvi = 5)
 	Mem_Region23_REO_t 		Mem_Region_REO;		//Освещение РЭО	(kvi = 7)

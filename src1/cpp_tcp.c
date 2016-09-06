@@ -8,6 +8,7 @@
   #include <stdlib.h>
   #include <netdb.h>
   #include <math.h>
+  #include <time.h>
   #include "../include/shared_mem.h"
   #include "../include/USOIwrk.h"
   #include "../include/CrSocket.h"
@@ -37,11 +38,12 @@ pid_t proxy_time;
 volatile un counter;
 struct zag_CPP mes_cpp, *mes_fcpp;
 struct from_cpp12 *f12;
+struct from_cpp18 *f18;
 struct to_cpp11 f11;
 timer_t  tm10;
 struct sigevent event_sig;
 struct itimerspec timer_sig;
-unsigned short *aaa,*bbb;
+unsigned short *aaa,*bbb,*cccc;
 unsigned short ccc[100]={0xFFFF,0xFFFF,0x0B00,0x0203,0x0001,0x000B,0x0000,0x0000,0x0000,
 						 0x0001,0x0000,0x0010,0x0010,0x010D,0x0001,0x00FF,0x0001,0x0001,
 						 0x0001,0x01f8,0,0,0,0,0,0,0};
@@ -50,7 +52,7 @@ unsigned char work_point[6]={0x10,0x34,0x55,0x76,0x97,0xB8};
 int T_ALRM =0; //prizn srabativani9 taimera
 char *Host="CPP0_1",*port="4003";
 int timer1=0,verbose=0;
-
+//clock_t start_time, stop_time;
 int Seans=0; 
 //--------- timer 50ms -----------------------------
 pid_t far handler_time()
@@ -423,7 +425,7 @@ main(int argc, char *argv[])
 								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
 								{
 									col=tcp_send_read(col);
-									if ((col==0x14)&&(f12->data.SS0_all==1)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS0_all==1)&&(f12->data.SS1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS2_1==0)&&(f12->data.SS6==0)) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->fromMN3.a_params[0]==1)) //esli otet=sosto9nie 
+									if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS1==0)&&(f12->data.SS2_0==0)&&(f12->data.SS2_1==0)&&(f12->data.SS6==0)) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->fromMN3.a_params[0]==1)) //esli otet=sosto9nie 
 									{
 										printf("ok SS0_all(1)=%d  SS1(0)=%d SS2_0(0)=%d  SS2_1(0)=%d  SS6(0)=%d\n", f12->data.SS0_all, f12->data.SS1, f12->data.SS2_0, f12->data.SS2_1, f12->data.SS6 );
 										p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -431,7 +433,7 @@ main(int argc, char *argv[])
 									else 
 									{
 										p->work_com[c_step].s[i].status=3;
-										printf("error SS0_all(1)=%d  SS1(1)=%d SS2_0(0)=%d  SS2_1(0)=%d  SS6(0)=%d\n", f12->data.SS0_all, f12->data.SS1, f12->data.SS2_0, f12->data.SS2_1, f12->data.SS6);
+										printf("error SS0_all(1)=%d  SS1(0)=%d SS2_0(0)=%d  SS2_1(0)=%d  SS6(0)=%d\n", f12->data.SS0_all, f12->data.SS1, f12->data.SS2_0, f12->data.SS2_1, f12->data.SS6);
 									}
 									//printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 								}
@@ -468,12 +470,12 @@ main(int argc, char *argv[])
 									verbose=p->verbose;
 									p->verbose=0;
 								}
-								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 150))
 								{	
 									f11.zag.KSS=0;
 									col = sizeof(struct zag_CPP);
 									col=tcp_send_read(col);
-									if (tri>3) 
+									if (tri>20) 
 									{
 										printf("error step4 SS9=%d \n", f12->data.SS9);
 										p->work_com[c_step].s[i].status=3;
@@ -482,17 +484,65 @@ main(int argc, char *argv[])
 										p->verbose=verbose;
 									}
 									else 
-										if ((col==0x14)&&(f12->data.SS0_all)&&(f12->data.SS9==p->fromMN3.a_params[4]))  //esli otet pravilnii 
+										//if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS9==p->fromMN3.a_params[4]))  //esli otet pravilnii 
+										if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
-											printf("SS9=%d \n", f12->data.SS9);
+											printf("SS9=%d OK\n", f12->data.SS9);
 											tri=0;
 											p->verbose=verbose;
 										}
+									printf("SS9=%d tri=%d col=%02x SS0=%d par4=%d \n", f12->data.SS9, tri , col , f12->data.SS0_all, p->fromMN3.a_params[4] );	
 									tri++;
 								}	
 								break;	
-								
+							case 923: //FK 5
+								if(p->work_com[c_step].s[i].status==0)
+								{
+									p->work_com[c_step].s[i].status=1;
+									p->work_com[c_step].t_start = p->sys_timer;
+									if(p->verbose) printf("			PEREDA4A ONN\n");
+									verbose=p->verbose;
+									p->verbose=0;
+									f11.data.KU1=1;
+									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									//f11.data.KU2=0; 
+									//f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									col=tcp_send_read(col);
+									//printf("SS2_prd1=%d\n",f12->data.SS2_0);
+									tri=0;
+									if ((col==0x14))//&&(p->fromMN3.a_params[0]==f12->data.SS2_0)) //esli otet=sosto9nie 
+									{	
+										printf("SS2=%d\n",f12->data.SS2_0);
+										//p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									else p->work_com[c_step].s[i].status=3;
+								}
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 150))
+								{	
+									f11.zag.KSS=0;
+									col = sizeof(struct zag_CPP);
+									col=tcp_send_read(col);
+									if (tri>20) 
+									{
+										printf("error step5 SS9=%d \n", f12->data.SS9);
+										p->work_com[c_step].s[i].status=3;
+										p->toMN3.k_o = 2;
+										tri=0;
+										p->verbose=verbose;
+									}
+									else 
+										if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS9==2))  //esli otet pravilnii 
+										{
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+											printf("SS9=%d OK\n", f12->data.SS9);
+											tri=0;
+											p->verbose=verbose;
+										}
+									printf("SS9=%d SS2=%d tri=%d col=%02x SS0=%d par4=%d \n", f12->data.SS9, f12->data.SS2_0,tri , col , f12->data.SS0_all, p->fromMN3.a_params[4] );	
+									tri++;
+								}	
+								break;		
 							case 924: //FK 5
 								if(p->work_com[c_step].s[i].status==0)
 								{
@@ -511,13 +561,12 @@ main(int argc, char *argv[])
 									}
 									else 
 										{
-										printf("error step6 \n");
+										printf("error step6 SS8 =%d ss0_all =%d \n",f12->data.SS8==1, f12->data.SS0_all);
 										p->work_com[c_step].s[i].status=3;
 										p->toMN3.k_o = 4;
 										}
 								}
 								break;
-								
 							case 93: //ust svyaz' s AK
 								if(p->work_com[c_step].s[i].status==0)
 								{
@@ -744,31 +793,46 @@ main(int argc, char *argv[])
 					f11.zag.TS=3;
 					f11.zag.PS=1;
 					f11.zag.KSS=sizeof(struct form11)/2;
-					f11.data.nf=11;
-						
+					f11.data.nf=11;	
 					col = sizeof(f11);
-			
-					//p->work_com[c_step].s[i].status=1;
-					//if(p->verbose) printf("			SVCH status \n");
 					f11.zag.KSS=0;
 					col = sizeof(struct zag_CPP);
-					//printf("f11.data.KU2 %x \n", f11.data.KU2);
 					col=tcp_reqest(col);		
-					//if (col==0x14) //esli otet=sosto9nie 
-					//{
-					//if (f12->data.SS0_all) 
-					//p->work_com[c_step].s[i].status=2; // ispravnost'
-					//	}
-					//else //p->work_com[c_step].s[i].status=3;
-					//printf("timer1 = %d \n", timer1);
 					timer1 =0;
 				}
+				/*if ((p->cvs==10)&&(timer1==20))
+				{
+					f11.zag.marker1=0xFFFF;
+					f11.zag.marker2=0xFFFF;
+					f11.zag.II=3;
+					f11.zag.TS=2;
+					f11.zag.PS=1;
+					f11.zag.KSS=sizeof(struct form11)/2;
+					f11.data.nf=11;	
+					col = sizeof(f11);
+					f11.zag.KSS=0;
+					col = sizeof(struct zag_CPP);
+					col=rli_reqest(col);
+
+					if (TS==0x12)
+					{
+						for (0, f<20, f++)
+						{
+							read_rli[][f]=f18;
+							if (PS==1)
+							{
+								send Ts=4
+								f=20;
+							}
+							
+					}
+				}*/
 			}
 		}//timer
 	}//while
 	timer_delete(tm10);
 }
-
+//-------------------------------------------------------------------------------------------------------
 
 short tcp_send_read(int col)
 {
@@ -785,7 +849,7 @@ short tcp_send_read(int col)
 	mes_cpp.TS=0;
 	mes_cpp.PS=1;
 	*/
-
+	//start_time = clock();
 	//            starting connection
 	for(i1=0;i1<3;i1++)
 	{
@@ -806,6 +870,11 @@ short tcp_send_read(int col)
 		delay(200);
 		//printf("\ni1=%d\n",i1);
 	}
+	
+	//stop_time = clock();
+	
+	//printf(" time = %lu %d \n", (stop_time - start_time) , CLOCKS_PER_SEC );
+	
 	if (rez) //send message
 	{
 		T_ALRM =0;
@@ -884,6 +953,8 @@ short tcp_reqest(int col)
 	int i,i1,n,j;
 	short status,sum;
 	//            starting connection
+	//start_time = clock();
+	
 	for(i1=0;i1<3;i1++)
 	{
 		T_ALRM =0;
@@ -901,6 +972,11 @@ short tcp_reqest(int col)
 		timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // stop timer
 		delay(100);
 	}
+	
+	//stop_time = clock();
+	
+	//printf(" time = %lu %d \n", (stop_time - start_time) , CLOCKS_PER_SEC );
+	
 	if (rez) //send message
 	{
 			i1=3; //exit from "for"
@@ -934,8 +1010,107 @@ short tcp_reqest(int col)
 								p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 								if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
 								for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
+								//printf("case 20 \n");
 								//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 								return 0x14;
+					case 0x12 : printf("Est' soobshenie \n");
+								
+						break;
+					case 0x13 : printf("Net soobsheniy \n");
+						break;
+					default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
+								break;
+			
+				}
+								
+				return f12->zag.TS;
+			}
+			else 
+			{
+				printf("n %d T_alrm %d\n",n, T_ALRM);
+				p->toMN3.sost_spiak.Cpp=0;
+				return 0; //owibka soedineni9
+			}//owibka priema
+			T_ALRM=0;
+	} //send-recieve
+	else 
+	{
+		return 0; //owibka soedineni9
+	
+	}
+	return 0;
+}
+//--------------------------------RLI---------------------------------------------------------------
+//--------------------------------timer-----------------------------------------------------------------
+short rli_reqest(int col)
+{
+	int sock1;
+	short rez;
+	int i,i1,n,j;
+	short status,sum;
+	//            starting connection
+	
+	
+	for(i1=0;i1<3;i1++)
+	{
+		T_ALRM =0;
+		timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*20; //5*10ms
+		rez=timer_settime( tm10, 0, &timer_sig,NULL); //start timer
+		if (rez==-1)    printf("%s. seanse %d. start timer error\n",Host,Seans);     
+		sock1 = CrSocket(Host,port);
+		rez=1;
+		if ((T_ALRM !=0)||(sock1==-1)) 
+		{
+			if (p->verbose>1) printf("error\n",Host,Seans);
+			rez=0;
+		}
+		else 	i1=3; //exit from "for"
+		timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // stop timer
+		delay(100);
+	}
+	
+	
+	
+	if (rez) //send message
+	{
+			i1=3; //exit from "for"
+			T_ALRM =0;
+			timer_sig.it_value.tv_nsec = TIMEOUT_NSEC*50;  
+			timer_settime( tm10, 0, &timer_sig,NULL); ////start timer 
+//-----------------------------------------------------------------
+			cccc = (unsigned short *)&f11;
+			sum=0;
+			if (col>10) 
+			{
+				for(i=0;i<14;i++) sum^=cccc[i+5];
+				//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
+				cccc[col/2-1]=sum;
+			}
+			write(sock1, cccc, col);	Seans++;
+			n=read(sock1,cccc,sizeof(struct from_cpp18));
+			timer_sig.it_value.tv_nsec = 0L;	timer_settime( tm10, 0, &timer_sig,NULL); // останов таймера
+			close(sock1);
+//-----------------------------------------------------------------			
+			if ((n>0)&&(T_ALRM==0))
+			{			
+				//if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
+				f18 = (struct from_cpp18 *)cccc;
+				//if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
+				switch(f18->zag.TS)
+				{
+					case 0x14 : //if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
+								//if(p->verbose>1) printf("SS1=%d SS2_0=%d SS2_1=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
+								p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
+								if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
+								for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
+								//printf("case 20 \n");
+								//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
+								return 0x14;
+					case 0x12 : printf("Est' soobshenie \n");
+								
+								break;
+					case 0x13 : printf("Net soobsheniy \n");
+								break;
 					default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
 								break;
 			
