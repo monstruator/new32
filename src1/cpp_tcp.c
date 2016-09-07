@@ -452,6 +452,7 @@ main(int argc, char *argv[])
 									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS1==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
+										printf("FK13_CPP ustanovlen \n");
 									}
 									else 
 									{
@@ -470,14 +471,14 @@ main(int argc, char *argv[])
 									verbose=p->verbose;
 									p->verbose=0;
 								}
-								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 150))
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 20))
 								{	
 									f11.zag.KSS=0;
 									col = sizeof(struct zag_CPP);
 									col=tcp_send_read(col);
 									if (tri>20) 
 									{
-										printf("error step4 SS9=%d \n", f12->data.SS9);
+										printf("IB ne zagruzhen, error step4 SS9=%d \n", f12->data.SS9);
 										p->work_com[c_step].s[i].status=3;
 										p->toMN3.k_o = 2;
 										tri=0;
@@ -488,7 +489,7 @@ main(int argc, char *argv[])
 										if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
-											printf("SS9=%d OK\n", f12->data.SS9);
+											printf("IB Zagruzhen SS9=%d OK\n", f12->data.SS9);
 											tri=0;
 											p->verbose=verbose;
 										}
@@ -501,7 +502,7 @@ main(int argc, char *argv[])
 								{
 									p->work_com[c_step].s[i].status=1;
 									p->work_com[c_step].t_start = p->sys_timer;
-									if(p->verbose) printf("			PEREDA4A ONN\n");
+									if(p->verbose) printf("			IB peredan \n");
 									verbose=p->verbose;
 									p->verbose=0;
 									f11.data.KU1=1;
@@ -525,7 +526,7 @@ main(int argc, char *argv[])
 									col=tcp_send_read(col);
 									if (tri>20) 
 									{
-										printf("error step5 SS9=%d \n", f12->data.SS9);
+										printf("IB ne peredan, error step5 SS9=%d \n", f12->data.SS9);
 										p->work_com[c_step].s[i].status=3;
 										p->toMN3.k_o = 2;
 										tri=0;
@@ -535,9 +536,10 @@ main(int argc, char *argv[])
 										if ((col==0x14)&&(f12->data.SS0_all==1)&&(f12->data.SS9==2))  //esli otet pravilnii 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
-											printf("SS9=%d OK\n", f12->data.SS9);
+											printf("IB peredan, SS9=%d OK\n", f12->data.SS9);
 											tri=0;
 											p->verbose=verbose;
+											break;
 										}
 									printf("SS9=%d SS2=%d tri=%d col=%02x SS0=%d par4=%d \n", f12->data.SS9, f12->data.SS2_0,tri , col , f12->data.SS0_all, p->fromMN3.a_params[4] );	
 									tri++;
@@ -555,7 +557,7 @@ main(int argc, char *argv[])
 									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									col=tcp_send_read(col);
 							
-									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS8==1))  //esli otet pravilnii
+									if ((col==0x14)&&(f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1))  //esli otet pravilnii
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}

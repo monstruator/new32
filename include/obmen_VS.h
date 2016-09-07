@@ -115,7 +115,7 @@ struct sostSPIAK {
         struct Tabl_5 O_na_zapros;
         struct Tabl_7_9 O_na_kom;} read_7118;   
  //-----------------------------------------------
-    typedef            struct Tabl_2
+    struct Tabl_2
         {
         unsigned short OICH;
         unsigned short Protokol;
@@ -124,7 +124,7 @@ struct sostSPIAK {
         struct sac Sach;
         unsigned short Data[52];
         //unsigned int Summa; //?? nuzhna li ona? v 193 formulyare netu kontrol'noy summi
-        } Read_inf;
+        };
 
        union  {
 	   unsigned short buffer[62];
@@ -132,17 +132,7 @@ struct sostSPIAK {
 	   struct Tabl_2 Read_inf;}
 	   read_data;
 	    //-----------------------------------------------
-    typedef            struct Tabl_22
-        {
-        unsigned short OICH;
-        unsigned short Protokol;
-        unsigned short N_Port;
-        unsigned short N_Can;
-        struct sac Sach;
-        unsigned short Data[52];
-        //unsigned int Summa; //?? nuzhna li ona? v 193 formulyare netu kontrol'noy summi
-        } send_inf;
-
+   
        union  {
 	   unsigned short buffer[62];
        unsigned char byte_bufer[124];
@@ -400,7 +390,7 @@ typedef struct
 	short    komanda625;
 	short    SOST625;
 	cmd625   cmd_625;   //otvet iz t625 
-	send_inf inf_625;   //inf for t625
+	struct Tabl_2 inf_625;   //inf for t625
 	
 	short count_cpp_message;   //kolichestvo soobsheniy cpp
 	short count_r999_message;   //kolichestvo soobsheniy r999

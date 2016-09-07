@@ -42,6 +42,9 @@
 	int timer2=0;
 	int timer3=0;
 	int iii;
+	int x=0;
+	int tri=0;
+	unsigned int t625com;
 
 	int verbose;
 	char name[30] = "192.168.4.2";
@@ -112,7 +115,7 @@ main(int argc, char *argv[])
 					if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&(p->work_com[c_step].s[i].status!=2)&&(p->work_com[c_step].s[i].status!=3)) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas
 					{
 						if((p->verbose>1)&&(p->work_com[c_step].s[i].status==0)) printf("\nSTEP=%d    minicom for T625 : %d      status=%d time %d \n", p->cur_step,  p->work_com[c_step].s[i].n_com, p->work_com[c_step].s[i].status, p->sys_timer);
-						p->work_com[c_step].s[i].status=1;						
+						//p->work_com[c_step].s[i].status=1;						
 						switch(p->work_com[c_step].s[i].n_com)
 						{
 							case 1: send_zapros();														
@@ -329,45 +332,56 @@ main(int argc, char *argv[])
 									break;
 							case 922: 	// FK5 800bit
 									p->work_com[c_step].s[i].status=1;
-									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=0x5555;
+									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=ii;
 									
 									sen = Udp_Client_Send(&Uc42,&send_data,Initinf(50));
 									p->SOST625=1;
 									local_timer=p->sys_timer;
 									bytes=0;
 									p->work_com[c_step].s[i].status=2;
+									t625com = p->cmd_625.count625_inf;
 									break;
 							case 923: 	// FK5 800bit
-									while  ((( bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
-									if (bytes>0)
+									//printf("status %d \n", p->work_com[c_step].s[i].status);
+									if(p->work_com[c_step].s[i].status==0)
 									{
-										p->SOST625=2; 
-										memcpy(&p->inf_625,&send_data,sizeof(send_data));
-										p->cmd_625.count625_inf++;
-										for(ii=0;ii<50;ii++) 
+										p->work_com[c_step].s[i].status=1;
+										tri=0;
+										//t625com = p->cmd_625.count625_inf;
+									}
+									if (tri<20) 
+									{
+										if (t625com != p->cmd_625.count625_inf) 
 										{
-											if(send_data.send_inf.Data[ii]==0x5555) printf("STEP 7 800 bit ok\n");
-											else
+											for(iii=4;iii<60;iii++)
 											{
-											printf("800 bit error\n");
-											p->cmd_625.T625_on_off=1;
-											p->SOST625=3;
-											p->work_com[c_step].s[i].status=3;
+												if (send_data.buffer[iii] != read_data.buffer[iii])
+												{
+													printf("IB ne sovpali %d \n", iii);
+													p->work_com[c_step].s[i].status=3;
+													x=0;
+													tri=0;
+													break;
+													//printf("read(%04x ) send(%04x) %d \n", read_data.buffer[iii], send_data.buffer[iii]);
+												}
 											}
-										printf("\n"); 
-										p->cmd_625.T625_on_off=0;
-										p->work_com[c_step].s[i].status=2; // ispravnost'
+											//printf("step status %d \n", p->work_com[c_step].s[i].status);
+											if(p->work_com[c_step].s[i].status==1) 
+											{
+												p->work_com[c_step].s[i].status=2;
+												printf("Massivi IB sovpali \n");
+												tri=0;
+											}
 										}
 									}
-									else 
+									else
 									{
-										printf("T-625-Inf no answer\n");
-										p->cmd_625.T625_on_off=1;
-										p->SOST625=3;
+										printf("800bit not data tri=%d t625com=%d p->cmd_625.count625_inf=%d\n",tri,t625com,p->cmd_625.count625_inf);
 										p->work_com[c_step].s[i].status=3;
-										//break;
 									}
-										break;
+									
+									tri++;
+									break;
 						//------------FK5 END-----------------------------------------------------
 						//------------Ustanovit' svyaz' s AK START--------------------------------
 							case 93:  //ust svyaz' s AK
@@ -488,13 +502,7 @@ main(int argc, char *argv[])
 			else 
 			{
 				timer2++;
-				timer3++;
-				if (timer3 == 10) 
-				{
-				bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data));
-				timer3 = 0;
-				}
-				if (timer2 == 200) // primerno 10 sec
+				if (timer2 == 100) // primerno 10 sec
 				{
 					
 					send_zapros();
@@ -520,6 +528,7 @@ main(int argc, char *argv[])
 								//p->cmd_625.T625_Result, // reshim raboti
 								//read_7118.O_na_zapros.Dlina, //dlina
 								//p->cmd_625.count625_cmd);
+								
 								printf (" T625 : ");
 								if (p->cmd_625.T625_ok_nok==0x40) p->toMN3.sost_spiak.ispr=1;
 								else p->toMN3.sost_spiak.ispr=0;
@@ -554,6 +563,20 @@ main(int argc, char *argv[])
 						}
 					timer2 =0;
 				}
+			}
+			timer3++;
+			if (timer3 > 5) // zapros dannih c T-625
+			{
+				//printf("bytes=%d p->cmd_625.count625_inf=%d \n",bytes,p->cmd_625.count625_inf);
+				bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data));
+				if (bytes>0) 
+				{	
+					p->cmd_625.count625_inf++;
+					printf("bytes=%d p->cmd_625.count625_inf=%d \n",bytes,p->cmd_625.count625_inf);
+					for (iii=0;iii<bytes/2;iii++) printf("%04x ",read_data.buffer[iii]);printf("\n");
+					for (iii=0;iii<bytes/2;iii++) printf("%04x ",send_data.buffer[iii]);printf("\n");
+				}
+				timer3 = 0;
 			}
 		}//timer
 	}//while
