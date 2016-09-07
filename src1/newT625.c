@@ -244,53 +244,53 @@ main(int argc, char *argv[])
 							case 3: switch(p->fromMN3.a_params[0])
 									{
 										case 193:	
-											 read_data.Read_inf.Sach.ps = 1;
-											 read_data.Read_inf.Sach.vr = 1;
-											 read_data.Read_inf.Sach.rez1 = 0;
-											 read_data.Read_inf.Sach.kvi = 5;
-											 read_data.Read_inf.Sach.rez2 = 0;
-											 read_data.Read_inf.Sach.nf = 193;
+											 send_data.send_inf.Sach.ps = 1;
+											 send_data.send_inf.Sach.vr = 1;
+											 send_data.send_inf.Sach.rez1 = 0;
+											 send_data.send_inf.Sach.kvi = 5;
+											 send_data.send_inf.Sach.rez2 = 0;
+											 send_data.send_inf.Sach.nf = 193;
 
-											 read_data.Read_inf.Sach.a0 = 3;
-											 read_data.Read_inf.Sach.a1 = 2;
-											 read_data.Read_inf.Sach.a2 = 1;
-											 read_data.Read_inf.Sach.a3 = 0;
+											 send_data.send_inf.Sach.a0 = 3;
+											 send_data.send_inf.Sach.a1 = 2;
+											 send_data.send_inf.Sach.a2 = 1;
+											 send_data.send_inf.Sach.a3 = 0;
 
-											 read_data.Read_inf.Sach.a4 = 0;
-											 read_data.Read_inf.Sach.a5 = 0;
-											 read_data.Read_inf.Sach.p0 = 6;
-											 read_data.Read_inf.Sach.p1 = 5;
+											 send_data.send_inf.Sach.a4 = 0;
+											 send_data.send_inf.Sach.a5 = 0;
+											 send_data.send_inf.Sach.p0 = 6;
+											 send_data.send_inf.Sach.p1 = 5;
 
-											 read_data.Read_inf.Sach.p2 = 4;
-											 read_data.Read_inf.Sach.p3 = 0;
-											 read_data.Read_inf.Sach.p4 = 0;
-											 read_data.Read_inf.Sach.p5 = 0;
+											 send_data.send_inf.Sach.p2 = 4;
+											 send_data.send_inf.Sach.p3 = 0;
+											 send_data.send_inf.Sach.p4 = 0;
+											 send_data.send_inf.Sach.p5 = 0;
 
-											 read_data.Read_inf.Sach.r0 = 9;
-											 read_data.Read_inf.Sach.r1 = 8;
-											 read_data.Read_inf.Sach.r2 = 9;
-											 read_data.Read_inf.Sach.r3 = 7;
+											 send_data.send_inf.Sach.r0 = 9;
+											 send_data.send_inf.Sach.r1 = 8;
+											 send_data.send_inf.Sach.r2 = 9;
+											 send_data.send_inf.Sach.r3 = 7;
 
 
-											 read_data.Read_inf.Sach.v0 = 5;
-											 read_data.Read_inf.Sach.v1 = 5;
-											 read_data.Read_inf.Sach.v2 = 4;
-											 read_data.Read_inf.Sach.v3 = 3; 
+											 send_data.send_inf.Sach.v0 = 5;
+											 send_data.send_inf.Sach.v1 = 5;
+											 send_data.send_inf.Sach.v2 = 4;
+											 send_data.send_inf.Sach.v3 = 3; 
 											//------------------DATA--------------------------------------------------
-											 read_data.Read_inf.Data[0] = 0x1D00; //data 7 tip upakovku/reserv !bin!
-											 read_data.Read_inf.Data[1] = 0x2300; //data 8 kod formalizovannogo soobsheniya/priznak napravleniya !bin!
-											 read_data.Read_inf.Data[2] = 0x2400; //data 9 koordinata X !bin!
-											 read_data.Read_inf.Data[3] = 0x2500; //data 10 koordinata Y !bin!
-											 read_data.Read_inf.Data[4] = 0x1D00; //data 11 kurs grad !bin!
-											 read_data.Read_inf.Data[5] = 0x001E; //data 12 skorost' m/s !bin!
-											 read_data.Read_inf.Data[6] = 0x1248; //data 13 vstavka 1 !bin!
-											 read_data.Read_inf.Data[7] = 0x1249; //data 14 vstavka 2 !bin!
-											 read_data.Read_inf.Data[8] = 0x1250; //data 15 vstavka 3 !bin!
-											 read_data.Read_inf.Data[9] = 0x1251; //data 16 vstavka 3 !bin!
-											 read_data.Read_inf.Data[10] = 0x0000; //data 17 reserv
-											 read_data.Read_inf.Data[11] = 0x0000; //data 18 reserv
-											 read_data.Read_inf.Data[12] = 0x0000; //data 19 reserv
-											 read_data.Read_inf.Data[13] = 0x0000; //data 20 reserv
+											 send_data.send_inf.Data[0] = 0x1D00; //data 7 tip upakovku/reserv !bin!
+											 send_data.send_inf.Data[1] = 0x2300; //data 8 kod formalizovannogo soobsheniya/priznak napravleniya !bin!
+											 send_data.send_inf.Data[2] = 0x2400; //data 9 koordinata X !bin!
+											 send_data.send_inf.Data[3] = 0x2500; //data 10 koordinata Y !bin!
+											 send_data.send_inf.Data[4] = 0x1D00; //data 11 kurs grad !bin!
+											 send_data.send_inf.Data[5] = 0x001E; //data 12 skorost' m/s !bin!
+											 send_data.send_inf.Data[6] = 0x1248; //data 13 vstavka 1 !bin!
+											 send_data.send_inf.Data[7] = 0x1249; //data 14 vstavka 2 !bin!
+											 send_data.send_inf.Data[8] = 0x1250; //data 15 vstavka 3 !bin!
+											 send_data.send_inf.Data[9] = 0x1251; //data 16 vstavka 3 !bin!
+											 send_data.send_inf.Data[10] = 0x0000; //data 17 reserv
+											 send_data.send_inf.Data[11] = 0x0000; //data 18 reserv
+											 send_data.send_inf.Data[12] = 0x0000; //data 19 reserv
+											 send_data.send_inf.Data[13] = 0x0000; //data 20 reserv
 										break;
 										//case 2:	send_DMW(); break;
 									}
@@ -300,20 +300,20 @@ main(int argc, char *argv[])
 									for(ii=0;ii<6;ii++) buffer[ii]=ii;
 									Initinf(ii);
 									
-									sen = Udp_Client_Send(&Uc42,&read_data,sizeof(read_data));
+									sen = Udp_Client_Send(&Uc42,&send_data,sizeof(send_data));
 									p->SOST625=1;
 									local_timer=p->sys_timer;
 									bytes=0;
-									while  ((( bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									while  ((( bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
 									//	if( (p->sys_timer-local_timer)>time625)
 									if (bytes>0)
 									{
 										p->SOST625=2; 
-										memcpy(&p->inf_625,&read_data,sizeof(read_data));
+										memcpy(&p->inf_625,&send_data,sizeof(send_data));
 										p->cmd_625.count625_inf++;
-										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	read_data.buffer[4],	p->cmd_625.count625_inf);
-										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", read_data.buffer[ii]);
-										for (ii=0; ii<10; ii++) printf ("%04x  ",read_data.buffer[ii]); 
+										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	send_data.buffer[4],	p->cmd_625.count625_inf);
+										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", send_data.buffer[ii]);
+										for (ii=0; ii<10; ii++) printf ("%04x  ",send_data.buffer[ii]); 
 										printf("\n"); 
 										p->cmd_625.T625_on_off=0;
 										p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -329,24 +329,24 @@ main(int argc, char *argv[])
 									break;
 							case 922: 	// FK5 800bit
 									p->work_com[c_step].s[i].status=1;
-									for(ii=0;ii<50;ii++) read_data.Read_inf.Data[ii]=0x5555;
+									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=0x5555;
 									
-									sen = Udp_Client_Send(&Uc42,&read_data,Initinf(50));
+									sen = Udp_Client_Send(&Uc42,&send_data,Initinf(50));
 									p->SOST625=1;
 									local_timer=p->sys_timer;
 									bytes=0;
 									p->work_com[c_step].s[i].status=2;
 									break;
 							case 923: 	// FK5 800bit
-									while  ((( bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									while  ((( bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
 									if (bytes>0)
 									{
 										p->SOST625=2; 
-										memcpy(&p->inf_625,&read_data,sizeof(read_data));
+										memcpy(&p->inf_625,&send_data,sizeof(send_data));
 										p->cmd_625.count625_inf++;
 										for(ii=0;ii<50;ii++) 
 										{
-											if(read_data.Read_inf.Data[ii]==0x5555) printf("STEP 7 800 bit ok\n");
+											if(send_data.send_inf.Data[ii]==0x5555) printf("STEP 7 800 bit ok\n");
 											else
 											{
 											printf("800 bit error\n");
@@ -420,20 +420,20 @@ main(int argc, char *argv[])
 							case 931: 	// t625  po lvs 
 									for(ii=0;ii<50;ii++) buffer[ii]=0x5555;
 									Initinf(50);
-									sen = Udp_Client_Send(&Uc42,&read_data,sizeof(read_data));
+									sen = Udp_Client_Send(&Uc42,&send_data,sizeof(send_data));
 									p->SOST625=1;
 									local_timer=p->sys_timer;
 									bytes=0;
-									while  ((( bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									while  ((( bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
 									//	if( (p->sys_timer-local_timer)>time625)
 									if (bytes>0)
 									{
 										p->SOST625=2; 
-										memcpy(&p->inf_625,&read_data,sizeof(read_data));
+										memcpy(&p->inf_625,&send_data,sizeof(send_data));
 										p->cmd_625.count625_inf++;
-										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	read_data.buffer[4],	p->cmd_625.count625_inf);
-										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", read_data.buffer[ii]);
-										for (ii=0; ii<10; ii++) printf ("%04x  ",read_data.buffer[ii]); 
+										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	send_data.buffer[4],	p->cmd_625.count625_inf);
+										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", send_data.buffer[ii]);
+										for (ii=0; ii<10; ii++) printf ("%04x  ",send_data.buffer[ii]); 
 										printf("\n"); 
 										p->cmd_625.T625_on_off=0;
 										
@@ -449,7 +449,7 @@ main(int argc, char *argv[])
 									break;
 							
 							case 932: 	// t625  po lvs   
-									if ((read_data.buffer[7]==read_data.Read_inf.Data[0])&&(read_data.buffer[8]==read_data.Read_inf.Data[1])&&(read_data.buffer[9]==read_data.Read_inf.Data[2])&&(read_data.buffer[10]==read_data.Read_inf.Data[3])&&(read_data.buffer[11]==read_data.Read_inf.Data[3])&&(read_data.buffer[12]==read_data.Read_inf.Data[4])&&(read_data.buffer[13]==read_data.Read_inf.Data[5])&&(read_data.buffer[14]==read_data.Read_inf.Data[6])&&(read_data.buffer[15]==read_data.Read_inf.Data[7])&&(read_data.buffer[16]==read_data.Read_inf.Data[8])) 
+									if ((send_data.buffer[7]==send_data.send_inf.Data[0])&&(send_data.buffer[8]==send_data.send_inf.Data[1])&&(send_data.buffer[9]==send_data.send_inf.Data[2])&&(send_data.buffer[10]==send_data.send_inf.Data[3])&&(send_data.buffer[11]==send_data.send_inf.Data[3])&&(send_data.buffer[12]==send_data.send_inf.Data[4])&&(send_data.buffer[13]==send_data.send_inf.Data[5])&&(send_data.buffer[14]==send_data.send_inf.Data[6])&&(send_data.buffer[15]==send_data.send_inf.Data[7])&&(send_data.buffer[16]==send_data.send_inf.Data[8])) 
 										{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
@@ -491,7 +491,7 @@ main(int argc, char *argv[])
 				timer3++;
 				if (timer3 == 10) 
 				{
-				bytes = Udp_Client_Read(&Uc42,&read_data,sizeof(read_data);
+				bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data));
 				timer3 = 0;
 				}
 				if (timer2 == 200) // primerno 10 sec
@@ -566,58 +566,58 @@ main(int argc, char *argv[])
     void  KSumPrm(int size_all)
 {   int i;
 	unsigned int ksum=0;
-	for( i=0;i < (size_all-2);i++)			ksum=ksum*3+read_data.buffer[i];
-	read_data.buffer[size_all-2] = ksum;
-	read_data.buffer[size_all-1] = ksum>>16;
+	for( i=0;i < (size_all-2);i++)			ksum=ksum*3+send_data.buffer[i];
+	send_data.buffer[size_all-2] = ksum;
+	send_data.buffer[size_all-1] = ksum>>16;
 }
 int  Initinf (unsigned short size) // 0<=size<=50
 {
 	int y,z,virav=0;
 	printf("size = %d \n", size);
-	//for(y=0; y<62; y++) read_data.buffer[y] =0; 
-	read_data.Read_inf.OICH=(size+9)*16;    //????
-    read_data.Read_inf.Protokol=0x0400;
-    read_data.Read_inf.N_Port=0;
-    read_data.Read_inf.N_Can=0;
-	read_data.Read_inf.Sach.ps = 1;
+	//for(y=0; y<62; y++) send_data.buffer[y] =0; 
+	send_data.send_inf.OICH=(size+9)*16;    //????
+    send_data.send_inf.Protokol=0x0400;
+    send_data.send_inf.N_Port=0;
+    send_data.send_inf.N_Can=0;
+	send_data.send_inf.Sach.ps = 1;
 	//----------------------------SACH------------------------------------
 	if (p->fromMN3.a_params[1]!=0) // esli p[rinznak ustanovki vremeni ne reven 0
 	{
-		read_data.Read_inf.Sach.vr =1; //priznak ustanovki vremeni v sach
-		read_data.Read_inf.Sach.v0 = ( ( p->fromMN3.a_params[1] % 3600 ) / 60 ) % 10; 
-		read_data.Read_inf.Sach.v1 = ( ( p->fromMN3.a_params[1] % 3600 ) / 60 ) / 10;
-		read_data.Read_inf.Sach.v2 = ( p->fromMN3.a_params[1] / 3600 ) % 10 ;
-		read_data.Read_inf.Sach.v3 = ( p->fromMN3.a_params[1] / 3600 ) / 10;
+		send_data.send_inf.Sach.vr =1; //priznak ustanovki vremeni v sach
+		send_data.send_inf.Sach.v0 = ( ( p->fromMN3.a_params[1] % 3600 ) / 60 ) % 10; 
+		send_data.send_inf.Sach.v1 = ( ( p->fromMN3.a_params[1] % 3600 ) / 60 ) / 10;
+		send_data.send_inf.Sach.v2 = ( p->fromMN3.a_params[1] / 3600 ) % 10 ;
+		send_data.send_inf.Sach.v3 = ( p->fromMN3.a_params[1] / 3600 ) / 10;
 	}
-	else read_data.Read_inf.Sach.vr = read_data.Read_inf.Sach.v0 = read_data.Read_inf.Sach.v1 = read_data.Read_inf.Sach.v2 = read_data.Read_inf.Sach.v3 = 0;
+	else send_data.send_inf.Sach.vr = send_data.send_inf.Sach.v0 = send_data.send_inf.Sach.v1 = send_data.send_inf.Sach.v2 = send_data.send_inf.Sach.v3 = 0;
 	
-	read_data.Read_inf.Sach.rez1 = 0;
-	read_data.Read_inf.Sach.kvi = 2; 
-	read_data.Read_inf.Sach.rez2 = 0;
-	read_data.Read_inf.Sach.nf = 193;
+	send_data.send_inf.Sach.rez1 = 0;
+	send_data.send_inf.Sach.kvi = 2; 
+	send_data.send_inf.Sach.rez2 = 0;
+	send_data.send_inf.Sach.nf = 193;
 	
-	read_data.Read_inf.Sach.a0 = ( ( ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) % 10;
-	read_data.Read_inf.Sach.a1 = ( ( ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) / 10;
-	read_data.Read_inf.Sach.a2 = ( ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) % 1000) / 100;
-	read_data.Read_inf.Sach.a3 = ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) / 1000;
+	send_data.send_inf.Sach.a0 = ( ( ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) % 10;
+	send_data.send_inf.Sach.a1 = ( ( ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) / 10;
+	send_data.send_inf.Sach.a2 = ( ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) % 1000) / 100;
+	send_data.send_inf.Sach.a3 = ( ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) % 10000 ) / 1000;
 
-	read_data.Read_inf.Sach.a4 = ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) / 10000;
-	read_data.Read_inf.Sach.a5 = ( p->fromMN3.a_params[2] % 1000000 ) / 100000;
-	read_data.Read_inf.Sach.p0 = ( ( ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) % 10;
-	read_data.Read_inf.Sach.p1 = ( ( ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) / 10;
+	send_data.send_inf.Sach.a4 = ( ( p->fromMN3.a_params[2] % 1000000 ) % 100000 ) / 10000;
+	send_data.send_inf.Sach.a5 = ( p->fromMN3.a_params[2] % 1000000 ) / 100000;
+	send_data.send_inf.Sach.p0 = ( ( ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) % 10;
+	send_data.send_inf.Sach.p1 = ( ( ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) % 1000) % 100) / 10;
 
-	read_data.Read_inf.Sach.p2 = ( ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) % 1000) / 100;
-	read_data.Read_inf.Sach.p3 = ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) / 1000;
-	read_data.Read_inf.Sach.p4 = ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) / 10000;
-	read_data.Read_inf.Sach.p5 = ( p->fromMN3.a_params[3] % 1000000 ) / 100000;
+	send_data.send_inf.Sach.p2 = ( ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) % 1000) / 100;
+	send_data.send_inf.Sach.p3 = ( ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) % 10000 ) / 1000;
+	send_data.send_inf.Sach.p4 = ( ( p->fromMN3.a_params[3] % 1000000 ) % 100000 ) / 10000;
+	send_data.send_inf.Sach.p5 = ( p->fromMN3.a_params[3] % 1000000 ) / 100000;
 
 	p->count_cpp_message++;
-	read_data.Read_inf.Sach.r0 = ( ( ( p->count_cpp_message % 10000 ) % 1000 ) % 100 ) % 10;
-	read_data.Read_inf.Sach.r1 = ( ( ( p->count_cpp_message % 10000 ) % 1000 ) % 100 ) / 10;
-	read_data.Read_inf.Sach.r2 = ( ( p->count_cpp_message % 10000 ) % 1000 ) / 100;
-	read_data.Read_inf.Sach.r3 = ( p->count_cpp_message % 10000 ) / 1000;
+	send_data.send_inf.Sach.r0 = ( ( ( p->count_cpp_message % 10000 ) % 1000 ) % 100 ) % 10;
+	send_data.send_inf.Sach.r1 = ( ( ( p->count_cpp_message % 10000 ) % 1000 ) % 100 ) / 10;
+	send_data.send_inf.Sach.r2 = ( ( p->count_cpp_message % 10000 ) % 1000 ) / 100;
+	send_data.send_inf.Sach.r3 = ( p->count_cpp_message % 10000 ) / 1000;
    //------------------------------DATA-----------------------------------------------------
-	//for (z=0; z<=size; z++) read_data.Read_inf.Data = buf[z];
+	//for (z=0; z<=size; z++) send_data.send_inf.Data = buf[z];
 	if (size%2!=0) virav = 1;
 	
 	//------------------------CHECK SUMM-----------------------------------------------------
@@ -627,7 +627,7 @@ int  Initinf (unsigned short size) // 0<=size<=50
 	//printf(" return %d \n", (2*(size+virav+12)));
 	for (y=0; y<size+virav+12; y++)	
 	{
-		printf("%04x ", read_data.buffer[y]);
+		printf("%04x ", send_data.buffer[y]);
 		if (y==3) printf("\n");
 		if (y==9) printf("\n");
 		if (y==(size+virav+9)) printf("\n");

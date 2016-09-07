@@ -91,6 +91,8 @@ main(int argc, char **argv)
 
 					memcpy(&p->inbufMN3,&bufi,sizeof(packcmd));
 
+					//p->toMN3.Mem_Region_RLI.cr_data_pac++;
+					
 					memcpy(pack_buf,&p->toMN3,sizeof(packusoi)); ///!!!!!!
 					pack_buf[0]=70;
 					pack_buf[1]=num_mess++;

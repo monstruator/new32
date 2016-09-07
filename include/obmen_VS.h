@@ -131,6 +131,23 @@ struct sostSPIAK {
        unsigned char byte_bufer[124];
 	   struct Tabl_2 Read_inf;}
 	   read_data;
+	    //-----------------------------------------------
+    typedef            struct Tabl_22
+        {
+        unsigned short OICH;
+        unsigned short Protokol;
+        unsigned short N_Port;
+        unsigned short N_Can;
+        struct sac Sach;
+        unsigned short Data[52];
+        //unsigned int Summa; //?? nuzhna li ona? v 193 formulyare netu kontrol'noy summi
+        } send_inf;
+
+       union  {
+	   unsigned short buffer[62];
+       unsigned char byte_bufer[124];
+	   struct Tabl_2 send_inf;}
+	   send_data;
 	   
 	typedef            struct RLI_data
 			{
@@ -383,7 +400,7 @@ typedef struct
 	short    komanda625;
 	short    SOST625;
 	cmd625   cmd_625;   //otvet iz t625 
-	Read_inf inf_625;   //inf for t625
+	send_inf inf_625;   //inf for t625
 	
 	short count_cpp_message;   //kolichestvo soobsheniy cpp
 	short count_r999_message;   //kolichestvo soobsheniy r999
