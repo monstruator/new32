@@ -2,7 +2,6 @@
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <sys/kernel.h>
-
   #include <netinet/in.h>
   #include <stdio.h>
   #include <unistd.h>
@@ -12,15 +11,10 @@
   //#include "../include/func_IP.h"
   #include "../include/IP_nb.h"
   #include "../include/shared_mem.h"
-  
- //#define SRC_PORT 4003
- // #define DST_PORT 4000
-
-
+ 
   #define MS 1000000
   char          pack_buf[1500];  
 
-  
 main(int argc, char **argv)
 {//--- KOHCTAHTbl npu6opa 1.0 ---//
 		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0 , j;
@@ -83,7 +77,7 @@ main(int argc, char **argv)
 			if (TC10==2) 
 			{
 				TC10=0;
-				bytes = Udp_Client_Read(&Uc42,bufi,4096);
+				bytes = Udp_Client_Read(&Uc42,bufi,1400);
 				if (bytes>0)
 				{
 					//printf(" Udp_READ=%d	%d\n", bytes, ii++);
