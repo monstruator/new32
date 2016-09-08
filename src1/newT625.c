@@ -332,9 +332,9 @@ main(int argc, char *argv[])
 									break;
 							case 922: 	// FK5 800bit
 									p->work_com[c_step].s[i].status=1;
-									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=ii;
+									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=ii; // 0x5555
 									
-									sen = Udp_Client_Send(&Uc42,&send_data,Initinf(50));
+									sen = Udp_Client_Send(&Uc42,&send_data,Initinf(50)); //1-50
 									p->SOST625=1;
 									local_timer=p->sys_timer;
 									bytes=0;
@@ -502,9 +502,8 @@ main(int argc, char *argv[])
 			else 
 			{
 				timer2++;
-				if (timer2 == 100) // primerno 10 sec
+				if (timer2 == 100) // primerno 5 sec
 				{
-					
 					send_zapros();
 					Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
 					p->SOST625=1;

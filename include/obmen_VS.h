@@ -141,16 +141,17 @@ struct sostSPIAK {
 	   
 	typedef            struct RLI_data
 			{
-			unsigned short OICH;  //oich formulyara 18
+			unsigned short SACH[6];  //oich formulyara 18
 			unsigned short kolvo_slov; // kolichestvo informacionnih slov v aormulyare
 			unsigned short form_5; // chastniy formulyar 5
-			unsigned short form_6; // chastniy formulyar 6
-			unsigned short nomer_str; // nomer stroki 0
+			unsigned short form_6[9]; // chastniy formulyar 6
+			unsigned short nomer_str[203]; // nomer stroki 0
 			} Read_rli;
 			
 			union  {
-			unsigned short buffer[219][20];
-			unsigned char byte_bufer[8760];
+			//unsigned short buffer[219];
+			unsigned short pic[400][219];
+			unsigned char byte_bufer[175200];
 			struct RLI_data Read_rli;}
 			read_rli;
    

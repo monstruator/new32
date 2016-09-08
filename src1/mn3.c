@@ -565,7 +565,7 @@ main(int argc, char **argv)
 							}
 							else 
 							{
-								p->work_com[n_s].s[n_mc].n_chan=2;    //Cpp
+								p->work_com[n_s].s[n_mc].n_chan=2;  //Cpp
 								p->work_com[n_s].s[n_mc].n_com=101; // Command OK
 							}
 							n_mc++; //kol-vo mini komand + 1

@@ -214,7 +214,7 @@ struct from_cpp18
 	union
 	{
 		struct form18 data;
-		short mass[219];
+		short mass[sizeof(struct form18)];
 	};
 };
 
