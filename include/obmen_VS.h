@@ -145,7 +145,7 @@ struct sostSPIAK {
 			unsigned short kolvo_slov; // kolichestvo informacionnih slov v aormulyare
 			unsigned short form_5; // chastniy formulyar 5
 			unsigned short form_6[9]; // chastniy formulyar 6
-			unsigned short nomer_str[203]; // nomer stroki 0
+			//unsigned short nomer_str[203]; // nomer stroki 0
 			} Read_rli;
 			
 			union  {

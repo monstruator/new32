@@ -189,7 +189,7 @@ struct form18
 {
 	struct sac Sach;
 	short n_word;
-	short form5[9]; 
+	short form5[6];  /// ------------- 9 ------------------
 	short form6[203]; 
 };
 

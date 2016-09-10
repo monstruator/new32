@@ -83,9 +83,9 @@ main()
 	delay(2500);
 	open_shmem();
 	delay(1000);
-	
-	if (p->cvs==10)	{		name="CPP0_1";		SRC_PORT=DST_PORT=4004; 	}//4004	
-	else			{		name="CPP2";		SRC_PORT=DST_PORT=4003; 	}//4003			
+	SRC_PORT=DST_PORT=4003; 
+	if (p->cvs==10)	name="CPP0_1";
+	else			name="CPP2";	
 	
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
 	
@@ -132,20 +132,30 @@ main()
 									else p->work_com[c_step].s[i].status=3;
                                     //printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 									break;
-							case 5: p->work_com[c_step].s[i].status=1;
-                                    if(p->verbose) printf("			SVCH PRD-PRM CHAN \n");
-									f11.data.KU6=f11.data.KU5=work_point[p->fromMN3.a_params[0]-1]; //// RT PRD 1 - 6
-									f11.data.ustKU5=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									//f11.data.KU6=p->fromMN3.a_params[0]+6; //// RT PRM 7 - 13
-									f11.data.ustKU6=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send_read(col);
-									//printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
-									if ((col==0x14)&&(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
+							case 5: if(p->work_com[c_step].s[i].status==0) 
 									{
-										if(p->verbose>1) printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
-										p->work_com[c_step].s[i].status=2; // ispravnost'
+										p->work_com[c_step].s[i].status=1;
+										if(p->verbose) printf("			SVCH PRD-PRM CHAN \n");
+										f11.data.KU6=f11.data.KU5=work_point[p->fromMN3.a_params[0]-1]; //// RT PRD 1 - 6
+										f11.data.ustKU5=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										//f11.data.KU6=p->fromMN3.a_params[0]+6; //// RT PRM 7 - 13
+										f11.data.ustKU6=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										col=tcp_send_read(col);
+										p->work_com[c_step].t_start = p->sys_timer;
 									}
-									else p->work_com[c_step].s[i].status=3;
+									if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 10))
+									{
+										f11.zag.KSS=0;
+										col = sizeof(struct zag_CPP);
+										col=tcp_send_read(col);
+										//printf("col=%d\n",col);
+										if ((col==0x14)&&(p->fromMN3.a_params[0]==f12->data.SS4)) //esli otet=sosto9nie 
+										{
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else p->work_com[c_step].s[i].status=3;
+										if(p->verbose>1) printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
+									} 	
                                     break;
 							case 8: p->work_com[c_step].s[i].status=1;
                                     if(p->verbose) printf("			FM SHPS\n");
@@ -183,6 +193,7 @@ main()
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
 										else p->work_com[c_step].s[i].status=3;
+										if(p->verbose>1) printf("SS2=%d\n",f12->data.SS2_1);
 									} 	
                                     break;
 							case 14: p->work_com[c_step].s[i].status=1;
@@ -764,7 +775,7 @@ main()
 			}//step>0
 			else
 			{
-				timer1++;
+				//timer1++;
 				if (timer1 == 200) // primerno 10 sec
 				{
 					f11.zag.marker1=0xFFFF;
@@ -783,7 +794,7 @@ main()
 
 			} //esli net waga
 			
-			if (p->cvs==10)
+			if (p->cvs==10) // RLI
 			{
 				timer2++;
 				if (timer2 > 15) // primerno 10 sec
@@ -827,6 +838,7 @@ short tcp_send_read(int col)
 		//if(p->verbose>2) printf("CKH_SUM=%04x \n",sum);
 	if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
 	n = Udp_Client_Send(&Uc42,bbb,col);
+	delay(10);
 		//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
 	n = Udp_Client_Read(&Uc42,bbb,1400);
 //-----------------------------------------------------------------			
@@ -884,6 +896,7 @@ short tcp_reqest(int col)
 	}
 			//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
 	n = Udp_Client_Send(&Uc42,bbb,col);
+	delay(100);
 		//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
 	n = Udp_Client_Read(&Uc42,bbb,1400);
 //-----------------------------------------------------------------			
@@ -937,18 +950,21 @@ short rli_reqest(int col)
 	}
 	timer_rli=p->sys_timer+300; // ustanovka timera na 2 sec
 	n = Udp_Client_Send(&Uc42,cccc,col);
+	delay(10);
 //-------------------------READ MESSAGE---------------------------------------------------
 	for(i2=0; i2<20; i2++) // priem za raz ne bolee 20 soobcheniy
 	{
+		//delay(10);
 		timer_read=p->sys_timer+75; // ustanovka timera na 0.5 sec
-		n = Udp_Client_Read(&Uc42,ccc,1400);
-		if((timer_rli>p->sys_timer)&&(timer_read>p->sys_timer)) // timeri na 2 sec i na 0.5 sec
+		n = Udp_Client_Read(&Uc42,cccc,1400);
+		if((timer_rli>p->sys_timer)&&(timer_read>p->sys_timer)&&(n>0)) // timeri na 2 sec i na 0.5 sec
 		{
 			f18 = (struct from_cpp18 *)cccc;
 			switch (f18->zag.TS)
 			{
 				case 0x12: 	
 					printf("stoka prinyata %d timer %d kolvo slov %d \n",i2,p->sys_timer, n/2);
+					
 					if(f18->zag.PS==1) 
 					{
 						printf("Posledniya stroka \n");
@@ -956,8 +972,8 @@ short rli_reqest(int col)
 					}
 					break;
 				case 0x13: 
-					printf("Netu strok %d \n", p->sys_timer);
-					i2=400;
+					printf("Netu strok timer=%d n=%d\n", p->sys_timer, n);
+					i2=200;
 					break;
 				default:
 					i2=400;
@@ -967,12 +983,12 @@ short rli_reqest(int col)
 		}
 		else
 		{
-			i2=400;
-			printf("error: time out \n");
+			i2=600;
+			printf("error: time out n=%d\n",n);
 		}
 	}
 			
-	printf("soket close: timer_read %d timer_rli %d i2 %d PS %d \n", timer_read, timer_rli, i2, f18->zag.PS);
+	printf("timer=%d  timer_rli %d i2=%d PS=%d \n", timer_read, timer_rli, i2, f18->zag.PS);
 //-----------------------------------------------------------------			
 	if (n>0)
 	{			
