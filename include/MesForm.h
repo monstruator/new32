@@ -187,10 +187,18 @@ struct form14
 
 struct form18 
 {
-	struct sac Sach;
+	short Sach[6];
 	short n_word;
 	short form5[6];  /// ------------- 9 ------------------
 	short form6[203]; 
+};
+
+struct form181 
+{
+	short Sach[6];
+	short n_word;
+	short form5[6];  /// ------------- 9 ------------------
+	short form6[81200]; 
 };
 
 struct from_cpp12
@@ -215,6 +223,16 @@ struct from_cpp18
 	{
 		struct form18 data;
 		short mass[sizeof(struct form18)];
+	};
+};
+
+struct from_cpp181
+{
+	struct zag_CPP zag;
+	union
+	{
+		struct form181 data;
+		short mass[sizeof(struct form181)];
 	};
 };
 

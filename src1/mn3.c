@@ -296,7 +296,7 @@ main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							
 							//---------------------------------------------
-							p->work_com[n_s].t_stop =p->sys_timer+300;   
+							p->work_com[n_s].t_stop =p->sys_timer+500;   
 						}
 						else 
 						{
