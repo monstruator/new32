@@ -301,7 +301,7 @@ main()
 										col=tcp_send_read(col);
 										p->work_com[c_step].t_start = p->sys_timer;
 									}
-									if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
+									if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 300))
 									{
 										f11.zag.KSS=0;
 										col=tcp_send_read(sizeof(struct zag_CPP));
@@ -311,7 +311,7 @@ main()
 											p->toMN3.fk = 0;
 											p->toMN3.kzv=0;
 										}
-										else p->work_com[c_step].s[i].status=3;
+										//else p->work_com[c_step].s[i].status=3;
 									if(p->verbose) printf("SS10(50-70)=%d TKI(0)=%d \n",f12->data.SS10, f12->data.SS2_1);
 									}
 								break;
@@ -323,7 +323,7 @@ main()
 										col=tcp_send_read(col);
 										p->work_com[c_step].t_start = p->sys_timer;
 									}
-									if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
+									if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 300))
 									{
 										f11.zag.KSS=0;
 										col=tcp_send_read(sizeof(struct zag_CPP));
@@ -333,7 +333,7 @@ main()
 											p->toMN3.fk = 0;
 											p->toMN3.kzv=0;
 										}
-										else p->work_com[c_step].s[i].status=3;
+										//else p->work_com[c_step].s[i].status=3;
 										if(p->verbose) printf("SS10(10-30)=%d \n",f12->data.SS10);
 									}
 									break;
@@ -346,7 +346,7 @@ main()
 								col=tcp_send_read(col);
 								p->work_com[c_step].t_start = p->sys_timer;
 								}
-								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 300))
 								{
 									f11.zag.KSS=0;
 									col=tcp_send_read(sizeof(struct zag_CPP));
@@ -356,7 +356,7 @@ main()
 										p->toMN3.fk = 0;
 										p->toMN3.kzv=0;
 									}
-									else p->work_com[c_step].s[i].status=3;
+									//else p->work_com[c_step].s[i].status=3;
 									if(p->verbose) printf("SS10(50-70)=%d\n",f12->data.SS10);
 								}
 								break;
@@ -369,7 +369,7 @@ main()
 								col=tcp_send_read(col);
 								p->work_com[c_step].t_start = p->sys_timer;
 								}
-								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 100))
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 300))
 								{
 									f11.zag.KSS=0;
 									col=tcp_send_read(sizeof(struct zag_CPP));
@@ -379,7 +379,7 @@ main()
 										p->toMN3.fk = 0;
 										p->toMN3.kzv=0;
 									}
-									else p->work_com[c_step].s[i].status=3;
+									//else p->work_com[c_step].s[i].status=3;
 									if(p->verbose) printf("SS10(10-30)=%d RLI(1)=%d  \n",f12->data.SS10, f12->data.SS2_1);
 								}
 								break;
@@ -416,6 +416,7 @@ main()
 								}
 								break;
 							case 90:
+								printf("status %d \n", p->work_com[c_step].s[i].status);// -----vremenno
 								if(p->work_com[c_step].s[i].status==0)
 								{
 									p->work_com[c_step].s[i].status=1;
@@ -804,8 +805,8 @@ main()
 			}//step>0
 			else
 			{
-				//timer1++;
-				if (timer1 == 200) // primerno 10 sec
+				timer1++;
+				if (timer1 == 70) // primerno 10 sec
 				{
 					f11.zag.marker1=0xFFFF;
 					f11.zag.marker2=0xFFFF;
@@ -920,10 +921,10 @@ short tcp_reqest(int col)
 	if (col>10) 
 	{
 		for(i=0;i<14;i++) sum^=bbb[i+5];
-		//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
+		//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);
 		bbb[col/2-1]=sum;
 	}
-			//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
+	//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
 	n = Udp_Client_Send(&Uc42,bbb,col);
 	delay(100);
 		//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
@@ -937,7 +938,7 @@ short tcp_reqest(int col)
 		switch(f12->zag.TS)
 		{
 			case 0x14 : //if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
-				//if(p->verbose>1) printf("SS1=%d SS2_0=%d SS2_1=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS1,f12->data.SS2_0,f12->data.SS2_1,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
+				//if(p->verbose>1) printf("SS15=%d SS16=%d SS2_1=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS15,f12->data.SS16,f12->data.SS2_1,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
 				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 				if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
 				for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
@@ -964,7 +965,7 @@ short rli_reqest(int col)
 {
 	int sock1;
 	short rez;
-	int i,i1,n,j,y;
+	int i,i1,n,j,y=0;
 	short status,sum,i2;
 	long timer_rli=0;
 	long timer_read=0;
@@ -977,14 +978,14 @@ short rli_reqest(int col)
 		//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
 		cccc[col/2-1]=sum;
 	}
-	timer_rli=p->sys_timer+300; // ustanovka timera na 2 sec
+	timer_rli=p->sys_timer+600; // ustanovka timera na 2 sec
 	n = Udp_Client_Send(&Uc42,cccc,col);
-	delay(10);
+	delay(15);
 //-------------------------READ MESSAGE---------------------------------------------------
 	for(i2=0; i2<20; i2++) // priem za raz ne bolee 20 soobcheniy
 	{
 		//delay(10);
-		timer_read=p->sys_timer+75; // ustanovka timera na 0.5 sec
+		timer_read=p->sys_timer+200; // ustanovka timera na 0.5 sec
 		n = Udp_Client_Read(&Uc42,cccc1,1400);
 		if((timer_rli>p->sys_timer)&&(timer_read>p->sys_timer)&&(n>0)) // timeri na 2 sec i na 0.5 sec
 		{
@@ -992,20 +993,21 @@ short rli_reqest(int col)
 			switch (f18->zag.TS)
 			{
 				case 0x12: 	
-					printf("stoka prinyata %d timer %d kolvo slov %d \n",i2,p->sys_timer, n/2);
+					
 					memcpy(f181.data.Sach, f18->data.Sach, 12);
-					f181.data.n_word = f18->data.n_word;
+					f181.data.n_word++;
 					memcpy(f181.data.form5, f18->data.form5, 12);
 					if(y==400) y = 0;
-					memcpy(&f181.data.form6[y*203], f18->data.form6, 406);
+					//memcpy(&f181.data.form6[y*203], f18->data.form6, 406);
 					y++;
+					printf("stoka prinyata %d timer %d kolvo slov %d y=%d \n" ,i2,p->sys_timer, n/2,f181.data.n_word);
 					if(f18->zag.PS==1) 
 					{
 						printf("Posledniya stroka \n");
 						i2=20;  // proverka na poslednee soobshenie v cikle obmena
 					}
 				//----------------------test start ------------------------------------------
-				for(i=0; i<203; i++)
+				/*for(i=0; i<203; i++)
 				{
 					if (f181.data.form6[((y-1)*203)+i] == f18->data.form6[i])
 					{
@@ -1013,30 +1015,30 @@ short rli_reqest(int col)
 					}
 					else 
 					{
-						i=401;
+						i=204;
 						printf("DATA error line %d not correct \n", (y-1));
 					}
-				}
+				} */
 				//----------------------test end---------------------------------------------
 					break;
 				case 0x13: 
-					printf("Netu strok timer=%d n=%d\n", p->sys_timer, n);
+					//printf("Netu strok timer=%d n=%d TS=%04x \n", p->sys_timer, n, f18->zag.TS);
 					i2=200;
 					break;
 				default:
 					i2=400;
-					printf("error: ne tot TS %d\n", f18->zag.TS);
+					//printf("error: ne tot TS %d\n", f18->zag.TS);
 					
 			}
 		}
 		else
 		{
 			i2=600;
-			printf("error: time out n=%d\n",n);
+			//printf("error: time out n=%d\n",n);
 		}
 	}
 			
-	printf("timer=%d  timer_rli %d i2=%d PS=%d \n", timer_read, timer_rli, i2, f18->zag.PS);
+	//printf("timer=%d  timer_rli %d i2=%d PS=%d \n", timer_read, timer_rli, i2, f18->zag.PS);
 //-----------------------------------------------------------------			
 	if (n>0)
 	{			

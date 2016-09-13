@@ -126,7 +126,7 @@ main(int argc, char *argv[])
 			{
 				c_step=p->cur_step;
 				for (i=0;i<p->work_com[c_step].num_mini_com;i++) //prosmotrim vse minicomandi na wage 
-					if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&(p->work_com[c_step].s[i].status!=2)) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas
+					if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&(p->work_com[c_step].s[i].status!=2)&&(p->work_com[c_step].s[i].status!=3)) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas
 					{
 						if((p->verbose>1)&&(p->work_com[c_step].s[i].status==0)) printf("\nSTEP=%d    minicom for RELE : %d      status=%d time %d \n", p->cur_step,  p->work_com[c_step].s[i].n_com, p->work_com[c_step].s[i].status, p->sys_timer);
 
@@ -247,20 +247,22 @@ main(int argc, char *argv[])
 									}
 									break;
 							case 50: //off 5 rele
-									if (p->work_com[c_step].s[i].status==0) 
-									{
+							printf("status rele 50 %d \n", p->work_com[c_step].s[i].status);// -----vremenno
+									//if (p->work_com[c_step].s[i].status==0) 
+									//{
 										p->work_com[c_step].s[i].status=2; 
 										rele &= ~0x10; 	*(unsigned int*)(addr1 +0x2C00)=rele;
-										if(p->verbose>1) printf("WRITE OUT DATA %x\n",rele);
-									}
+										/*if(p->verbose>1)*/ printf("WRITE OUT DATA %x\n",rele);
+									//}
 									break;
 							case 51: //on 5 rele
-									if (p->work_com[c_step].s[i].status==0) 
-									{
+							printf("status rele 51 %d \n", p->work_com[c_step].s[i].status);// -----vremenno
+									//if (p->work_com[c_step].s[i].status==0) 
+									//{
 										p->work_com[c_step].s[i].status=2; 
 										rele|=0x10; *(unsigned int*)(addr1 +0x2C00)=rele;
-										if(p->verbose>1) printf("WRITE OUT DATA  %x\n",rele);
-									}
+										/*if(p->verbose>1)*/ printf("WRITE OUT DATA  %x\n",rele);
+									//}
 									break;
 							case 60: //off 6 rele
 									if (p->work_com[c_step].s[i].status==0) 

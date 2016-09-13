@@ -501,21 +501,36 @@ main(int argc, char **argv)
 					//--------------------------------------------
 					//printf("номер канала на нулевом шаге = %d\n",p->work_com[0].s[0].n_chan);
  						break;
-				case 90 :    
-					n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
-					p->work_com[n_s].s[n_mc].n_chan=2;
-					p->work_com[n_s].s[n_mc].n_com=90; //SVCH work
-					n_mc++; //kol-vo mini komand + 1
-	
-					if (p->cvs==10)
+				case 90 :   
+					printf("Check work start \n");				
+					if (p->cvs==11)
 					{
+						n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
+						printf("status %d \n", p->work_com[c_step].s[i].status);// -----vremenno
+						p->work_com[n_s].s[n_mc].n_chan=2;
+						p->work_com[n_s].s[n_mc].n_com=90; //SVCH work
+						n_mc++; //kol-vo mini komand + 1
+						p->work_com[n_s].t_stop =p->sys_timer+300;
+					}
+					else
+					{
+						n_s=1;  n_mc=0;//nomer waga //s4et4ik mini komamdi
+						printf("status %d \n", p->work_com[c_step].s[i].status);// -----vremenno
+						p->work_com[n_s].s[n_mc].n_chan=2;
+						p->work_com[n_s].s[n_mc].n_com=90; //SVCH work
+						n_mc++; //kol-vo mini komand + 1
+						p->work_com[n_s].t_stop =p->sys_timer+300;
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+					//---------------------------------------------	
+						n_s=2;  n_mc=0; 
 						p->work_com[n_s].s[n_mc].n_chan=3; //rele
 						if (p->fromMN3.a_params[0]) p->work_com[n_s].s[n_mc].n_com=51;
 						else	p->work_com[n_s].s[n_mc].n_com=50;						
-						n_mc++; //kol-vo mini komand + 1
-					}
-					//---------------------------------------------
-					p->work_com[n_s].t_stop =p->sys_timer+300;	
+						n_mc++; //kol-vo mini komand + 1						
+						p->work_com[n_s].t_stop =p->sys_timer+600;
+						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+					} 
+					
  					break;
 				case 92 : //FK SPIAK
 					switch (p->fromMN3.a_params[0])
@@ -570,54 +585,54 @@ main(int argc, char **argv)
 					case 6 : //FK 5	
 							if(p->cvs==11) 
 							{
-							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=2;    //Cpp
-							p->work_com[n_s].s[n_mc].n_com=921;   //FK13_CPP
-							n_mc++; //kol-vo mini komand + 1
-							p->work_com[n_s].t_stop =p->sys_timer+300;
-							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+								n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=2;    //Cpp
+								p->work_com[n_s].s[n_mc].n_com=921;   //FK13_CPP
+								n_mc++; //kol-vo mini komand + 1
+								p->work_com[n_s].t_stop =p->sys_timer+300;
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 					//---------------------------------------------
-							n_s=2;  n_mc=0; //nomer waga //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=6; //T625
-							p->fromMN3.a_params[1]=48900; //vrem9
-							p->fromMN3.a_params[2]=555;
-							p->fromMN3.a_params[3]=161;
-							p->work_com[n_s].s[n_mc].n_com=922; //T625 peredacha fomulyara
-							n_mc++; //kol-vo mini komand + 1						
-							p->work_com[n_s].t_stop =p->sys_timer+600;
-							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+								n_s=2;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=6; //T625
+								p->fromMN3.a_params[1]=48900; //vrem9
+								p->fromMN3.a_params[2]=555;
+								p->fromMN3.a_params[3]=161;
+								p->work_com[n_s].s[n_mc].n_com=922; //T625 peredacha fomulyara
+								n_mc++; //kol-vo mini komand + 1						
+								p->work_com[n_s].t_stop =p->sys_timer+600;
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					//---------------------------------------------
-							n_s=3;  n_mc=0; //nomer waga //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
-							p->work_com[n_s].s[n_mc].n_com=922; //IB zagruzhen
-							p->fromMN3.a_params[4]=1;
-							n_mc++; //kol-vo mini komand + 1						
-							p->work_com[n_s].t_stop =p->sys_timer+600;
-							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+								n_s=3;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
+								p->work_com[n_s].s[n_mc].n_com=922; //IB zagruzhen
+								p->fromMN3.a_params[4]=1;
+								n_mc++; //kol-vo mini komand + 1						
+								p->work_com[n_s].t_stop =p->sys_timer+600;
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					//---------------------------------------------
-							n_s=4;  n_mc=0; //nomer waga //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
-							p->work_com[n_s].s[n_mc].n_com=923; //IB peredan
-							//p->fromMN3.a_params[4]=2;
-							n_mc++; //kol-vo mini komand + 1						
-							p->work_com[n_s].t_stop =p->sys_timer+600;
-							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+								n_s=4;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
+								p->work_com[n_s].s[n_mc].n_com=923; //IB peredan
+								//p->fromMN3.a_params[4]=2;
+								n_mc++; //kol-vo mini komand + 1						
+								p->work_com[n_s].t_stop =p->sys_timer+600;
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					//---------------------------------------------
-					/*		n_s=6;  n_mc=0; //nomer waga //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
-							p->work_com[n_s].s[n_mc].n_com=924;
-							n_mc++; //kol-vo mini komand + 1						
-							p->work_com[n_s].t_stop =p->sys_timer+600;
-										p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+					/*			n_s=6;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=2; //Cpp
+								p->work_com[n_s].s[n_mc].n_com=924;
+								n_mc++; //kol-vo mini komand + 1						
+								p->work_com[n_s].t_stop =p->sys_timer+600;
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					*/
 					//---------------------------------------------
-							n_s=5;  
-							n_mc=0; //s4et4ik mini komamdi
-							p->work_com[n_s].s[n_mc].n_chan=6; //t625
-							p->work_com[n_s].s[n_mc].n_com=923; //nomer waga   sravnenie massiva
-							n_mc++; //kol-vo mini komand + 1						
-							p->work_com[n_s].t_stop =p->sys_timer+1000;
-							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+								n_s=5;  
+								n_mc=0; //s4et4ik mini komamdi
+								p->work_com[n_s].s[n_mc].n_chan=6; //t625
+								p->work_com[n_s].s[n_mc].n_com=923; //nomer waga   sravnenie massiva
+								n_mc++; //kol-vo mini komand + 1						
+								p->work_com[n_s].t_stop =p->sys_timer+1000;
+								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 							}
 							else 
 							{
