@@ -522,13 +522,14 @@ main(int argc, char **argv)
 						p->work_com[n_s].t_stop =p->sys_timer+300;
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 					//---------------------------------------------	
-						n_s=2;  n_mc=0; 
+						/*n_s=2;  n_mc=0; 
 						p->work_com[n_s].s[n_mc].n_chan=3; //rele
 						if (p->fromMN3.a_params[0]) p->work_com[n_s].s[n_mc].n_com=51;
 						else	p->work_com[n_s].s[n_mc].n_com=50;						
 						n_mc++; //kol-vo mini komand + 1						
 						p->work_com[n_s].t_stop =p->sys_timer+600;
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+						*/
 					} 
 					
  					break;
@@ -589,7 +590,7 @@ main(int argc, char **argv)
 								p->work_com[n_s].s[n_mc].n_chan=2;    //Cpp
 								p->work_com[n_s].s[n_mc].n_com=921;   //FK13_CPP
 								n_mc++; //kol-vo mini komand + 1
-								p->work_com[n_s].t_stop =p->sys_timer+300;
+								p->work_com[n_s].t_stop =p->sys_timer+100;
 								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 					//---------------------------------------------
 								n_s=2;  n_mc=0; //nomer waga //s4et4ik mini komamdi
@@ -642,7 +643,22 @@ main(int argc, char **argv)
 								p->work_com[n_s].t_stop =p->sys_timer+300;
 								p->work_com[n_s].num_mini_com=n_mc;
 							}
-							break;												
+							break;	
+					case 7 :  // FK6
+							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=2;  //Cpp
+							p->work_com[n_s].s[n_mc].n_com=68; // fk
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+300;  
+							break;
+						
+					case 8 :  // FK7
+							n_s=1;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=2;  //Cpp
+							p->work_com[n_s].s[n_mc].n_com=69; // fk
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+300;  
+							break;
 						default : 
 						printf("Bad param0 : %d\n",p->fromMN3.a_params[0]);
 						p->toMN3.kzv=1;

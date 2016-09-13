@@ -349,7 +349,7 @@ main(int argc, char *argv[])
 										tri=0;
 										//t625com = p->cmd_625.count625_inf;
 									}
-									if (tri<20) 
+									if (tri<50) 
 									{
 										if (t625com != p->cmd_625.count625_inf) 
 										{
@@ -366,7 +366,7 @@ main(int argc, char *argv[])
 												}
 											}
 											//printf("step status %d \n", p->work_com[c_step].s[i].status);
-											if(p->work_com[c_step].s[i].status==1) 
+											if(p->work_com[c_step].s[i].status==1) //esli status ewe ne 3
 											{
 												p->work_com[c_step].s[i].status=2;
 												printf("Massivi IB sovpali \n");
