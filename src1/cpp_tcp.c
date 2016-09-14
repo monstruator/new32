@@ -424,39 +424,52 @@ main()
 									printf("SS0All=%d SS0cpp=%d SS0prm=%d SS0prd=%d \n",f12->data.SS0_all, f12->data.SS0_cpp, f12->data.SS0_prm, f12->data.SS0_prd);
 								}
 								break;
-							case 68 : //FK6
-								p->work_com[c_step].s[i].status=1;
-                                if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
-								f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
-								f11.data.KU8=4;  //p->fromMN3.a_params[0]; //FK 1 - 12
-								f11.data.ustKU0=1;
-								f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-								col=tcp_send_read(col);
-								if ((col==0x14)&&(f12->data.SS1==1)&&(f12->data.SS7==4)) //esli otet=sosto9nie 
+							case 68 : if(p->work_com[c_step].s[i].status==0) //FK6
 								{
-									//if (f12->data.SS0_prm==0) p->toMN3.fk=1;
-									p->toMN3.k_o=0;
-									p->work_com[c_step].s[i].status=2; // ispravnost'
+									p->work_com[c_step].s[i].status=1;
+									if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.KU8=4;  //p->fromMN3.a_params[0]; //FK 1 - 12
+									f11.data.ustKU0=1;
+									f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									col=tcp_send_read(col);
+									p->work_com[c_step].t_start = p->sys_timer;
 								}
-								else p->work_com[c_step].s[i].status=3;
-								if(p->verbose>1) printf("SS1(1)=%d SS7(4)=%d col=%d\n",f12->data.SS1, f12->data.SS7, col);
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start < 300))
+								{
+									f11.zag.KSS=0;
+									col=tcp_send_read(sizeof(struct zag_CPP));
+									if ((col==0x14)&&(f12->data.SS1==1)&&(f12->data.SS7==4)) //esli otet=sosto9nie 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									//else p->work_com[c_step].s[i].status=3;
+									if(p->verbose>1) printf("SS1(1)=%d SS7(4)=%d col=%d\n",f12->data.SS1, f12->data.SS7, col);
+								}
 								break;
-							case 69 : //FK7
-								p->work_com[c_step].s[i].status=1;
-                                if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
-								f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
-								f11.data.KU8=8;  //p->fromMN3.a_params[0]; //FK 1 - 12
-								f11.data.ustKU0=1;
-								f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-								col=tcp_send_read(col);
-								if ((col==0x14)&&(f12->data.SS1==1)&&(f12->data.SS7==8)) //esli otet=sosto9nie 
+							case 69 : if(p->work_com[c_step].s[i].status==0) //FK7
 								{
-									//if (f12->data.SS0_prm==0) p->toMN3.fk=1;
-									p->toMN3.k_o=0;
-									p->work_com[c_step].s[i].status=2; // ispravnost'
+									p->work_com[c_step].s[i].status=1;
+									if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.KU8=8;  //p->fromMN3.a_params[0]; //FK 1 - 12
+									f11.data.ustKU0=1;
+									f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									col=tcp_send_read(col);
+									p->work_com[c_step].t_start = p->sys_timer;
 								}
-								else p->work_com[c_step].s[i].status=3;
-								if(p->verbose>1) printf("SS1(1)=%d SS7(8)=%d col=%d\n",f12->data.SS1, f12->data.SS7, col);
+								if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start < 300))
+								{
+									f11.zag.KSS=0;
+									col=tcp_send_read(sizeof(struct zag_CPP));								
+									if ((col==0x14)&&(f12->data.SS1==1)&&(f12->data.SS7==8)) //esli otet=sosto9nie 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									//else p->work_com[c_step].s[i].status=3;
+									else printf("SS1(1)=%d SS7(8)=%d col=%d\n",f12->data.SS1, f12->data.SS7, col);
+									if(p->verbose>1) printf("SS1(1)=%d SS7(8)=%d col=%d\n",f12->data.SS1, f12->data.SS7, col);
+								}
 								break;
 							case 90:
 								printf("status %d \n", p->work_com[c_step].s[i].status);// -----vremenno
