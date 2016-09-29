@@ -42,7 +42,7 @@ volatile un counter;
 struct zag_CPP mes_cpp, *mes_fcpp;
 struct from_cpp12 *f12;
 struct from_cpp18 *f18;
-struct from_cpp181 f181;
+struct form181 f181;
 struct to_cpp11 f11;
 timer_t  tm10;
 struct sigevent event_sig;
@@ -80,6 +80,7 @@ main()
     int data_read; //4tenie dannih 
 	struct form193 *f193;
 	int ustSS=0; // ustanovlennoe zna4enie
+	f181.n_word = 0;
 	
 	delay(2500);
 	open_shmem();
@@ -897,7 +898,7 @@ main()
 					col = sizeof(f11);
 					f11.zag.KSS=0;
 					col = sizeof(struct zag_CPP);
-					//col=rli_reqest(col);		
+					col=rli_reqest(col);		
 					timer2 =0;
 				}
 			} 
@@ -996,7 +997,7 @@ short tcp_reqest(int col)
 		switch(f12->zag.TS)
 		{
 			case 0x14 : //if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
-				if(p->verbose>1) printf("SS15=%d SS16=%d SS13=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS15,f12->data.SS16,f12->data.SS13,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
+				//if(p->verbose>1) printf("SS10=%d SS16=%d SS13=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS10,f12->data.SS16,f12->data.SS13,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
 				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 				if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
 				for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
@@ -1023,10 +1024,11 @@ short rli_reqest(int col)
 {
 	int sock1;
 	short rez;
-	int i,i1,n,j,y=0;
+	int i,i1,n,j,y=0,i3;
 	short status,sum,i2;
 	long timer_rli=0;
 	long timer_read=0;
+	char buff;
 	
 	cccc = (unsigned short *)&f11;
 	sum=0;
@@ -1047,18 +1049,67 @@ short rli_reqest(int col)
 		n = Udp_Client_Read(&Uc42,cccc1,1400);
 		if((timer_rli>p->sys_timer)&&(timer_read>p->sys_timer)&&(n>0)) // timeri na 2 sec i na 0.5 sec
 		{
+		 //------------------------------------test---------------------------------------------
+			/*if ((f181.n_word != 0)&&(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words<614))
+			{
+				//f181 -> danye
+				printf("//f181 -> danye n_word=%d\n",f181.n_word); 
+				memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f181.Sach, 12);
+				memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f181.form5, 16);
+				memcpy(&p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[0], (char *)f181.form6[f181.n_word-202], 404);
+				f181.n_word = f181.n_word - 202;
+			}
+			*/
 			f18 = (struct from_cpp18 *)cccc1;
 			switch (f18->zag.TS)
 			{
-				case 0x12: 	
+				case 0x12:
+					for(i3=5;i3<219;i3++) //perevorov baitov
+					{
+						buff = f18->mass1[i3*2];
+						f18->mass1[i3*2] = f18->mass1[i3*2+1];
+						f18->mass1[i3*2+1] = buff;
+					}
+					// Obnovlenie SAC i Form5
 					
-					memcpy(f181.data.Sach, f18->data.Sach, 12);
-					f181.data.n_word++;
-					memcpy(f181.data.form5, f18->data.form5, 12);
+					////////-----------------------	1 -------------------------------------------
+					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f18->data.Sach, 12);
+					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f18->data.form5, 16);
+					memcpy(f181.Sach, f18->data.Sach, 12);
+					memcpy(f181.form5, f18->data.form5, 16);
+					//printf("\n");
+					//printf("18/D \n");
+					//for(i2=0; i2<12; i2++)
+					//{
+					//	printf("%04x/%04x ", f18->data.Sach[i2], p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH[i2]);
+					//	if(i2 == 6) printf("\n");
+					//}
+					
+					
+					/// -------------------------- 2 --------------------------------------
+					if (p->toMN3.Mem_Region2.Mem_Region_RLI.num_words<606)
+					{
+						p->toMN3.Mem_Region2.Mem_Region_RLI.num_words = p->toMN3.Mem_Region2.Mem_Region_RLI.num_words + 202;
+						printf("num_words %d \n", p->toMN3.Mem_Region2.Mem_Region_RLI.num_words);
+						//f18 -> Danye
+						// ------------------------ 3 -----------------------------------------------
+						//memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6, f18->data.form6, 404);
+					}
+					else printf("vilet \n");
+					/*
+					else //f18 -> f181
+					{
+						memcpy(&f181.form6[f181.n_word-202], (char *) f18->data.form6[0], 404);
+						f181.n_word = f181.n_word + 202;
+					}
+					*/
+					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
+					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
+		//-----------------------------test end-----------------------------------------------			
 					if(y==400) y = 0;
 					//memcpy(&f181.data.form6[y*203], f18->data.form6, 406);
 					y++;
-					printf("stoka prinyata %d timer %d kolvo slov %d y=%d \n" ,i2,p->sys_timer, n/2,f181.data.n_word);
+					//printf("stoka %d=%d prinyata %d timer %d kolvo slov %d y=%d \n" ,f18->data.form6[1],p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1],i2,p->sys_timer, n/2,f181.data.n_word);
 					if(f18->zag.PS==1) 
 					{
 						printf("Posledniya stroka \n");

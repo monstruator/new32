@@ -11,9 +11,26 @@
   //#include "../include/func_IP.h"
   #include "../include/IP_nb.h"
   #include "../include/shared_mem.h"
- 
+  #include <string.h>
+  #include <i86.h>
+  #include <conio.h>
+  #define SNT "/etc/config/sysinit"
   #define MS 1000000
   char          pack_buf[1500];  
+  
+  enum N_NUM {CPC1=1,CPC2,CPC3,CPC4,CPC5,
+			CPC6=1,CPC7,
+			CPC8=1,CPC9,CPC10=1,
+			CPC11=1,CPC12=1};
+const char *K_N[]={"_RLS.","_SORS.","_SPIAK.","_MO3A.","_6M.",NULL};
+const char *przn_PC[]={"1.1","2.2","3.3","4.4","5.5","6.1","7.2","8.1",
+					 "9.2","10.1","11.1","12.1",NULL};		   
+struct my_comp {
+	nid_t cpc_num;
+    nid_t node_num;
+	char sys_name[80];
+	char przn_PC[10];
+			   };
 
 main(int argc, char **argv)
 {//--- KOHCTAHTbl npu6opa 1.0 ---//
@@ -21,6 +38,7 @@ main(int argc, char **argv)
 		static Udp_Client_t Uc42;
 		short c_step=0,TC10=0;	
 		short sen;
+		short num_word=0;
 		char bufi[1024];
 		char bufo[1024];
 		char out_buf[1024];
@@ -40,6 +58,17 @@ main(int argc, char **argv)
 		pid_t pid, proxym;
 		long timer_mn3=0;
 		unsigned char num_mess=0;
+		
+		unsigned int requested_n; // nomer EBM
+		unsigned int przn_find=0;
+		nid_t node_n; // nomer uzla
+		nid_t node_number[]={CPC1,CPC2,CPC3,CPC4,CPC5,CPC6,CPC7,
+							 CPC8,CPC9,CPC10,CPC11,CPC12};
+
+		struct my_comp array_comp[12]; //trebuemiy uzel
+		unsigned char command[80];
+		char buf[3],str_6M[10],pnt[10];
+		FILE *fp;
 
 	delay(1500);
 	open_shmem();
@@ -48,6 +77,12 @@ main(int argc, char **argv)
 	p->cvs=10;  //default
 	InitArgs( argc, argv );
 	printf("START M03A<->PULT cvs=%d verbose=%d\n",p->cvs,p->verbose);
+	
+	//outp(0x37a, inp(0x37a)|0x24);
+	//node_n=getnid();
+	//requested_n=inp(0x378)&0xF;
+	//printf("nomer ebm %d \n", requested_n);
+	
 	if (p->cvs==10) 
 	{
 		name="192.168.3.1";// ;"SPIAK_N8_Eth2"
@@ -70,6 +105,7 @@ main(int argc, char **argv)
 	{
 	   	if (timer_mn3!=p->sys_timer) //timer
 		{
+		//printf("timer %d timer mn3 %d\n", p->sys_timer, timer_mn3);
 			timer_mn3=p->sys_timer;
 			//TCount++;
 			TC10++;
@@ -101,6 +137,22 @@ main(int argc, char **argv)
 					//printf("Send i = %d\n ",i);
 					//printf("\n=====> ");for(i1=0;i1<i;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
 				}
+			}
+			
+			if (p->toMN3.Mem_Region2.Mem_Region_RLI.num_words!=0) //есть данные РЛИ
+			{
+				memcpy(pack_buf,&p->toMN3,sizeof(packusoi)); 
+				pack_buf[0]=70;
+				pack_buf[1]=num_mess++;
+				pack_buf[2]=1;
+				pack_buf[3]=1;
+				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
+				//printf("Send1 %d RLI word timer %d\n",p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer);
+				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
+				
+				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
+				printf("Send2 %d RLI word timer %d\n",num_word, p->sys_timer);
+				
 			}
            //--------------------------------------------------------------------------- 
 			if (p->fromMN3.cr_com!=p->inbufMN3.cr_com) // new command from MN3

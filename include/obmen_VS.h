@@ -237,7 +237,7 @@ typedef struct {
 } Mem_Region23_RLI_t;	//1240 б.инф.
 
 typedef	union {
-	short buf[627];
+	short buf[623];
 
 	Mem_Region23_NO_t 		Mem_Region_NO;		//Освещение НО	(kvi = 5)
 	Mem_Region23_REO_t 		Mem_Region_REO;		//Освещение РЭО	(kvi = 7)
