@@ -331,7 +331,7 @@ main()
 									{
 										f11.zag.KSS=0;
 										col=tcp_send_read(sizeof(struct zag_CPP));
-										if ((col==0x14)&&(f12->data.SS10>10)&&(f12->data.SS10<30)) //esli otet=sosto9nie 
+										if ((col==0x14)&&(f12->data.SS10>10)&&(f12->data.SS10<50)) //esli otet=sosto9nie 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 											p->toMN3.fk = 0;
@@ -866,45 +866,54 @@ main()
 			else
 			{
 				//------------------- timer oprosa ----------------------------------------
-				timer1++;
-				if (timer1 == 30) // primerno 1 sec
+				if (p->cvs==11) // 
 				{
-					f11.zag.marker1=0xFFFF;
-					f11.zag.marker2=0xFFFF;
-					//if (p->cvs==11) 
-					f11.zag.II=2; 
-					//else f11.zag.II=3;
-					f11.zag.TS=3;
-					f11.zag.PS=1;
-					f11.zag.KSS=sizeof(struct form11)/2;
-					f11.data.nf=11;	
-					col = sizeof(f11);
-					f11.zag.KSS=0;
-					col = sizeof(struct zag_CPP);
-					col=tcp_reqest(col);		
-					timer1 =0;
+					timer2++;
+					if (timer2 > 40) // primerno 05 sec
+					{
+						f11.zag.marker1=0xFFFF;
+						f11.zag.marker2=0xFFFF;
+						f11.zag.II=2;
+						f11.zag.PS=1;
+						f11.zag.KSS=0;
+						col = sizeof(struct zag_CPP);
+						f11.zag.TS=3; //parametri
+						col=tcp_reqest(col);		
+						timer2 =0;
+					}
 				}
-
-			} //esli net waga
-			// -------------------------- RLI timer --------------------------------------
-			if (p->cvs==10) // RLI
-			{
-				timer2++;
-				if (timer2 > 15) // primerno 05 sec
+				// -------------------------- RLI timer --------------------------------------
+				if (p->cvs==10) // RLI
 				{
-					f11.zag.marker1=0xFFFF;
-					f11.zag.marker2=0xFFFF;
-					f11.zag.II=2;
-					f11.zag.TS=2;  //zapros dannih
-					f11.zag.PS=1;
-					//f11.zag.KSS=sizeof(struct form11)/2;
-					f11.data.nf=11;	
-					col = sizeof(f11);
-					f11.zag.KSS=0;
-					col = sizeof(struct zag_CPP);
-					col=rli_reqest(col);		
-					timer2 =0;
-				}
+					timer2++;
+					if (timer2 > 20) // primerno 05 sec
+					{	
+						timer2 =0;
+						f11.zag.marker1=0xFFFF;
+						f11.zag.marker2=0xFFFF;
+						f11.zag.II=2;
+						f11.zag.PS=1;
+						f11.zag.KSS=0;
+						f11.zag.KSS=0;
+						timer1++;
+						col = sizeof(struct zag_CPP);
+						if (timer1 == 5) //20*5 
+						{	
+							f11.zag.TS=3; //parametri
+							col=tcp_reqest(col);		
+							timer1 = 0;
+							printf("ParamRqst\n");
+						}
+						else
+						{
+							f11.zag.TS=2;  //zapros dannih
+							//col=rli_reqest(col);		
+							//printf("RliRqst\n");
+						}
+						
+						//
+					}
+				} //esli net waga
 			} 
 		}//timer
 		delay(20);
@@ -941,6 +950,7 @@ short tcp_send_read(int col)
 		if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb1[j]); printf("\n");}
 		f12 = (struct from_cpp12 *)bbb1;
 		if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
+		if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
 		switch(f12->zag.TS)
 		{
 			case 0x10 : if(p->verbose) printf("Check CPP link OK(TC=0x10)\n");
@@ -953,7 +963,7 @@ short tcp_send_read(int col)
 						break;
 			case 0x14 : if(p->verbose) printf("CPP parameters (TC=0x14)\n");
 						p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
-						if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
+						
 						for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
 						//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 						return 0x14;
@@ -996,15 +1006,16 @@ short tcp_reqest(int col)
 //-----------------------------------------------------------------			
 	if (n>0)
 	{			
-		//if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
+		if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
 		f12 = (struct from_cpp12 *)bbb1;
 		//if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
+		if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
+				
 		switch(f12->zag.TS)
 		{
 			case 0x14 : //if(p->verbose>1) printf("SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0_all=%d \n",f12->data.SS0_prd,f12->data.SS0_prm,f12->data.SS0_cpp,f12->data.SS0_all);
 				//if(p->verbose>1) printf("SS10=%d SS16=%d SS13=%d SS3=%d SS4=%d SS5=%d SS6=%d SS7=%d\n",f12->data.SS10,f12->data.SS16,f12->data.SS13,f12->data.SS3,f12->data.SS4,f12->data.SS5,f12->data.SS6,f12->data.SS7);
 				p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
-				if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
 				for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
 					//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 				return 0x14;
@@ -1049,12 +1060,16 @@ short rli_reqest(int col)
 	timer_rli=p->sys_timer+600; // ustanovka timera na 2 sec
 	n = Udp_Client_Send(&Uc42,cccc,col);
 	delay(15);
+	//if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",cccc[j]); printf("\n");}
+		
 //-------------------------READ MESSAGE---------------------------------------------------
-	for(i2=0; i2<20; i2++) // priem za raz ne bolee 20 soobcheniy
+	for(i2=0; i2<14; i2++) // priem za raz ne bolee 20 soobcheniy
 	{
 		delay(5);
 		timer_read=p->sys_timer+200; // ustanovka timera na 0.5 sec
 		n = Udp_Client_Read(&Uc42,cccc1,1400);
+		
+		//if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
 		if((timer_rli>p->sys_timer)&&(timer_read>p->sys_timer)&&(n>0)) // timeri na 2 sec i na 0.5 sec
 		{
 		 //------------------------------------test---------------------------------------------
@@ -1072,8 +1087,8 @@ short rli_reqest(int col)
 				for(i3=0;i3<202;i3++) p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[wordRLI+i3]=f181.form6[word181+i3];
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words += 202;
 				f181.n_form--;
-				printf("//f181 -> danye 		form181=%d 		wRLI=%d 	str=%d\n",
-				f181.n_form,wordRLI,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7);
+				//printf("//f181 -> danye 		form181=%d 		wRLI=%d 	str=%d\n",
+				//f181.n_form,wordRLI,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7);
 			}
 			
 			
@@ -1109,14 +1124,14 @@ short rli_reqest(int col)
 						word181=f181.n_form*202;
 						//memcpy(&f181.form6[f181.n_word], f18->data.form6, 404);
 						for(i3=0;i3<202;i3++) f181.form6[word181+i3]=f18->data.form6[i3];
-						printf("n_str=%d nstr_old=%d word=%d form=%d\n",f181.form6[word181+1]>>7,f18->data.form6[1]>>7,word181,f181.n_form);
+						//printf("n_str=%d nstr_old=%d word=%d form=%d\n",f181.form6[word181+1]>>7,f18->data.form6[1]>>7,word181,f181.n_form);
 						f181.n_form++;
 					}
 					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
 					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
 					N_string=f18->data.form6[1]>>7;
-					printf("form181 = %d RLI.num_words = %d  N_STR=%d \n",
-					f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string);
+					//printf("form18 = %d RLI.num_words = %d  N_STR=%d \n",
+					//f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string&0x1FF);
 		//-----------------------------test end-----------------------------------------------			
 					
 					//printf("stoka %d=%d prinyata %d timer %d kolvo slov %d y=%d \n" ,f18->data.form6[1],p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1],i2,p->sys_timer, n/2,f181.data.n_word);

@@ -27,7 +27,7 @@ struct my_comp {
 	char przn_PC[10];
 			   };
 
-main(int argc, char **argv)
+void main(int argc, char **argv)
 {//--- KOHCTAHTbl npu6opa 1.0 ---//
 		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0, i3=0 , j;
 		static Udp_Client_t Uc42;
@@ -54,15 +54,14 @@ main(int argc, char **argv)
 		long timer_mn3=0;
 		unsigned char num_mess=0;
 
-
 	delay(1500);
 	open_shmem();
 	delay(1000);
 	p->verbose=0; //default
 	p->cvs=10;  //default
 	InitArgs( argc, argv );
-	//outp(0x37a, inp(0x37a)|0x24);
-	//ver=ver_cvs(ver);  //-------------------- opredelenie nomera CVS--------------------------
+	
+	ver=ver_cvs(ver);  //-------------------- opredelenie nomera CVS--------------------------
 	printf("START M03A<->PULT cvs=%d verbose=%d\n",p->cvs,p->verbose);
 	printf("CVS = %d \n", ver);
 	
@@ -70,6 +69,7 @@ main(int argc, char **argv)
 	//node_n=getnid();
 	//requested_n=inp(0x378)&0xF;
 	//printf("nomer ebm %d \n", requested_n);
+	p->cur_step=0;
 	
 	if (p->cvs==10) 
 	{
@@ -135,8 +135,8 @@ main(int argc, char **argv)
 				pack_buf[2]=1;
 				pack_buf[3]=1;
 				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
-				//printf("Send1 wRLI=%d  timer=%d str1=%d str2=%d str3=%d\n",
-				//p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7);
+				printf("Send1 wRLI=%d  timer=%d str1=%d str2=%d str3=%d\n",
+				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
 				
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
