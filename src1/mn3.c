@@ -17,14 +17,9 @@
   #define SNT "/etc/config/sysinit"
   #define MS 1000000
   char          pack_buf[1500];  
-  
-  enum N_NUM {CPC1=1,CPC2,CPC3,CPC4,CPC5,
-			CPC6=1,CPC7,
-			CPC8=1,CPC9,CPC10=1,
-			CPC11=1,CPC12=1};
-const char *K_N[]={"_RLS.","_SORS.","_SPIAK.","_MO3A.","_6M.",NULL};
-const char *przn_PC[]={"1.1","2.2","3.3","4.4","5.5","6.1","7.2","8.1",
-					 "9.2","10.1","11.1","12.1",NULL};		   
+  short ver_cvs(unsigned int );
+  unsigned int ver;
+   
 struct my_comp {
 	nid_t cpc_num;
     nid_t node_num;
@@ -34,7 +29,7 @@ struct my_comp {
 
 main(int argc, char **argv)
 {//--- KOHCTAHTbl npu6opa 1.0 ---//
-		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0 , j;
+		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0, i3=0 , j;
 		static Udp_Client_t Uc42;
 		short c_step=0,TC10=0;	
 		short sen;
@@ -58,17 +53,7 @@ main(int argc, char **argv)
 		pid_t pid, proxym;
 		long timer_mn3=0;
 		unsigned char num_mess=0;
-		
-		unsigned int requested_n; // nomer EBM
-		unsigned int przn_find=0;
-		nid_t node_n; // nomer uzla
-		nid_t node_number[]={CPC1,CPC2,CPC3,CPC4,CPC5,CPC6,CPC7,
-							 CPC8,CPC9,CPC10,CPC11,CPC12};
 
-		struct my_comp array_comp[12]; //trebuemiy uzel
-		unsigned char command[80];
-		char buf[3],str_6M[10],pnt[10];
-		FILE *fp;
 
 	delay(1500);
 	open_shmem();
@@ -76,7 +61,10 @@ main(int argc, char **argv)
 	p->verbose=0; //default
 	p->cvs=10;  //default
 	InitArgs( argc, argv );
+	//outp(0x37a, inp(0x37a)|0x24);
+	//ver=ver_cvs(ver);  //-------------------- opredelenie nomera CVS--------------------------
 	printf("START M03A<->PULT cvs=%d verbose=%d\n",p->cvs,p->verbose);
+	printf("CVS = %d \n", ver);
 	
 	//outp(0x37a, inp(0x37a)|0x24);
 	//node_n=getnid();
@@ -105,7 +93,7 @@ main(int argc, char **argv)
 	{
 	   	if (timer_mn3!=p->sys_timer) //timer
 		{
-		//printf("timer %d timer mn3 %d\n", p->sys_timer, timer_mn3);
+		   // printf("timer %d timer mn3 %d  word=%d \n", p->sys_timer, timer_mn3,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words);
 			timer_mn3=p->sys_timer;
 			//TCount++;
 			TC10++;
@@ -139,7 +127,7 @@ main(int argc, char **argv)
 				}
 			}
 			
-			if (p->toMN3.Mem_Region2.Mem_Region_RLI.num_words!=0) //есть данные РЛИ
+			if ((p->toMN3.Mem_Region2.Mem_Region_RLI.num_words>600)&&(p->cvs==10)) //есть данные РЛИ
 			{
 				memcpy(pack_buf,&p->toMN3,sizeof(packusoi)); 
 				pack_buf[0]=70;
@@ -147,12 +135,13 @@ main(int argc, char **argv)
 				pack_buf[2]=1;
 				pack_buf[3]=1;
 				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
-				//printf("Send1 %d RLI word timer %d\n",p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer);
+				//printf("Send1 wRLI=%d  timer=%d str1=%d str2=%d str3=%d\n",
+				//p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
 				
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
-				printf("Send2 %d RLI word timer %d\n",num_word, p->sys_timer);
-				
+				//printf("Send2 %d RLI word timer %d  N_STRING=%d \n",num_word, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]);
+				//for(i3=0;i3<6;i3++)	printf(" %04x ",p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH[i3]);printf("\n");
 			}
            //--------------------------------------------------------------------------- 
 			if (p->fromMN3.cr_com!=p->inbufMN3.cr_com) // new command from MN3
@@ -979,4 +968,20 @@ void InitArgs( int argc, char **argv )
          break;
       }
    }
+}
+
+short ver_cvs(unsigned int ver)
+{
+unsigned int requested_n; // nomer EBM
+unsigned int i,przn_find=0;
+nid_t node_n; // nomer uzla
+
+//---Определение соответствия между номером узла и номером ЭВМ 
+	outp(0x37a, inp(0x37a)|0x24);
+	//node_n=getnid();
+	requested_n=inp(0x378)&0xF;
+	printf("Номер ЭВМ %d \n", 
+		requested_n);
+		return requested_n;
+		ver = requested_n;
 }

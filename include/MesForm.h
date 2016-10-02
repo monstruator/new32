@@ -196,7 +196,7 @@ struct form18
 struct form181 
 {
 	short Sach[6];
-	short n_word;
+	short n_form; //kol-vo form6 po 202 slova
 	short form5[8];  /// ------------- 9 ------------------
 	short form6[81200]; 
 };
@@ -222,8 +222,8 @@ struct from_cpp18
 	union
 	{
 		struct form18 data;
-		short mass[sizeof(struct form18)/2];
-		char  mass1[sizeof(struct form18)];
+		unsigned short mass[sizeof(struct form18)/2];
+		unsigned char  mass1[sizeof(struct form18)];
 		
 	};
 };

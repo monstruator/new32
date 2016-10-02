@@ -349,7 +349,7 @@ main(int argc, char *argv[])
 										tri=0;
 										//t625com = p->cmd_625.count625_inf;
 									}
-									if (tri<50) 
+									if (tri<150) 
 									{
 										if (t625com != p->cmd_625.count625_inf) 
 										{
