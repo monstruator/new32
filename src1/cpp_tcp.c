@@ -377,7 +377,7 @@ main()
 								{
 									f11.zag.KSS=0;
 									col=tcp_send_read(sizeof(struct zag_CPP));
-									if ((col==0x14)&&(f12->data.SS10>10)&&(f12->data.SS10<30)&&(f12->data.SS2_1==1)) //esli otet=sosto9nie 
+									if ((col==0x14)&&(f12->data.SS10>10)&&(f12->data.SS10<50)&&(f12->data.SS2_1==1)) //esli otet=sosto9nie 
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 										p->toMN3.fk = 0;
