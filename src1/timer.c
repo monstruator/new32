@@ -35,7 +35,7 @@ void main( int argc, char *argv[] )
 	create_shmem();
 	delay(300);
 	open_shmem();
-	delay(2300);
+	delay(1300);
 
 
 	//----------------------------------------------------

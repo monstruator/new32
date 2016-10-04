@@ -395,6 +395,7 @@ typedef struct
 	
 	short count_cpp_status;   //kolichestvo soobsheniy cpp
 	short count_cpp_rli;   //kolichestvo soobsheniy cpp
+	short count_cpp_message;
 	short count_r999_message;   //kolichestvo soobsheniy r999
 	
 	

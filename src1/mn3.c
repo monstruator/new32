@@ -137,7 +137,7 @@ void main(int argc, char **argv)
 				pack_buf[2]=1;
 				pack_buf[3]=1;
 				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
-				printf("Send1 wRLI=%d  timer=%d str1=%d str2=%d str3=%d\n",
+				printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
 				
