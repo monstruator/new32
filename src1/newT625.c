@@ -90,7 +90,7 @@ main(int argc, char *argv[])
 
 	i = Udp_Client_Ini(&Uc41,name,DST_PORT41,port_src);
     i = Udp_Client_Ini(&Uc42,name,DST_PORT42,port_src_dat);
-	
+	if(p->cvs == 10) exit(0);
 	delay(1500);
 	open_shmem();
 	delay(1000);

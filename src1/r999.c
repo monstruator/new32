@@ -102,6 +102,7 @@ unsigned int word=0;
 int chk_num,Time_out=2000,Con=0;
 unsigned short etalon_r_pr[]={0x1,0x2,0x20,0x40,0x80,0x100};
 unsigned short etalon_wr_pr[]={0x4,0};
+if(p->cvs == 11) exit(0);
 IntFlag=0;
 arginit(argc,argv,"¢?¡¢ ¿Rý£<¯ CPCI429-3\n");
 argp("IO=", "%d", &ind, "?-ý?ò¡ ¿Rý£<¯ -ÿ ¨ð-? CPCI");

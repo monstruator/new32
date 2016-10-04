@@ -70,6 +70,7 @@ main(int argc, char *argv[])
     long rele_timer=0;
 	unsigned short save;
 	int ind=0,chk_num,Time_out=5,Con1=1;
+	if(p->cvs == 11) exit(0);
 	if (p->verbose) printf("START MO3A<->RELE\n\n");
 	//===============================================================================
 	//			 timer 10ms

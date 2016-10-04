@@ -14,7 +14,8 @@
   #include <string.h>
   #include <i86.h>
   #include <conio.h>
-  #define SNT "/etc/config/sysinit"
+  #define SNT "/home/new32/src1/test"
+  #define SNT1 "/home/new32/"
   #define MS 1000000
   char          pack_buf[1500];  
   short ver_cvs(unsigned int );
@@ -54,16 +55,17 @@ void main(int argc, char **argv)
 		long timer_mn3=0;
 		unsigned char num_mess=0;
 
+
 	delay(1500);
 	open_shmem();
 	delay(1000);
 	p->verbose=0; //default
-	p->cvs=10;  //default
+	p->cvs=0;  //default
 	InitArgs( argc, argv );
 	
-	ver=ver_cvs(ver);  //-------------------- opredelenie nomera CVS--------------------------
+	p->cvs = ver_cvs(ver);  //-------------------- opredelenie nomera CVS--------------------------
 	printf("START M03A<->PULT cvs=%d verbose=%d\n",p->cvs,p->verbose);
-	printf("CVS = %d \n", ver);
+	//printf("CVS = %d \n", ver);
 	
 	//outp(0x37a, inp(0x37a)|0x24);
 	//node_n=getnid();
@@ -136,7 +138,7 @@ void main(int argc, char **argv)
 				pack_buf[3]=1;
 				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
 				printf("Send1 wRLI=%d  timer=%d str1=%d str2=%d str3=%d\n",
-				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7);
+				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
 				
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
@@ -668,14 +670,16 @@ void main(int argc, char **argv)
 								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					*/
 					//---------------------------------------------
-								n_s=5;  
+					/*			n_s=5;  
 								n_mc=0; //s4et4ik mini komamdi
 								p->work_com[n_s].s[n_mc].n_chan=6; //t625
 								p->work_com[n_s].s[n_mc].n_com=923; //nomer waga   sravnenie massiva
 								n_mc++; //kol-vo mini komand + 1						
 								p->work_com[n_s].t_stop =p->sys_timer+1000;
 								p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+							*/
 							}
+					
 							else 
 							{
 								n_s=1;  n_mc=0;
@@ -957,7 +961,7 @@ void InitArgs( int argc, char **argv )
       switch( c ) {
       
       case 'c':
-         p->cvs = atoi( optarg );
+         //p->cvs = atoi( optarg );
          break;
       case 'v':
          p->verbose++;
@@ -968,12 +972,14 @@ void InitArgs( int argc, char **argv )
          break;
       }
    }
-}
+} 
 
 short ver_cvs(unsigned int ver)
 {
 unsigned int requested_n; // nomer EBM
 unsigned int i,przn_find=0;
+		unsigned char command[80];
+		unsigned char test[80];
 nid_t node_n; // nomer uzla
 
 //---Определение соответствия между номером узла и номером ЭВМ 
@@ -984,4 +990,17 @@ nid_t node_n; // nomer uzla
 		requested_n);
 		return requested_n;
 		ver = requested_n;
+		
+	//---Копирование соответствующего sysinit в sysinit нужного узла
+	strcpy(command,"cp ");
+	strcat(command,SNT);
+	strcat(command,test);
+	strcat(command,".");
+	strcat(command,"15");
+	strcat(command," ");
+	strcat(command,SNT1);
+	strcat(command,".");
+	strcat(command,"1");
+	printf("%s \n",command);
+	system(command);  
 }

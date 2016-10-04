@@ -43,7 +43,7 @@ struct zag_CPP mes_cpp, *mes_fcpp;
 struct from_cpp12 *f12;
 struct from_cpp18 *f18;
 struct form181 f181;
-struct to_cpp11 f11;
+struct to_cpp11 f11,F11Rqst;
 timer_t  tm10;
 struct sigevent event_sig;
 struct itimerspec timer_sig;
@@ -65,8 +65,8 @@ int timer1=0,timer2=0,verbose=0;
 
 
 short tcp_send_read(int );
-short tcp_reqest(int );
-short rli_reqest(int );
+short tcp_reqest( );
+short rli_reqest( );
 //===============================================================================
 //			MAIN	MAIN	MAIN	MAIN 	MAIN
 main()
@@ -871,14 +871,7 @@ main()
 					timer2++;
 					if (timer2 > 40) // primerno 05 sec
 					{
-						f11.zag.marker1=0xFFFF;
-						f11.zag.marker2=0xFFFF;
-						f11.zag.II=2;
-						f11.zag.PS=1;
-						f11.zag.KSS=0;
-						col = sizeof(struct zag_CPP);
-						f11.zag.TS=3; //parametri
-						col=tcp_reqest(col);		
+						tcp_reqest();		
 						timer2 =0;
 					}
 				}
@@ -886,32 +879,25 @@ main()
 				if (p->cvs==10) // RLI
 				{
 					timer2++;
-					if (timer2 > 20) // primerno 05 sec
+					if (timer2 > 30) // primerno 05 sec
 					{	
 						timer2 =0;
-						f11.zag.marker1=0xFFFF;
-						f11.zag.marker2=0xFFFF;
-						f11.zag.II=2;
-						f11.zag.PS=1;
-						f11.zag.KSS=0;
-						f11.zag.KSS=0;
+						
 						timer1++;
-						col = sizeof(struct zag_CPP);
-						if (timer1 == 5) //20*5 
+						
+						if (timer1 == 7) //20*5 
 						{	
-							f11.zag.TS=3; //parametri
-							col=tcp_reqest(col);		
+							printf("ParamRqst TS= %d\n",tcp_reqest());		
 							timer1 = 0;
-							printf("ParamRqst\n");
+							
 						}
 						else
 						{
-							f11.zag.TS=2;  //zapros dannih
-							//col=rli_reqest(col);		
-							//printf("RliRqst\n");
+							printf("RliRqst=%d\n",rli_reqest());
+							
+							
+							
 						}
-						
-						//
 					}
 				} //esli net waga
 			} 
@@ -983,30 +969,30 @@ short tcp_send_read(int col)
 
 //--------------------------------reqests---------------------------------------------------------------
 //--------------------------------timer-----------------------------------------------------------------
-short tcp_reqest(int col)
+short tcp_reqest()
 {
-	int sock1;
-	short rez;
 	int i,i1,n,j;
-	short status,sum;
-
-	bbb = (unsigned short *)&f11;
-	sum=0;
-	if (col>10) 
-	{
-		for(i=0;i<14;i++) sum^=bbb[i+5];
-		//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);
-		bbb[col/2-1]=sum;
-	}
+	int col1;
+	unsigned short *bbb1,*bbb2;
+	F11Rqst.zag.marker1=0xFFFF;
+	F11Rqst.zag.marker2=0xFFFF;
+	F11Rqst.zag.II=2;
+	F11Rqst.zag.PS=1;
+	F11Rqst.zag.KSS=0;
+	F11Rqst.zag.TS=3; //parametri
+	col1 = sizeof(struct zag_CPP);
+					
+	bbb2 = (unsigned short *)&F11Rqst;
+	
 	//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
-	n = Udp_Client_Send(&Uc42,bbb,col);
-	delay(40);
-		//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<37;i1++) printf("%04x ",ccc[i1]);printf("\n");}
+	n = Udp_Client_Send(&Uc42,bbb2,col1);
+	delay(50);
+	if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col1/2;i1++) printf("%04x ",bbb2[i1]);printf("\n");}
 	n = Udp_Client_Read(&Uc42,bbb1,1400);
 //-----------------------------------------------------------------			
 	if (n>0)
 	{			
-		if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
+		if(p->verbose>1) {printf("Rqst->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb1[j]); printf("\n");}
 		f12 = (struct from_cpp12 *)bbb1;
 		//if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
 		if(p->cvs==10) f12->data.SS0_prd=f12->data.SS0_prm=f12->data.SS0_all=1; // podkraasheno chto rabotaet cpp na cvs10
@@ -1036,7 +1022,7 @@ short tcp_reqest(int col)
 }
 //--------------------------------RLI---------------------------------------------------------------
 //--------------------------------timer-----------------------------------------------------------------
-short rli_reqest(int col)
+short rli_reqest()
 {
 	int sock1;
 	short rez;
@@ -1048,18 +1034,22 @@ short rli_reqest(int col)
 	int word181; //kol-vo slov v 181
 	int wordRLI; //kol-vo slov v RLI dl9 Dani
 	unsigned char buff;
+	struct to_cpp11 f11Rli;
+	int col2;
 	
-	cccc = (unsigned short *)&f11;
-	sum=0;
-	if (col>10) 
-	{
-		for(i=0;i<14;i++) sum^=cccc[i+5];
-		//if(p->verbose>2) printf("ccc[%d]=%x CKH_SUM=%04x \n",i+5,ccc[i+5],sum);}
-		cccc[col/2-1]=sum;
-	}
+	f11Rli.zag.marker1=0xFFFF;
+	f11Rli.zag.marker2=0xFFFF;
+	f11Rli.zag.II=2;
+	f11Rli.zag.PS=1;
+	f11Rli.zag.KSS=0;
+	f11Rli.zag.TS=2;  //zapros dannih
+	col2 = sizeof(struct zag_CPP);
+	
+	cccc = (unsigned short *)&f11Rli;
+	
 	timer_rli=p->sys_timer+600; // ustanovka timera na 2 sec
-	n = Udp_Client_Send(&Uc42,cccc,col);
-	delay(15);
+	n = Udp_Client_Send(&Uc42,cccc,col2);
+	delay(50);
 	//if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",cccc[j]); printf("\n");}
 		
 //-------------------------READ MESSAGE---------------------------------------------------
@@ -1093,6 +1083,8 @@ short rli_reqest(int col)
 			
 			
 			f18 = (struct from_cpp18 *)cccc1;
+			
+			printf("TS=%d\n",f18->zag.TS);
 			
 			switch (f18->zag.TS)
 			{
@@ -1130,8 +1122,8 @@ short rli_reqest(int col)
 					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
 					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
 					N_string=f18->data.form6[1]>>7;
-					//printf("form18 = %d RLI.num_words = %d  N_STR=%d \n",
-					//f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string&0x1FF);
+					printf("form18 = %d RLI.num_words = %d  N_STR=%d \n",
+					f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string&0x1FF);
 		//-----------------------------test end-----------------------------------------------			
 					
 					//printf("stoka %d=%d prinyata %d timer %d kolvo slov %d y=%d \n" ,f18->data.form6[1],p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1],i2,p->sys_timer, n/2,f181.data.n_word);
@@ -1179,7 +1171,7 @@ short rli_reqest(int col)
 		//if(p->verbose>1) {printf("->Read %d word : ",n/2); for (j=0;j<n/2;j++ ) printf(" %04x",bbb[j]); printf("\n");}
 		//printf("RLI download line %d \n", i2);
 		//if(p->verbose>1) printf("KSS=%d II=%d TS=%d      ", f12->zag.KSS,f12->zag.II,f12->zag.TS);
-		return 1;
+		return n;
 	}
 	return 0;
 	

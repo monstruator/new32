@@ -393,7 +393,8 @@ typedef struct
 	cmd625   cmd_625;   //otvet iz t625 
 	struct Tabl_2 inf_625;   //inf for t625
 	
-	short count_cpp_message;   //kolichestvo soobsheniy cpp
+	short count_cpp_status;   //kolichestvo soobsheniy cpp
+	short count_cpp_rli;   //kolichestvo soobsheniy cpp
 	short count_r999_message;   //kolichestvo soobsheniy r999
 	
 	
