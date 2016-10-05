@@ -90,11 +90,16 @@ main(int argc, char *argv[])
 
 	i = Udp_Client_Ini(&Uc41,name,DST_PORT41,port_src);
     i = Udp_Client_Ini(&Uc42,name,DST_PORT42,port_src_dat);
-	if(p->cvs == 10) exit(0);
-	delay(1500);
+	
+	delay(2500);
 	open_shmem();
 	delay(1000);
 	
+	if(p->cvs != 11) 
+	{
+		printf("T625-CVS != 11 kill \n");
+		exit(0);
+	}
 	p->cmd_625.count625_cmd=0;
     p->cmd_625.T625_on_off=0;
     p->komanda625=0;

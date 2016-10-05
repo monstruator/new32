@@ -70,7 +70,14 @@ main(int argc, char *argv[])
     long rele_timer=0;
 	unsigned short save;
 	int ind=0,chk_num,Time_out=5,Con1=1;
-	if(p->cvs == 11) exit(0);
+	delay(500);
+	open_shmem();
+	delay(500);
+	if(p->cvs != 10) 
+	{
+		printf("RELE-CVS != 10 kill \n");
+		exit(0);
+	}
 	if (p->verbose) printf("START MO3A<->RELE\n\n");
 	//===============================================================================
 	//			 timer 10ms
@@ -113,9 +120,7 @@ main(int argc, char *argv[])
 	i++; printf("WRITE I_CTL %x\n",*(unsigned int*)(addr1 +0x4400)=0x80);
 	//--------------------------------------------nastroika rele----------------------------
 	//create_shmem();
-	delay(500);
-	open_shmem();
-	delay(500);
+
 	
 //---------------------------------------------------------------------	
 	while(1)

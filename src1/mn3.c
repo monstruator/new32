@@ -137,8 +137,8 @@ void main(int argc, char **argv)
 				pack_buf[2]=1;
 				pack_buf[3]=1;
 				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
-				printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
-				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
+				//printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
+				//p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
 				
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
@@ -978,8 +978,8 @@ short ver_cvs(unsigned int ver)
 {
 unsigned int requested_n; // nomer EBM
 unsigned int i,przn_find=0;
-		unsigned char command[80];
-		unsigned char test[80];
+unsigned char command[80];
+unsigned char test[80];
 nid_t node_n; // nomer uzla
 
 //---Определение соответствия между номером узла и номером ЭВМ 
@@ -990,17 +990,4 @@ nid_t node_n; // nomer uzla
 		requested_n);
 		return requested_n;
 		ver = requested_n;
-		
-	//---Копирование соответствующего sysinit в sysinit нужного узла
-	strcpy(command,"cp ");
-	strcat(command,SNT);
-	strcat(command,test);
-	strcat(command,".");
-	strcat(command,"15");
-	strcat(command," ");
-	strcat(command,SNT1);
-	strcat(command,".");
-	strcat(command,"1");
-	printf("%s \n",command);
-	system(command);  
 }

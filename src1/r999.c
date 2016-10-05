@@ -102,7 +102,16 @@ unsigned int word=0;
 int chk_num,Time_out=2000,Con=0;
 unsigned short etalon_r_pr[]={0x1,0x2,0x20,0x40,0x80,0x100};
 unsigned short etalon_wr_pr[]={0x4,0};
-if(p->cvs == 11) exit(0);
+
+delay(2500);
+open_shmem();
+delay(500);
+if(p->cvs != 10) 
+{
+	printf("R999-CVS != 10 kill \n");
+	exit(0);
+}
+
 IntFlag=0;
 arginit(argc,argv,"¢?¡¢ ¿Rý£<¯ CPCI429-3\n");
 argp("IO=", "%d", &ind, "?-ý?ò¡ ¿Rý£<¯ -ÿ ¨ð-? CPCI");
@@ -152,9 +161,7 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 		pc_si_ap (1,0,3,1);	//??1 na priem		
 	//--------------------------------------------nastroika rele----------------------------
 	//create_shmem();
-	delay(500);
-	open_shmem();
-	delay(500);
+
 	com999.cm.addr=0xf8;
 	com999.cm.reserv=0; // reserv
 	com999.cm.reserv1=0; // reserv1
