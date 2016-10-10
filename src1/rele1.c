@@ -70,7 +70,7 @@ main(int argc, char *argv[])
     long rele_timer=0;
 	unsigned short save;
 	int ind=0,chk_num,Time_out=5,Con1=1;
-	delay(500);
+	delay(2500);
 	open_shmem();
 	delay(500);
 	if(p->cvs != 10) 

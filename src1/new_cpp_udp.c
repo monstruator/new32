@@ -116,7 +116,7 @@ main()
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
 	_beginthread(read1,stack_in,STACK_SIZE,0);
 	
-	printf("START MO3A<->CPP Host=%s port=%s cvs=%d\n\n",name,SRC_PORT,p->cvs);
+	printf("START MO3A<->CPP Host=%s port=%d cvs=%d\n\n",name,SRC_PORT,p->cvs);
 //---------------------------------------------------------------------	
 	while(1)
 	{
@@ -353,7 +353,7 @@ main()
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
-										if ((f12->data.SS10>200)&&(f12->data.SS10<800)&&(f12->data.SS2_1==0)) //esli otet=sosto9nie 
+										if ((f12->data.SS10>50)&&(f12->data.SS10<800)&&(f12->data.SS2_1==0)) //esli otet=sosto9nie 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 											p->toMN3.fk = 0;
@@ -365,7 +365,7 @@ main()
 											new_f12 = p->count_cpp_status;
 											col=tcp_reqest();
 										}
-									if(p->verbose) printf("SS10(200-800)=%d TKI(0)=%d \n",f12->data.SS10, f12->data.SS2_1);
+									if(p->verbose) printf("SS10(50-800)=%d TKI(0)=%d \n",f12->data.SS10, f12->data.SS2_1);
 									}
 								break;
 							
@@ -406,7 +406,7 @@ main()
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 								{
-									if ((f12->data.SS10>200)&&(f12->data.SS10<800)) //esli otet=sosto9nie 
+									if ((f12->data.SS10>50)&&(f12->data.SS10<800)) //esli otet=sosto9nie 
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 										p->toMN3.fk = 0;
@@ -418,7 +418,7 @@ main()
 										new_f12 = p->count_cpp_status;
 										col=tcp_reqest();
 									}
-									if(p->verbose) printf("SS10(200-800)=%d\n",f12->data.SS10);
+									if(p->verbose) printf("SS10(50-800)=%d\n",f12->data.SS10);
 								}
 								break;
 							

@@ -33,9 +33,9 @@ void main( int argc, char *argv[] )
 //	porog_df = atof(argv[3]);
 
 	create_shmem();
-	delay(300);
+	delay(100);
 	open_shmem();
-	delay(1300);
+	delay(100);
 
 
 	//----------------------------------------------------
