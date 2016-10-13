@@ -1,9 +1,10 @@
-cc -T3 -o timer timer.c
-cc -T3 -o mn3 mn3.c
+cc -T1 -o timer timer.c
+cc -T1 -o mn3 mn3.c
 cc -T1 -ms -o Tcp_test Tcp_test.c
-cc -T1 -ms -o cpp_tcp cpp_tcp.c
+cc -T1 -ms -o new_cpp_udp new_cpp_udp.c
 cc -T1 -ms -o rele1 rele1.c
 cc -T1 -ms -o r999 r999.c
+cc -T1 -ms -o newT625 newT625.c
 
 rm *.o
 
