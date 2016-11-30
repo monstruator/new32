@@ -156,8 +156,10 @@ main()
 										col=tcp_send();
 										new_f12 = p->count_cpp_status;
 									}
+									//printf("SS %d status %d = 1 newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
+										//printf("count=%d status=%d ss_all=%d\n",p->count_cpp_status,p->work_com[c_step].s[i].status, f12->data.SS0_all);
 										if(f12->data.SS0_all==1) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->fromMN3.a_params[0]==1)) //esli otet=sosto9nie 
 										{
 											//if (f12->data.SS0_all) 
@@ -168,8 +170,15 @@ main()
 											new_f12 = p->count_cpp_status;
 											col=tcp_reqest();
 										}
-										//printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 									}
+									if (f12->zag.TS != 20) p->work_com[c_step].s[i].status=3;
+									printf("KSS=%04x TS=%04x II=%04x PS=%04x\n",f12->zag.KSS, f12->zag.TS, f12->zag.II, f12->zag.PS);
+									printf("SS1=%04x SS0_prd=%04x SS0_prm=%04x SS0_cpp=%04x SS0_all=%04x\n", f12->data.SS1, f12->data.SS0_prd, f12->data.SS0_prm, f12->data.SS0_cpp, f12->data.SS0_all);
+									printf("SS2_0=%04x SS2_1=%04x SS3=%04x SS5=%04x SS4=%04x\n", f12->data.SS2_0, f12->data.SS2_1, f12->data.SS3, f12->data.SS5, f12->data.SS4);
+									printf("SS7=%04x SS6=%04x SS9=%04x SS8=%04x SS10=%04x\n", f12->data.SS7, f12->data.SS6, f12->data.SS9, f12->data.SS8, f12->data.SS10);
+									printf("SS11=%04x SS12=%04x SS13=%04x SS14=%04x SS15=%04x\n", f12->data.SS11, f12->data.SS12, f12->data.SS13, f12->data.SS14, f12->data.SS15);
+									printf("SS16=%04x SS17=%04x SS18=%04x SS19=%04x SS20=%04x\n", f12->data.SS16, f12->data.SS17, f12->data.SS18, f12->data.SS19, f12->data.SS20);
+									printf("p->count_cpp_status%d\n", p->count_cpp_status);
 									break;
 									
 							case 5: if(p->work_com[c_step].s[i].status==0) 
@@ -183,6 +192,7 @@ main()
 										col=tcp_send();
 										new_f12 = p->count_cpp_status;
 									}
+									//printf("status = %d cpp_count = %d \n", p->work_com[c_step].s[i].status, p->count_cpp_status);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
 										if (p->fromMN3.a_params[0]==f12->data.SS4) //esli otet=sosto9nie 
@@ -196,8 +206,9 @@ main()
 											new_f12 = p->count_cpp_status;
 											col=tcp_reqest();
 										}
-										//if(p->verbose>1) printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
-									} 	
+										//printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
+									} 
+									else printf("error status = %d cpp_count = %d \n", p->work_com[c_step].s[i].status, p->count_cpp_status);
                                     break;
 									
 							case 8: if(p->work_com[c_step].s[i].status==0) 
@@ -241,7 +252,7 @@ main()
 									{
 										if (p->fromMN3.a_params[0]==f12->data.SS2_1) //esli otet=sosto9nie 
 										{
-											//if(p->verbose>1) printf("SS2=%d\n",f12->data.SS2_1);
+											if(p->verbose>1) printf("SS2=%d\n",f12->data.SS2_1);
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
 										else 
@@ -261,43 +272,57 @@ main()
 									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									col=tcp_send();
 									new_f12 = p->count_cpp_status;
-									if (p->fromMN3.a_params[0]==f12->data.SS2_0) //esli otet=sosto9nie 
+									if (0 == f12->data.SS2_0) //esli otet=sosto9nie 
 									{
-										if(p->verbose>1) printf("SS2=%d\n",f12->data.SS2_0);
+										if(p->verbose>1) printf("param %d = SS2=%d\n",p->fromMN3.a_params[0], f12->data.SS2_0);
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}
 									else p->work_com[c_step].s[i].status=3;
 									if(p->verbose) printf("ok=%d\n",p->fromMN3.a_params[0]);
                                     break;
 							
-							case 15: p->work_com[c_step].s[i].status=1;
-                                    if(p->verbose) printf("			PEREDA4A ONN\n");
-									f11.data.KU1=p->fromMN3.a_params[0];
-									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									f11.data.KU2=0; 
-									f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
-									new_f12 = p->count_cpp_status;
-									if (p->fromMN3.a_params[0]==f12->data.SS2_0) //esli otet=sosto9nie 
-									{	
-										if(p->verbose>1) printf("SS2=%d\n",f12->data.SS2_0);
-										p->work_com[c_step].s[i].status=2; // ispravnost'
+							case 15: if(p->work_com[c_step].s[i].status==0) 
+									{
+										p->work_com[c_step].s[i].status=1;
+										if(p->verbose) printf("			PEREDA4A ONN\n");
+										f11.data.KU1= 1;//p->fromMN3.a_params[0];
+										f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										f11.data.KU2=0; 
+										f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										col=tcp_send();
+										new_f12 = p->count_cpp_status;
 									}
-									else p->work_com[c_step].s[i].status=3;
+									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+									{
+										//if(p->verbose>1) printf("SS2=%d(1)\n",f12->data.SS2_0);
+										if (1 == f12->data.SS2_0) //esli otet=sosto9nie 
+										{	
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else col=tcp_reqest();
+									}
                                     break;
 							
-							case 30: p->work_com[c_step].s[i].status=1;
-                                    if(p->verbose) printf("			SVCH ATT \n");
-									f11.data.KU7=p->fromMN3.a_params[0]; // oslablenie 0 - 25
-									f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
-									new_f12 = p->count_cpp_status;
-									if (p->fromMN3.a_params[0]==f12->data.SS6) //esli otet=sosto9nie 
+							case 30: 
+									if(p->work_com[c_step].s[i].status==0) 
 									{
-										if(p->verbose>1) printf("SS6=%d\n",f12->data.SS6);
-										p->work_com[c_step].s[i].status=2; // ispravnost'
+										p->work_com[c_step].s[i].status=1;
+										if(p->verbose) printf("			SVCH ATT \n");
+										f11.data.KU7=p->fromMN3.a_params[0]; // oslablenie 0 - 25
+										f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										col=tcp_send();
+										new_f12 = p->count_cpp_status;
 									}
-									else p->work_com[c_step].s[i].status=3;
+									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+									{
+										//if(p->verbose>1) printf("param %d = SS6 %d\n", p->fromMN3.a_params[0],f12->data.SS6);
+										if (p->fromMN3.a_params[0]==f12->data.SS6) //esli otet=sosto9nie 
+										{
+											if(p->verbose>1) printf("SS6=%d\n",f12->data.SS6);
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else p->work_com[c_step].s[i].status=3;
+									}
                                     break;
 							
 							case 32: case 42: p->work_com[c_step].s[i].status=1;
@@ -328,19 +353,72 @@ main()
 									else p->work_com[c_step].s[i].status=3;
                                     break;
 							
-							case 61: p->work_com[c_step].s[i].status=1;
-                                    if(p->verbose) printf("			SVCH status \n");
-									//f11.zag.KSS=0;
-									//col = sizeof(struct zag_CPP);
-									col=tcp_reqest();
-									new_f12 = p->count_cpp_status;
-									if (col==0x14) //esli otet=sosto9nie 
-									{
-										//if (f12->data.SS0_all) 
-										p->work_com[c_step].s[i].status=2; // ispravnost'
+							case 61: if(p->work_com[c_step].s[i].status==0) 
+									{ 
+										p->work_com[c_step].s[i].status=1;
+										if(p->verbose) printf("			SVCH status \n");
+										//f11.zag.KSS=0;
+										//col = sizeof(struct zag_CPP);
+										col=tcp_reqest();
+										new_f12 = p->count_cpp_status;
 									}
-									else p->work_com[c_step].s[i].status=3;
+									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+									{
+										//printf("TS %x\n", f12->zag.TS);
+										if (f12->zag.TS == 0x14) //esli otet=sosto9nie 
+										{
+											//if (f12->data.SS0_all) 
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+											printf("TS = %x\n", f12->zag.TS);
+										}
+										else col=tcp_reqest();
+									}
 									break;
+							
+							case 63: if(p->work_com[c_step].s[i].status==0) 
+									{
+										p->work_com[c_step].s[i].status=1;
+										f11.data.KU0=0;
+										f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										col=tcp_send();
+										new_f12 = p->count_cpp_status;
+									}
+									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+									{
+										//if(p->verbose>1) printf("Error SS7=%d (0)\n",f12->data.SS1);
+										if (0 == f12->data.SS1)//esli otet=sosto9nie 
+										{
+											if(p->verbose>1) printf("SS7=%d\n",f12->data.SS1);
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else col=tcp_reqest();
+									}
+                                    break;
+							
+							case 64: if(p->work_com[c_step].s[i].status==0) 
+									{
+										p->work_com[c_step].s[i].status=1;
+										f11.data.KU8=p->fromMN3.a_params[0]; // fk #
+										f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										f11.data.KU0=1;
+										f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										col=tcp_send();
+										new_f12 = p->count_cpp_status;
+									}
+									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+									{
+										if ( p->fromMN3.a_params[0]==f12->data.SS7)//esli otet=sosto9nie 
+										{
+											if(p->verbose>1) printf("SS7=%d\n",f12->data.SS7);
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else 
+										{
+											p->work_com[c_step].s[i].status=3;
+											if(p->verbose>1) printf("SS7=%d param=%d KU=%d SS1=%d(1)\n",f12->data.SS7, p->fromMN3.a_params[0], f11.data.KU8, f12->data.SS1);
+										}
+									}
+                                    break;
 							
 							case 65 : if(p->work_com[c_step].s[i].status==0) 
 									{
@@ -1060,9 +1138,9 @@ short tcp_reqest()
 	bbb2 = (unsigned short *)&F11Rqst;
 	//printf("tcp_zapros \n");
 	
-	//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col/2;i1++) printf("%x ",bbb[i1]);printf("\n");}
+	//if(p->verbose>2) {printf("<-Send ");for(i1=0;i1<col1/2;i1++) printf("%x ",bbb2[i1]);printf("\n");}
 	n = Udp_Client_Send(&Uc42,bbb2,sizeof(struct zag_CPP));
-	//printf("<-Send ");
+	//printf("<-Send %d \n", n);
 	//for(i1=0;i1<col1/2;i1++) printf("%04x ",bbb2[i1]);printf("\n");
 	return 1;
 }

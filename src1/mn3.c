@@ -490,6 +490,15 @@ void main(int argc, char **argv)
 							p->toMN3.cr_com++;
 						}
  						break;
+				case 60 : 	  // rabota
+						n_s=1;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=2;
+						p->work_com[n_s].s[n_mc].n_com=63; //rabota
+						n_mc++; //kol-vo mini komand + 1
+					//---------------------------------------------
+						p->work_com[n_s].t_stop =p->sys_timer+200;                        
+ 						break;	
 				case 61 : 	  
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
@@ -518,6 +527,17 @@ void main(int argc, char **argv)
 						//---------------------------------------------
 						p->work_com[n_s].t_stop =p->sys_timer+100;   
 						break;
+						
+				case 65 : //FK2
+						n_s=1;  //nomer waga
+						n_mc=0; //s4et4ik mini komamdi
+						p->work_com[n_s].s[n_mc].n_chan=2; //cpp
+						p->work_com[n_s].s[n_mc].n_com=64;
+						n_mc++; //kol-vo mini komand + 1
+						//---------------------------------------------
+						p->work_com[n_s].t_stop =p->sys_timer+100;   
+						break;
+						
 				case 78 :    
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
