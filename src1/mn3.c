@@ -176,7 +176,7 @@ void main(int argc, char **argv)
 						n_mc++; //kol-vo mini komand + 1
 					}
 					//---------------------------------------------
-					p->work_com[n_s].t_stop =p->sys_timer+100;
+					p->work_com[n_s].t_stop =p->sys_timer+200;
 					//---------------------------------------------
 					/*n_s=2;  n_mc=0; //nomer waga //s4et4ik mini komamdi
 					p->work_com[n_s].s[n_mc].n_chan=6; //T625
@@ -430,7 +430,7 @@ void main(int argc, char **argv)
 							p->toMN3.cr_com++;
 						}
  						break;					
-				case 25 :
+				case 25 : // vkluchenie peredachi na r999
 						n_s=1;  //nomer waga
 						n_mc=0; //s4et4ik mini komamdi
 						p->work_com[n_s].s[n_mc].n_chan=3;

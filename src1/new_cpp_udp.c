@@ -156,10 +156,10 @@ main()
 										col=tcp_send();
 										new_f12 = p->count_cpp_status;
 									}
-									//printf("SS %d status %d = 1 newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
+									printf("SS0=%d status=%d(1) newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
-										//printf("count=%d status=%d ss_all=%d\n",p->count_cpp_status,p->work_com[c_step].s[i].status, f12->data.SS0_all);
+										printf("count=%d status=%d ss_all=%d\n",p->count_cpp_status,p->work_com[c_step].s[i].status, f12->data.SS0_all);
 										if(f12->data.SS0_all==1) //(p->SS1==(p->work_com[n_s].s[n_mc].n_com==60)&&(p->fromMN3.a_params[0]==1)) //esli otet=sosto9nie 
 										{
 											//if (f12->data.SS0_all) 
@@ -171,14 +171,18 @@ main()
 											col=tcp_reqest();
 										}
 									}
-									if (f12->zag.TS != 20) p->work_com[c_step].s[i].status=3;
-									printf("KSS=%04x TS=%04x II=%04x PS=%04x\n",f12->zag.KSS, f12->zag.TS, f12->zag.II, f12->zag.PS);
-									printf("SS1=%04x SS0_prd=%04x SS0_prm=%04x SS0_cpp=%04x SS0_all=%04x\n", f12->data.SS1, f12->data.SS0_prd, f12->data.SS0_prm, f12->data.SS0_cpp, f12->data.SS0_all);
-									printf("SS2_0=%04x SS2_1=%04x SS3=%04x SS5=%04x SS4=%04x\n", f12->data.SS2_0, f12->data.SS2_1, f12->data.SS3, f12->data.SS5, f12->data.SS4);
-									printf("SS7=%04x SS6=%04x SS9=%04x SS8=%04x SS10=%04x\n", f12->data.SS7, f12->data.SS6, f12->data.SS9, f12->data.SS8, f12->data.SS10);
-									printf("SS11=%04x SS12=%04x SS13=%04x SS14=%04x SS15=%04x\n", f12->data.SS11, f12->data.SS12, f12->data.SS13, f12->data.SS14, f12->data.SS15);
-									printf("SS16=%04x SS17=%04x SS18=%04x SS19=%04x SS20=%04x\n", f12->data.SS16, f12->data.SS17, f12->data.SS18, f12->data.SS19, f12->data.SS20);
-									printf("p->count_cpp_status%d\n", p->count_cpp_status);
+									if (f12->zag.TS != 20) 
+									{
+										p->work_com[c_step].s[i].status=3;
+										printf("TS error TS=%d(20)", f12->zag.TS);
+									}
+									//printf("KSS=%04x TS=%04x II=%04x PS=%04x\n",f12->zag.KSS, f12->zag.TS, f12->zag.II, f12->zag.PS);
+									//printf("SS1=%04x SS0_prd=%04x SS0_prm=%04x SS0_cpp=%04x SS0_all=%04x\n", f12->data.SS1, f12->data.SS0_prd, f12->data.SS0_prm, f12->data.SS0_cpp, f12->data.SS0_all);
+									//printf("SS2_0=%04x SS2_1=%04x SS3=%04x SS5=%04x SS4=%04x\n", f12->data.SS2_0, f12->data.SS2_1, f12->data.SS3, f12->data.SS5, f12->data.SS4);
+									//printf("SS7=%04x SS6=%04x SS9=%04x SS8=%04x SS10=%04x\n", f12->data.SS7, f12->data.SS6, f12->data.SS9, f12->data.SS8, f12->data.SS10);
+									//printf("SS11=%04x SS12=%04x SS13=%04x SS14=%04x SS15=%04x\n", f12->data.SS11, f12->data.SS12, f12->data.SS13, f12->data.SS14, f12->data.SS15);
+									//printf("SS16=%04x SS17=%04x SS18=%04x SS19=%04x SS20=%04x\n", f12->data.SS16, f12->data.SS17, f12->data.SS18, f12->data.SS19, f12->data.SS20);
+									//printf("p->count_cpp_status%d\n", p->count_cpp_status);
 									break;
 									
 							case 5: if(p->work_com[c_step].s[i].status==0) 

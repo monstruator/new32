@@ -105,7 +105,7 @@ if (_CA_PCI_Find_Device(dev_id,ven_id,ind,
 	&my_device->busnum,&my_device->devfuncnum)!=PCI_SUCCESS) return (-1);
 
 i=_CA_PCI_Read_Config_DWord(my_device->busnum,my_device->devfuncnum,offset,1,(char *)&mass[offset]);
-printf("offset %8x value %08x\n",offset,mass[offset]);
+printf("offset %8x value %08x\n ind%08x\n",offset,mass[offset],ind);
 return i;
 					  }
 new_func_read_W(unsigned short dev_id, long ven_id, struct conf_pci *my_device,int offset,int ind){

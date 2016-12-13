@@ -148,12 +148,6 @@ struct sostSPIAK {
 			//unsigned short nomer_str[203]; // nomer stroki 0
 			} Read_rli;
 			
-			union  {
-			//unsigned short buffer[219];
-			unsigned short pic[400][219];
-			unsigned char byte_bufer[175200];
-			struct RLI_data Read_rli;}
-			read_rli;
    
 typedef   struct 
 {   

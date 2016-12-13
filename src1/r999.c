@@ -97,7 +97,7 @@ main(int argc, char *argv[])
 	
 	char txt[100],buf[10];
 char *run[]={"/dev/io1","/dev/io2","/dev/io3",NULL};
-int fd[3];
+int fd[3],ckor2;
 unsigned int word=0;
 int chk_num,Time_out=2000,Con=0;
 unsigned short etalon_r_pr[]={0x1,0x2,0x20,0x40,0x80,0x100};
@@ -182,7 +182,7 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 
 						switch(p->work_com[c_step].s[i].n_com)
 						{
-							case 1: p->work_com[c_step].s[i].status=1;
+							case 1: p->work_com[c_step].s[i].status=1; //R999 Read
 									read_w=pc_rml(0x41f0);
 									if (read_w == pc_rml(0x41f0))
 									{
@@ -195,14 +195,14 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 									}
 									else p->work_com[c_step].s[i].status=3;	
 									break;
-							case 2: p->work_com[c_step].s[i].status=1;
+							case 2: p->work_com[c_step].s[i].status=1;  //power r999
 									com999.cm.power=p->fromMN3.a_params[0];
 									send_com();
 									if (p->fromMN3.a_params[0]==((pc_rml(0x41f0) & 0x300000)>>20))
 									p->work_com[c_step].s[i].status=2;
 									else p->work_com[c_step].s[i].status=3;	
 									break;
-							case 4:	p->work_com[c_step].s[i].status=1; 
+							case 4:	p->work_com[c_step].s[i].status=1; //R999 base setup
 									if(p->verbose) printf("		R999 BASE SETUP \n");
 									com999.cm.com=0; 
 									com999.cm.chan01=1;
@@ -240,7 +240,7 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 									}
 									
 									break;
-							case 80:if (p->work_com[c_step].s[i].status==0) 
+							case 80:if (p->work_com[c_step].s[i].status==0) //R999 Request
 									{
 										p->work_com[c_step].s[i].status=1; 
 										if(p->verbose) printf("		R999 REQUEST \n");
@@ -256,16 +256,16 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 										read_w=pc_rml(0x41f0);
 										if(p->verbose>1) printf("		R999 READ=%x %x\n",0x41f0,read_w);
 										printf("		R999 READ=%x %x\n",0x41f0,read_w);
-										printf("Chetnost'=%d\n",((pc_rml(0x41f0) & 0x1)>>31));
-										printf("Comandi=%d\n",((pc_rml(0x41f0) & 0x7f)>>24));
-										printf("RRCh=%d\n",((pc_rml(0x41f0) & 0x01)>>23));
-										printf("AP=%d\n",((pc_rml(0x41f0) & 0x01)>>22));
-										printf("Moshnost'=%d\n",((pc_rml(0x41f0) & 0x0c)>>18));
-										printf("C1-I=%d\n",((pc_rml(0x41f0) & 0x1)>>19));
-										printf("CA=%d\n",((pc_rml(0x41f0) & 0x01)>>18));
-										printf("Scorost'=%d\n",((pc_rml(0x41f0) & 0x03)>>16));
-										printf("Nomer kanala=%d\n",((pc_rml(0x41f0) & 0xFF)>>8));
-										printf("const=%d\n",((pc_rml(0x41f0) & 0x01)>>0));
+										//printf("Chetnost'=%d\n",(read_w & 0x1)>>31);
+										//printf("Comandi=%d\n",(read_w & 0x7f)>>24);
+										printf("RRCh=%d\n",(read_w & 0x7e000000)>>25);
+										//printf("AP=%d\n",(read_w & 0x01)>>22);
+										printf("Moshnost'=%d\n",(read_w & 0x300000)>>20);
+										//printf("C1-I=%d\n",(read_w & 0x1)>>19);
+										//printf("CA=%d\n",(read_w & 0x01)>>18);
+										printf("Scorost'=%x\n",(read_w & 0x30000)>>16);
+										printf("Nomer kanala=%d\n",(read_w & 0xff00)>>8);
+										//printf("const=%d\n",(read_w & 0x01)>>0);
 										p->toMN3.sost_r999=read_w;
 										
 										p->work_com[c_step].s[i].status=2;

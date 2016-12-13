@@ -1,14 +1,14 @@
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <sys/kernel.h>
-
-  #include <netinet/in.h>
-  #include <stdio.h>
-  #include <unistd.h>
-  #include <stdlib.h>
-  #include <netdb.h>
-  #include <math.h>
-  
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/kernel.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <netdb.h>
+#include <math.h>
+#include "../include/shared_mem.h"
+#include "../include/USOIwrk.h" 
 #include <stdlib.h>
 #include <sys/pci.h>
 #include <i86.h>
@@ -38,8 +38,7 @@
 #define LnKdr	   512	//макс число слов(2 байта) в кадре
 #define MaxKdr	  10000	//макс число хранимых кадров
 		  
-#include "../include/shared_mem.h"
-#include "../include/USOIwrk.h"
+
 
 #define MS 1000000
 #define N_CHAN 3 //RELE
@@ -100,6 +99,8 @@ main(int argc, char *argv[])
 	delay(Time_out);
 	//Определение Базового адреса внутренних регистров моста
 	i=new_func_read(D_Bridge,V_Bridge,&my_device,BAR0,ind);
+	
+	printf("i = %x\n", i);
 	if (i==-1) {printf("Мост отсутствует");exit(1);}
 	else if (!PCI_IS_MEM(mass[BAR0])) {printf("PCI устройство не обнаружено");exit(1);}
 	//Отображение портов модуля в PCI Memory Space
@@ -171,12 +172,13 @@ main(int argc, char *argv[])
 									{
 										p->work_com[c_step].s[i].status=1; 
 										rele|=1; *(unsigned int*)(addr1 +0x2C00)=rele;
-										if(p->verbose>1) printf("WRITE OUT DATA %x\n",rele);
+										printf("WRITE OUT DATA %x\n",rele);
 									}
 									if (p->work_com[c_step].s[i].status==1)
 									{
 										if (*(unsigned int*)(addr1 + 0x4C00)&0x08) p->work_com[c_step].s[i].status=2;
-										if(p->verbose>1) printf("READ DATA %x \n",*(unsigned int*)(addr1 + 0x4C00));
+										if(ii1==0) printf("READ DATA %x \n",*(unsigned int*)(addr1 + 0x4C00));
+										ii1++;
 									}
 									break;
 							case 20: //off 2 rele
@@ -216,7 +218,7 @@ main(int argc, char *argv[])
 									if (p->work_com[c_step].s[i].status==1)
 									{
 										if ((p->fromMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
-										if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
+										//if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
 									}
 									break;
 							case 31: //on 3 rele
@@ -233,7 +235,8 @@ main(int argc, char *argv[])
 									{
 										if (*(unsigned int*)(addr1 + 0x4C00)&0x04) p->work_com[c_step].s[i].status=2;
 										//if ((p->fromMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
-										if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
+										if(ii1==1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
+										ii1++;
 									}
 									break;
 							case 40: //off 4 rele
