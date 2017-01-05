@@ -366,12 +366,13 @@ main()
 										col=tcp_reqest();
 										new_f12 = p->count_cpp_status;
 									}
+									printf("TS %x\n", f12->zag.TS);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
-										//printf("TS %x\n", f12->zag.TS);
+										printf("TS %x\n", f12->zag.TS);
 										if (f12->zag.TS == 0x14) //esli otet=sosto9nie 
 										{
-											//if (f12->data.SS0_all) 
+											if (f12->data.SS0_all) 
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 											printf("TS = %x\n", f12->zag.TS);
 										}

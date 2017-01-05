@@ -30,8 +30,9 @@ struct my_comp {
 
 void main(int argc, char **argv)
 {//--- KOHCTAHTbl npu6opa 1.0 ---//
-		int sock, length, i , ii = 0, count_mes=0, i1 , i_p=0 , i2=0, i3=0 , j;
+		int sock, length, i , i32 , ii = 0, count_mes=0, i1 , i_p=0 , i2=0, i3=0 , j;
 		static Udp_Client_t Uc42;
+		static Udp_Client_t Uc43;
 		short c_step=0,TC10=0;	
 		short sen;
 		short num_word=0;
@@ -40,9 +41,15 @@ void main(int argc, char **argv)
 		char out_buf[1024];
 		//char name[30] ="SPIAK_N8_Eth2";// "192.168.3.1";
 		char *name ="SPIAK_N8_Eth2";// "192.168.3.1";
-		short SRC_PORT=4003;
-		short DST_PORT=4000;
-		int r,bytes,COM=0;
+//------------------------------------------TEST pribora 3.2-------------------------------------------
+		char *name1 ="SPIAK_4_2"; // !!!!!!!!!!!!!!!! V processe!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		short SRC_PORT1=4005;
+		short DST_PORT1=4005;
+//---------------------------------------End test pribora 3.2------------------------------------------
+		short SRC_PORT=4003;  //???
+		short DST_PORT=4000;  //???
+		int r,bytes,COM=0, newcmd=0;
+		char cmd=0, cmd1 =0;
 		short n_s=0; //nomer waga zapolneni9 komabdi
 		short n_mc=0; //nomer mini comandi na tekuwem wage
 		packusoi p1;
@@ -85,8 +92,9 @@ void main(int argc, char **argv)
 		name ="SPIAK_N9_Eth4";// "192.168.1.2";
 		SRC_PORT=4002;
 		DST_PORT=4002;
+		i = Udp_Client_Ini(&Uc43,name1,DST_PORT1,SRC_PORT1);
+		printf("Udp_Init_3.2=%d	dst=%d src=%d %s \n", i,DST_PORT1,SRC_PORT1, name1);
 	}
-
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
 	printf("Udp_Init=%d	dst=%d src=%d %s \n", i,DST_PORT,SRC_PORT, name);
 	
@@ -104,13 +112,18 @@ void main(int argc, char **argv)
 			{
 				TC10=0;
 				bytes = Udp_Client_Read(&Uc42,bufi,1400);
+				//if (p->cvs==11) bytes = Udp_Client_Read(&Uc43,bufi,1400);//--------------------TEST 3.2----------------
 				if (bytes>0)
 				{
-					//printf(" Udp_READ=%d	%d\n", bytes, ii++);
+					//printf(" Udp_READ1=%d	%d\n", bytes, ii++);
 					//printf("\n<===== ");for(i=0;i<28;i++) printf(" %d ", bufi[i]);
-
 					memcpy(&p->inbufMN3,&bufi,sizeof(packcmd));
-
+					if (p->inbufMN3.cr_com != cmd) 
+					{	
+						cmd = p->inbufMN3.cr_com;
+						newcmd = 1;
+					}
+					else newcmd = 0;
 					//p->toMN3.Mem_Region_RLI.cr_data_pac++;
 					
 					memcpy(pack_buf,&p->toMN3,sizeof(packusoi)); ///!!!!!!
@@ -123,9 +136,45 @@ void main(int argc, char **argv)
 					//for(j=0;j<9;j++) printf("%08x ",p->toMN3.sost_kasrt[j]);  printf("\n");
 					//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 	     			i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
-	
+					if (p->cvs==11) i = Udp_Client_Send(&Uc43,pack_buf,sizeof(packusoi));//---------------TEST 3.2-----------
+					
 					//printf("Send i = %d\n ",i);
 					//printf("\n=====> ");for(i1=0;i1<i;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
+				}
+				
+				else if (p->cvs==11) 
+				{
+					bytes = Udp_Client_Read(&Uc43,bufi,1400);//--------------------TEST 3.2----------------
+					if (bytes>0)
+					{
+						//printf(" Udp_READ2=%d	%d\n", bytes1, ii++);
+						//printf("\n<===== ");for(i=0;i<28;i++) printf(" %d ", bufi[i]);
+
+						memcpy(&p->inbufMN3,&bufi,sizeof(packcmd));
+						if (p->inbufMN3.cr_com != cmd1) 
+						{	
+							cmd1 = p->inbufMN3.cr_com;
+							newcmd = 1;
+						}
+						else newcmd = 0;
+						//p->toMN3.Mem_Region_RLI.cr_data_pac++;
+					
+						memcpy(pack_buf,&p->toMN3,sizeof(packusoi)); ///!!!!!!
+						pack_buf[0]=70;
+						pack_buf[1]=num_mess++;
+						pack_buf[2]=1;
+						pack_buf[3]=1;
+		
+						//printf("cr_com->MO3 = %d \n",	p->toMN3.cr_com);
+						//for(j=0;j<9;j++) printf("%08x ",p->toMN3.sost_kasrt[j]);  printf("\n");
+						//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
+						i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
+						i = Udp_Client_Send(&Uc43,pack_buf,sizeof(packusoi));//---------------TEST 3.2-----------
+	
+						//printf("Send i = %d\n ",i);
+						//printf("\n=====> ");for(i1=0;i1<10;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
+						//printf("\n=====> ");for(i1=11;i1<21;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
+					}
 				}
 			}
 			
@@ -140,13 +189,12 @@ void main(int argc, char **argv)
 				//printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
 				//p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
-				
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
 				//printf("Send2 %d RLI word timer %d  N_STRING=%d \n",num_word, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]);
 				//for(i3=0;i3<6;i3++)	printf(" %04x ",p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH[i3]);printf("\n");
 			}
            //--------------------------------------------------------------------------- 
-			if (p->fromMN3.cr_com!=p->inbufMN3.cr_com) // new command from MN3
+			if ((newcmd != 0) && (p->work_com[c_step].s[i].status!=1)) // new command from MN3
 //			if ((p->fromMN3.cr_com==0)||(p->fromMN3.cr_com!=p->inbufMN3.cr_com)) // new command from MN3
 			{
                 p->toMN3.num_com = p->inbufMN3.num_com;
@@ -160,6 +208,7 @@ void main(int argc, char **argv)
 				p->fromMN3=p->inbufMN3; //utvergdaem komandu
 					
 				printf("\n-------------------   New command : %d , param: %d %d %d    time=%d   ---------\n",p->fromMN3.num_com,p->fromMN3.a_params[0],p->fromMN3.a_params[1],p->fromMN3.a_params[2],p->sys_timer);
+				//printf("\n-------------------   status=%d i=%d c_step=%d---------\n",p->work_com[c_step].s[i].status,i,c_step);
 				switch (p->fromMN3.num_com)
 				{
 				case 1 : 
@@ -867,10 +916,6 @@ void main(int argc, char **argv)
 						n_mc++; //kol-vo mini komand + 1						
                         p->work_com[n_s].t_stop =p->sys_timer+200;
 						p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
-						if (p->work_com[c_step].s[i].status==3)
-						{
-						sen = Udp_Client_Send(&Uc42,&f12,sizeof(f12));
-						}
 						break;
 					
 					case 193 : //t625 inf

@@ -17,7 +17,7 @@
 			};
           
           main()
-          {
+			{
                   int sock, length;
                   struct sockaddr_in server;
                   int msgsock, j, i;
@@ -30,9 +30,11 @@
 				  delay(1000);
 				  printf("cvs=%d\n", p->cvs);
 				  if (p->cvs==10) i=6;				//cvs test
-								else if (p->cvs==11) i=6;								
-									else {printf("CVS!=10,11. ERROR\n");exit(1);}
+				  else if (p->cvs==11) i=6;								
+				  else {printf("CVS!=10,11 (%d). ERROR\n", p->cvs);exit(1);}
 				  printf("cvs=%d\n", p->cvs);
+				  i = 6;
+				  printf("i =%d\n", i );
                   /* Create socket */
                   sock = socket(AF_INET, SOCK_STREAM, 0);
                   if (sock < 0) 
@@ -66,25 +68,30 @@
 				  listen(sock, 5);
 				  printf ("listen_ok\n\n");
                   do {				 
-                          msgsock = accept(sock, 0, 0);
-						  printf ("ok\n\n");
+                          printf ("cycle\n");
+						  msgsock = accept(sock, 0, 0);
+						  printf ("ok\n");
+						  if (msgsock == 0) printf ("msgsock =0 \n");
                           if (msgsock == -1) 
 						  {
                                   perror("accept");
 								  return EXIT_FAILURE;
                           } 
-						  else do {
+						  else do 
+								{
                                   memset(buf, 0, sizeof(buf));
                                   if ((rval  = read(msgsock, buf,  1024)) < 0)
-                                          perror("reading stream message");
+                                  perror("reading stream message");
                                   else if (rval == 0)
                                           printf("Ending connection %d\n", rval);
-										else {								 
-										for (j=0; j<i; j++) mass[j].rez_tst=2;//b[j]=2;	
-										write(msgsock, mass, sizeof(struct my_elt)*i);			
-										printf("-->%s %d \n", b,rval);
-																	}								  
-                          } 
+										else 
+											{								 
+												printf("sending \n");
+												for (j=0; j<i; j++) mass[j].rez_tst=2;//b[j]=2;	
+												write(msgsock, mass, sizeof(struct my_elt)*i);			
+												printf("-->%s %d \n", b,rval);
+											}								  
+								} 
 						  while (rval > 0);
                           close(msgsock);
                   } 
@@ -94,4 +101,4 @@
                    * never explicitly closed.  However, all sockets will be closed
                    * automatically when  a process is killed  or terminates normally.
                    */
-          }
+			}

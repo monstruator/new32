@@ -184,7 +184,7 @@ main(int argc, char *argv[])
 									}
 									else 
 									{
-										printf("T-625-Rqst no answer\n");
+										if (p->verbose>1) printf("T-625-Rqst no answer\n");
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
