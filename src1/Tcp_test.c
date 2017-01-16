@@ -28,13 +28,10 @@
 				  delay(2500);
 				  open_shmem();
 				  delay(1000);
-				  printf("cvs=%d\n", p->cvs);
+				  //printf("cvs=%d\n", p->cvs);
 				  if (p->cvs==10) i=6;				//cvs test
 				  else if (p->cvs==11) i=6;								
 				  else {printf("CVS!=10,11 (%d). ERROR\n", p->cvs);exit(1);}
-				  printf("cvs=%d\n", p->cvs);
-				  i = 6;
-				  printf("i =%d\n", i );
                   /* Create socket */
                   sock = socket(AF_INET, SOCK_STREAM, 0);
                   if (sock < 0) 
@@ -42,18 +39,18 @@
                           perror("opening stream socket");
                           exit(1);
                   }
-				  printf ("create socket_ok\n\n");
+				  if (p->verbose>1) printf ("create socket_ok\n\n");
                   /* Name socket using wildcards */
                   server.sin_family = AF_INET;
                   server.sin_addr.s_addr = INADDR_ANY;  
                   server.sin_port = htons(1030); //add port
-                  printf ("socet start_ok\n\n");
+                  if (p->verbose>1) printf ("socet start_ok\n\n");
 				  if (bind(sock, (struct sockaddr *)&server, sizeof(server))) 
 				  {
                           perror("binding stream socket");
                           exit(1);
                   }
-				  printf ("bind_ok\n\n");
+				  if (p->verbose>1) printf ("bind_ok\n\n");
                   /* Find out assigned port number and print it out */
                   length = sizeof(server);
                   if (getsockname(sock, (struct sockaddr *)&server, &length)) 
@@ -61,16 +58,16 @@
                           perror("getting socket name");
                           exit(1);
                   }
-                  printf("Socket has port #%d\n", ntohs(server.sin_port));
+                  if (p->verbose>1) printf("Socket has port #%d\n", ntohs(server.sin_port));
 
                   /* Start accepting connections */
-                  printf ("start accepting connections\n\n");
+                  if (p->verbose>1) printf ("start accepting connections\n\n");
 				  listen(sock, 5);
-				  printf ("listen_ok\n\n");
+				  if (p->verbose>1)  printf ("listen_ok\n");
                   do {				 
-                          printf ("cycle\n");
+                          if (p->verbose>1) printf ("cycle\n");
 						  msgsock = accept(sock, 0, 0);
-						  printf ("ok\n");
+						  if (p->verbose>1) printf ("ok\n");
 						  if (msgsock == 0) printf ("msgsock =0 \n");
                           if (msgsock == -1) 
 						  {
@@ -83,13 +80,13 @@
                                   if ((rval  = read(msgsock, buf,  1024)) < 0)
                                   perror("reading stream message");
                                   else if (rval == 0)
-                                          printf("Ending connection %d\n", rval);
+                                          if (p->verbose>1) printf("Ending connection %d\n", rval);
 										else 
 											{								 
-												printf("sending \n");
+												if (p->verbose>1) printf("sending \n");
 												for (j=0; j<i; j++) mass[j].rez_tst=2;//b[j]=2;	
 												write(msgsock, mass, sizeof(struct my_elt)*i);			
-												printf("-->%s %d \n", b,rval);
+												if (p->verbose>1) printf("-->%s %d \n", b,rval);
 											}								  
 								} 
 						  while (rval > 0);

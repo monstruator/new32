@@ -242,7 +242,7 @@ main(int argc, char *argv[])
 									}
 									else 
 									{
-										printf("T-625-Rqst no answer\n");
+										if (p->verbose>1) printf("T-625-Rqst no answer\n");
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
@@ -328,7 +328,7 @@ main(int argc, char *argv[])
 									}
 									else 
 									{
-										printf("T-625-Inf no answer\n");
+										if (p->verbose>1) printf("T-625-Inf no answer\n");
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
@@ -429,7 +429,7 @@ main(int argc, char *argv[])
 									}
 									else 
 									{
-										printf("T-625-Rqst no answer\n");
+										if (p->verbose>1) printf("T-625-Rqst no answer\n");
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
@@ -459,7 +459,7 @@ main(int argc, char *argv[])
 									}
 									else 
 									{
-										printf("T-625-Inf no answer\n");
+										if (p->verbose>1) printf("T-625-Inf no answer\n");
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
@@ -474,7 +474,7 @@ main(int argc, char *argv[])
 										}
 										else 
 										{
-										printf("T-625-Inf no answer\n");
+										if (p->verbose>1) printf("T-625-Inf no answer\n");
 										p->cmd_625.T625_on_off=1;
 										p->SOST625=3;
 										p->work_com[c_step].s[i].status=3;
@@ -560,7 +560,7 @@ main(int argc, char *argv[])
 						else 
 						{
 							//printf("T625resul =%x T625ok =%x \n", p->cmd_625.T625_Result, p->cmd_625.T625_ok_nok);
-							printf("T-625-Rqst no answer\n");
+							if (p->verbose>1) printf("T-625-Rqst no answer\n");
 							p->cmd_625.T625_on_off=1;
 							p->SOST625=3;
 							p->toMN3.sost_spiak.T625=0; //ne ispravno T625

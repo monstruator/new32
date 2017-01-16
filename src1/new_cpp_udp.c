@@ -112,7 +112,6 @@ main()
 	else			name="CPP2"; 
 	
 	
-	p->verbose=3;
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
 	_beginthread(read1,stack_in,STACK_SIZE,0);
 	
@@ -156,7 +155,7 @@ main()
 										col=tcp_send();
 										new_f12 = p->count_cpp_status;
 									}
-									printf("SS0=%d status=%d(1) newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
+									if (p->verbose>1) printf("SS0=%d status=%d(1) newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
 										printf("count=%d status=%d ss_all=%d\n",p->count_cpp_status,p->work_com[c_step].s[i].status, f12->data.SS0_all);
@@ -360,21 +359,20 @@ main()
 							case 61: if(p->work_com[c_step].s[i].status==0) 
 									{ 
 										p->work_com[c_step].s[i].status=1;
-										if(p->verbose) printf("			SVCH status \n");
+										if(p->verbose) printf("			SVCH status\n");
 										//f11.zag.KSS=0;
 										//col = sizeof(struct zag_CPP);
 										col=tcp_reqest();
 										new_f12 = p->count_cpp_status;
 									}
-									printf("TS %x\n", f12->zag.TS);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
-										printf("TS %x\n", f12->zag.TS);
+										if (p->verbose>2) printf("TS %x\n", f12->zag.TS);
 										if (f12->zag.TS == 0x14) //esli otet=sosto9nie 
 										{
 											if (f12->data.SS0_all) 
 											p->work_com[c_step].s[i].status=2; // ispravnost'
-											printf("TS = %x\n", f12->zag.TS);
+											if (p->verbose>2) printf("TS = %x\n", f12->zag.TS);
 										}
 										else col=tcp_reqest();
 									}
