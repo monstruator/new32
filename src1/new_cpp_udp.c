@@ -13,7 +13,7 @@
   #include "../include/shared_mem.h"
   #include "../include/USOIwrk.h"
   //#include "../include/CrSocket.h"
-  #include "../include/IP_nb.h"
+  #include "../include/func_IP.h"
   #include "../include/MesForm.h" 
 
 #define TIMEOUT_SEC		   0L	//0 секунд
@@ -73,9 +73,9 @@ int timer1=0,timer2=0,verbose=0,num_f12=0,new_f12;
 int prev_str=0;
 
 
-short tcp_send(int );
-short tcp_reqest( );
-short rli_reqest( );
+short cmd_send(int );
+short status_request( );
+short rli_request( );
 void read1();
 void read_rli1();
 //===============================================================================
@@ -93,7 +93,9 @@ main()
 	struct form193 *f193;
 	int ustSS=0; // ustanovlennoe zna4enie
 	static char 		*stack_in;
-	
+	int word181; //kol-vo slov v 181
+	int wordRLI; //kol-vo slov v RLI dl9 Dani
+	int i3;//setprio(0,(getprio(0)+6));
 	
 	#if defined (_386_) 
   stack_in = (char *) malloc (STACK_SIZE);
@@ -152,7 +154,7 @@ main()
 									{
 										p->work_com[c_step].s[i].status=1;
 										if(p->verbose) printf("			SVCH work \n");
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if (p->verbose>1) printf("SS0=%d status=%d(1) newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
@@ -167,7 +169,7 @@ main()
 										else 
 										{
 											new_f12 = p->count_cpp_status;
-											col=tcp_reqest();
+											col=status_request();
 										}
 									}
 									if (f12->zag.TS != 20) 
@@ -192,7 +194,7 @@ main()
 										f11.data.ustKU5=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										//f11.data.KU6=p->fromMN3.a_params[0]+6; //// RT PRM 7 - 13
 										f11.data.ustKU6=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									//printf("status = %d cpp_count = %d \n", p->work_com[c_step].s[i].status, p->count_cpp_status);
@@ -207,7 +209,7 @@ main()
 											//f11.zag.KSS=0;
 											//col = sizeof(struct zag_CPP);
 											new_f12 = p->count_cpp_status;
-											col=tcp_reqest();
+											col=status_request();
 										}
 										//printf("SS4=%d SS5=%d \n",f12->data.SS4,f12->data.SS5);
 									} 
@@ -220,7 +222,7 @@ main()
 										if(p->verbose) printf("			FM SHPS\n");
 										f11.data.KU4=p->fromMN3.a_params[0]; //  0 - FM1, 1 - FM2 
 										f11.data.ustKU4=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -235,7 +237,7 @@ main()
 											//f11.zag.KSS=0;
 											//col = sizeof(struct zag_CPP);
 											new_f12 = p->count_cpp_status;
-											col=tcp_reqest();
+											col=status_request();
 										}
 										//if(p->verbose) printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
 									}
@@ -248,7 +250,7 @@ main()
 										if(p->verbose) printf("			SVCH TKI-RLI \n");
 										f11.data.KU3=p->fromMN3.a_params[0]; //  0 - TKI, 1 - RLI 
 										f11.data.ustKU3=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -262,7 +264,7 @@ main()
 										{
 											//f11.zag.KSS=0;
 											new_f12 = p->count_cpp_status;
-											col=tcp_reqest();
+											col=status_request();
 										}
 									} 	
                                     break;
@@ -273,7 +275,7 @@ main()
 									f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									f11.data.KU1=0; 
 									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if (0 == f12->data.SS2_0) //esli otet=sosto9nie 
 									{
@@ -292,7 +294,7 @@ main()
 										f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										f11.data.KU2=0; 
 										f11.data.ustKU2=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -302,7 +304,7 @@ main()
 										{	
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
-										else col=tcp_reqest();
+										else col=status_request();
 									}
                                     break;
 							
@@ -313,7 +315,7 @@ main()
 										if(p->verbose) printf("			SVCH ATT \n");
 										f11.data.KU7=p->fromMN3.a_params[0]; // oslablenie 0 - 25
 										f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -332,7 +334,7 @@ main()
                                     if(p->verbose) printf("		porog	MI \n");
 									f11.data.KU10=p->fromMN3.a_params[0]; // porog MI 1 - 15
 									f11.data.ustKU10=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ( p->fromMN3.a_params[0]==f12->data.SS12)//esli otet=sosto9nie 
 									{
@@ -346,7 +348,7 @@ main()
                                     if(p->verbose) printf("		porog	SS \n");
 									f11.data.KU11=p->fromMN3.a_params[0]; // porog SS 1 - 15
 									f11.data.ustKU11=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ( p->fromMN3.a_params[0]==f12->data.SS11) //esli otet=sosto9nie 
 									{
@@ -362,7 +364,7 @@ main()
 										if(p->verbose) printf("			SVCH status\n");
 										//f11.zag.KSS=0;
 										//col = sizeof(struct zag_CPP);
-										col=tcp_reqest();
+										col=status_request();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -374,7 +376,7 @@ main()
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 											if (p->verbose>2) printf("TS = %x\n", f12->zag.TS);
 										}
-										else col=tcp_reqest();
+										else col=status_request();
 									}
 									break;
 							
@@ -383,7 +385,7 @@ main()
 										p->work_com[c_step].s[i].status=1;
 										f11.data.KU0=0;
 										f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -394,7 +396,7 @@ main()
 											if(p->verbose>1) printf("SS7=%d\n",f12->data.SS1);
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
-										else col=tcp_reqest();
+										else col=status_request();
 									}
                                     break;
 							
@@ -405,7 +407,7 @@ main()
 										f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										f11.data.KU0=1;
 										f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -429,7 +431,7 @@ main()
 										if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
 										f11.data.KU3=0; //ust TKI
 										f11.data.ustKU3=1;
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -444,7 +446,7 @@ main()
 										{
 											//f11.zag.KSS=0;
 											new_f12 = p->count_cpp_status;
-											col=tcp_reqest();
+											col=status_request();
 										}
 									if(p->verbose) printf("SS10(50-800)=%d TKI(0)=%d \n",f12->data.SS10, f12->data.SS2_1);
 									}
@@ -455,7 +457,7 @@ main()
 									{
 										p->work_com[c_step].s[i].status=1;
 										if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
-										col=tcp_send();
+										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -470,7 +472,7 @@ main()
 										{
 											//f11.zag.KSS=0;
 											new_f12 = p->count_cpp_status;
-											col=tcp_reqest();
+											col=status_request();
 										}
 										if(p->verbose) printf("SS10(10-50)=%d \n",f12->data.SS10);
 									}
@@ -482,7 +484,7 @@ main()
                                 if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
 								f11.data.KU3=1; //ust RLI
 								f11.data.ustKU3=1;
-								col=tcp_send();
+								col=cmd_send();
 								new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -497,7 +499,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 									}
 									if(p->verbose) printf("SS10(50-800)=%d\n",f12->data.SS10);
 								}
@@ -509,7 +511,7 @@ main()
                                 if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
 								f11.data.KU3=1; //ust RLI
 								f11.data.ustKU3=1;
-								col=tcp_send();
+								col=cmd_send();
 								new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -524,7 +526,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 									}
 									if(p->verbose) printf("SS10(10-50)=%d RLI(1)=%d  \n",f12->data.SS10, f12->data.SS2_1);
 								}
@@ -541,7 +543,7 @@ main()
 									f11.data.KU6=1;
 									f11.data.KU8=2;  //p->fromMN3.a_params[0]; //FK 1 - 12
 									f11.data.ustKU0=f11.data.ustKU1=f11.data.ustKU2=f11.data.ustKU3=f11.data.ustKU6=f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -556,7 +558,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 									}
 								}
 								break;
@@ -566,7 +568,7 @@ main()
 								{
 									p->work_com[c_step].s[i].status=1;
 									if(p->verbose) printf("		FK3 \n");
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all==1)&&(f12->data.SS0_cpp==1)&&(f12->data.SS0_prm==1)&&(f12->data.SS0_prd==1)) //esli otet=sosto9nie 
 										 p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -583,7 +585,7 @@ main()
 									f11.data.KU8=4;  //p->fromMN3.a_params[0]; //FK 1 - 12
 									f11.data.ustKU0=1;
 									f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -596,7 +598,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 									}
 								}
 								break;
@@ -609,7 +611,7 @@ main()
 									f11.data.KU8=8;  //p->fromMN3.a_params[0]; //FK 1 - 12
 									f11.data.ustKU0=1;
 									f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -623,7 +625,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 									}
 								}
 								break;
@@ -645,7 +647,7 @@ main()
 									f11.data.ustKU3=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 									f11.data.KU7=0;//  oslablenie 0 - 25
 									f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -659,7 +661,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 										printf("ok SS0_all(1)=%d  SS1(0)=%d SS2_0(0)=%d  SS2_1(0)=%d  SS6(0)=%d\n", f12->data.SS0_all, f12->data.SS1, f12->data.SS2_0, f12->data.SS2_1, f12->data.SS6 );
 									}
 									printf("col=%d status=%d\n",col/2,p->work_com[c_step].s[i].status);
@@ -676,7 +678,7 @@ main()
 									f11.data.KU7=0;// oslablenie 0 - 25
 									f11.data.KU8=13;// FK 1 - 12
 									f11.data.ustKU0=f11.data.ustKU2=f11.data.ustKU3=f11.data.ustKU7=f11.data.ustKU8=1;
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 								}
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
@@ -690,7 +692,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 									}
 								}	
 								break;	
@@ -707,7 +709,7 @@ main()
 								{	
 									//f11.zag.KSS=0;
 									//col = sizeof(struct zag_CPP);
-									col=tcp_reqest();
+									col=status_request();
 									new_f12 = p->count_cpp_status;
 									if (tri>20) 
 									{
@@ -741,7 +743,7 @@ main()
 									p->verbose=0;
 									f11.data.KU1=1;
 									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									tri=0;
 								}
@@ -759,7 +761,7 @@ main()
 									{
 										//f11.zag.KSS=0;
 										new_f12 = p->count_cpp_status;
-										col=tcp_reqest();
+										col=status_request();
 										if ((f12->data.SS0_all==1)&&(f12->data.SS9==2))  //esli otet pravilnii 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -784,7 +786,7 @@ main()
 									f11.zag.PS=1;
 									f11.data.KU1=0; 
 									f11.data.ustKU1=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1))  //esli otet pravilnii
 									{
@@ -815,7 +817,7 @@ main()
 									f11.data.ustKU3=1;
 									f11.data.KU7=0;
 									f11.data.ustKU7=1;
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS1==0)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
 									{
@@ -833,7 +835,7 @@ main()
 									f11.zag.KSS=0;
 									f11.zag.II=2;
 									f11.zag.PS=1;
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
 									{
@@ -857,7 +859,7 @@ main()
 									f11.zag.PS=1;
 									f11.data.KU1=1;
 									f11.data.ustKU1=1;
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==0)&&(f12->data.SS0_prd==1)&&(f12->data.SS6==0)&&(f12->data.SS9==2))  //esli otet pravilnii 
 									{
@@ -883,7 +885,7 @@ main()
 									f11.data.ustKU1=1;
 									f11.data.KU2=1;
 									f11.data.ustKU1=1;
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS0_prm==0))  //esli otet pravilnii 
 									{
@@ -905,7 +907,7 @@ main()
 									f11.zag.KSS=0;
 									f11.zag.II=2;
 									f11.zag.PS=1;
-									col=tcp_send();
+									col=cmd_send();
 									new_f12 = p->count_cpp_status;
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS8==1))  //esli otet pravilnii 
 									{
@@ -922,7 +924,7 @@ main()
 							case 101: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
                                     {    
                                         if(p->verbose) printf("Check CPP link (TC=0)\n");
-										//tcp_send_read();
+										//cmd_send_read();
                                         p->work_com[c_step].s[i].status=2;
                                     }
                                     break;
@@ -941,16 +943,34 @@ main()
 			else
 			{
 				//------------------- timer oprosa ----------------------------------------
-					timer2++;
-					if (timer2 == 15) 
-					{
-						rli_reqest();//--------------------RLI reqest----------------------
-					}
-					if (timer2 > 40) 
-					{
-						tcp_reqest();//--------------------CPP reqest----------------------	
-						timer2 =0;
-					}
+				timer2++;
+				if (timer2 > 30) 
+				{
+					rli_request();
+					//timer2 =0;
+				}
+				/*if (timer2 > 40) 
+				{
+					status_request();
+					timer2 =0;
+				} */
+				if ((f181.n_form > 0)&&(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words<614)) //достать Дане долги
+				{
+					//f181 -> danye
+					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f181.Sach, 12);
+					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f181.form5, 16);
+					if(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words == 0) p->toMN3.Mem_Region2.Mem_Region_RLI.num_words = 8;
+					//memcpy(&p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8], (char *)f181.form6[f181.n_word-202], 404);
+					word181=(f181.n_form-1)*202;
+					wordRLI=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8;
+					for(i3=0;i3<202;i3++) p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[wordRLI+i3]=f181.form6[word181+i3];
+					p->toMN3.Mem_Region2.Mem_Region_RLI.num_words += 202;
+					f181.n_form--;
+					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
+					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
+					//printf("//f181 -> danye 		form181=%d 		wRLI=%d 	str=%d\n",
+					//f181.n_form,wordRLI,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7);
+				}	
 				//-------------------------------------------------------------------------
 			} 
 		}//timer
@@ -961,19 +981,15 @@ main()
 //------------------------------------------POTOK--------------------------------------------------------
 void read1()
 {
-	int timer_r=0,read_udp,j,read_timer=0,rep=0;
-	int word181; //kol-vo slov v 181
-	int wordRLI; //kol-vo slov v RLI dl9 Dani
-	int i3;//setprio(0,(getprio(0)+6));
+	int read_udp,j,read_timer=0,rep=0;
 	
 	while(1)
 	{
 		//delay(50);
 		
-		if(read_timer!=p->sys_timer)
+		//if(read_timer!=p->sys_timer)
 		{
-			read_timer=p->sys_timer;
-			timer_r++;
+			//read_timer=p->sys_timer;
 			read_udp = Udp_Client_Read(&Uc42,bbb1,1400);
 			if (read_udp>0)
 			{			
@@ -990,6 +1006,9 @@ void read1()
 							break;
 						case 0x12 : if(p->verbose>3) printf("Data recieved OK(TC=0x12)\n");
 								read_rli1();
+								//f18 = (struct from_cpp18 *)bbb1;
+								
+								//printf("N_STR=%d Time %d\n",(f18->data.form6[1]>>7)&0x1FF, p->sys_timer);
 								p->count_cpp_rli++;
 							break;
 						case 0x13 : if(p->verbose>3) printf("No data from AK(TC=0x13)\n");
@@ -1009,7 +1028,6 @@ void read1()
 			}	
 			else 
 			{
-				//printf("\read_udp error %d\n",timer_r);
 				rep++;
 				if (rep > 120) 
 				{
@@ -1017,24 +1035,7 @@ void read1()
 					rep = 0;
 				}
 			}//owibka priema
-			if ((f181.n_form > 0)&&(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words<614))
-			{
-				//f181 -> danye
 			
-				memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f181.Sach, 12);
-				memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f181.form5, 16);
-				if(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words == 0) p->toMN3.Mem_Region2.Mem_Region_RLI.num_words = 8;
-				//memcpy(&p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8], (char *)f181.form6[f181.n_word-202], 404);
-				word181=(f181.n_form-1)*202;
-				wordRLI=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8;
-				for(i3=0;i3<202;i3++) p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[wordRLI+i3]=f181.form6[word181+i3];
-				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words += 202;
-				f181.n_form--;
-				p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
-				p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
-				//printf("//f181 -> danye 		form181=%d 		wRLI=%d 	str=%d\n",
-				//f181.n_form,wordRLI,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7);
-			}
 		}
 	}
 }
@@ -1048,7 +1049,7 @@ void read_rli1()
 	int word181; //kol-vo slov v 181
 	int wordRLI; //kol-vo slov v RLI dl9 Dani
 	unsigned char buff;
-	struct to_cpp11 f11Rli;
+	//struct to_cpp11 f11Rli;
 
 		
 		f18 = (struct from_cpp18 *)bbb1;
@@ -1093,8 +1094,7 @@ void read_rli1()
 			for (i3=prev_str+1;i3<N_string;i3++) printf("miss str %d\n",i3);
 		}
 		prev_str=N_string;
-		//printf("form18 = %d RLI.num_words = %d  N_STR=%d \n",
-		//f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string&0x1FF);
+		//printf("form18 = %d RLI.num_words = %d  N_STR=%d Time %d\n", f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string&0x1FF, p->sys_timer);
 //-----------------------------test end-----------------------------------------------			
 					
 		//printf("stoka %d=%d prinyata %d timer %d kolvo slov %d y=%d \n" ,f18->data.form6[1],p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1],i2,p->sys_timer, n/2,f181.data.n_word);
@@ -1105,7 +1105,7 @@ void read_rli1()
 
 }
 
-short tcp_send()
+short cmd_send()
 {
 	int i,i1,n;
 	short sum;
@@ -1125,7 +1125,7 @@ short tcp_send()
 
 //--------------------------------reqests---------------------------------------------------------------
 //--------------------------------timer-----------------------------------------------------------------
-short tcp_reqest()
+short status_request()
 {
 	int i1,n;
 	int col1;
@@ -1149,7 +1149,7 @@ short tcp_reqest()
 }
 //--------------------------------RLI---------------------------------------------------------------
 //--------------------------------timer-----------------------------------------------------------------
-short rli_reqest()
+short rli_request()
 {
 	struct to_cpp11 f11Rli;
 	int col2,n;

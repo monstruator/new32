@@ -42,7 +42,7 @@ void main(int argc, char **argv)
 		//char name[30] ="SPIAK_N8_Eth2";// "192.168.3.1";
 		char *name ="SPIAK_N8_Eth2";// "192.168.3.1";
 //------------------------------------------TEST pribora 3.2-------------------------------------------
-		char *name1 ="SPIAK_4_2"; // !!!!!!!!!!!!!!!! V processe!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		char *name1 ="SPIAK_4_2"; 
 		short SRC_PORT1=4005;
 		short DST_PORT1=4005;
 //---------------------------------------End test pribora 3.2------------------------------------------
@@ -82,7 +82,7 @@ void main(int argc, char **argv)
 	
 	if (p->cvs==10) 
 	{
-		name="192.168.3.1";// ;"SPIAK_N8_Eth2"
+		name="SPIAK_N8_Eth2";//"192.168.3.1";
 		//name="192.168.1.2";
 		SRC_PORT=4001;
 		DST_PORT=4001;
@@ -103,12 +103,12 @@ void main(int argc, char **argv)
 	{
 	   	if (timer_mn3!=p->sys_timer) //timer
 		{
-		   // printf("timer %d timer mn3 %d  word=%d \n", p->sys_timer, timer_mn3,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words);
+		    //printf("timer %d timer mn3 %d  word=%d \n", p->sys_timer, timer_mn3,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words);
 			timer_mn3=p->sys_timer;
 			//TCount++;
 			TC10++;
 			//printf("%d\n", TC10);
-			if (TC10==2) 
+			if (TC10>10) 
 			{
 				TC10=0;
 				bytes = Udp_Client_Read(&Uc42,bufi,1400);
@@ -139,7 +139,8 @@ void main(int argc, char **argv)
 					if (p->cvs==11) i = Udp_Client_Send(&Uc43,pack_buf,sizeof(packusoi));//---------------TEST 3.2-----------
 					
 					//printf("Send i = %d\n ",i);
-					//printf("\n=====> ");for(i1=0;i1<i;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
+					//printf("\n=====> ");for(i1=0;i1<10;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
+					//printf("\n=====> ");for(i1=11;i1<21;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
 				}
 				
 				else if (p->cvs==11) 
