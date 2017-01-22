@@ -101,14 +101,14 @@ void main(int argc, char **argv)
 
 	while(1)
 	{
-	   	if (timer_mn3!=p->sys_timer) //timer
+	   	if (p->sys_timer!=timer_mn3) //timer
 		{
 		    //printf("timer %d timer mn3 %d  word=%d \n", p->sys_timer, timer_mn3,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words);
 			timer_mn3=p->sys_timer;
 			//TCount++;
 			TC10++;
 			//printf("%d\n", TC10);
-			if (TC10>10) 
+			if (TC10>5) 
 			{
 				TC10=0;
 				bytes = Udp_Client_Read(&Uc42,bufi,1400);
@@ -187,8 +187,9 @@ void main(int argc, char **argv)
 				pack_buf[2]=1;
 				pack_buf[3]=1;
 				num_word=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words;
-				//printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
-				//p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
+				//delay(5);
+				printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
+				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
 				//printf("Send2 %d RLI word timer %d  N_STRING=%d \n",num_word, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]);
@@ -388,7 +389,7 @@ void main(int argc, char **argv)
 							n_mc++; //kol-vo mini komand + 1
 							
 							//---------------------------------------------
-							p->work_com[n_s].t_stop =p->sys_timer+500;   
+							p->work_com[n_s].t_stop =p->sys_timer+200;   
 						}
 						else 
 						{

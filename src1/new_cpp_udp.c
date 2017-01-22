@@ -62,15 +62,17 @@ unsigned short ccc[100]={0xFFFF,0xFFFF,0x0B00,0x0203,0x0001,0x000B,0x0000,0x0000
 						 0x0001,0x0000,0x0010,0x0010,0x010D,0x0001,0x00FF,0x0001,0x0001,
 						 0x0001,0x01f8,0,0,0,0,0,0,0};
 unsigned char work_point[6]={0x10,0x34,0x55,0x76,0x97,0xB8};
-unsigned short bpic[219];
 
-int T_ALRM =0; //prizn srabativani9 taimera
 char *name="CPP0_1";
 short SRC_PORT;
 short DST_PORT;
-int timer1=0,timer2=0,verbose=0,num_f12=0,new_f12;
+int timer1=0,timer2=0,verbose=0,num_f12=0,new_f12, pause_req=0;
 //clock_t start_time, stop_time;
 int prev_str=0;
+unsigned short N_string=0;
+int word181; //kol-vo slov v 181
+	int wordRLI; //kol-vo slov v RLI dl9 Dani
+	int i3;//setprio(0,(getprio(0)+6));
 
 
 short cmd_send(int );
@@ -93,9 +95,6 @@ main()
 	struct form193 *f193;
 	int ustSS=0; // ustanovlennoe zna4enie
 	static char 		*stack_in;
-	int word181; //kol-vo slov v 181
-	int wordRLI; //kol-vo slov v RLI dl9 Dani
-	int i3;//setprio(0,(getprio(0)+6));
 	
 	#if defined (_386_) 
   stack_in = (char *) malloc (STACK_SIZE);
@@ -124,6 +123,26 @@ main()
 		if (cpp_timer!=p->sys_timer) //timer
 		{
 			cpp_timer=p->sys_timer;
+			//------------------------------------------------------------------------------------------------
+			if ((f181.n_form > 0)&&(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words<614)) //достать Дане долги
+			{
+					//f181 -> danye
+					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f181.Sach, 12);
+					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f181.form5, 16);
+					if(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words == 0) p->toMN3.Mem_Region2.Mem_Region_RLI.num_words = 8;
+					//memcpy(&p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8], (char *)f181.form6[f181.n_word-202], 404);
+					word181=(f181.n_form-1)*202;
+					wordRLI=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8;
+					for(i3=0;i3<202;i3++) p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[wordRLI+i3]=f181.form6[word181+i3];
+					p->toMN3.Mem_Region2.Mem_Region_RLI.num_words += 202;
+					f181.n_form--;
+					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
+					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
+					N_string=(f18->data.form6[1]>>7)&0x1FF;
+					
+					//printf("//f181 -> danye 		form181=%d 		wRLI=%03d 	str=%d\n", f181.n_form,wordRLI,N_string&0x1FF);
+			}
+			//----------------------------------------------------------------------------------------------------
 			if (p->cur_step!=0) //est' wag dl9 vipolnenni9
 			{
 				c_step=p->cur_step;
@@ -253,7 +272,7 @@ main()
 										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
-									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+									if (p->work_com[c_step].s[i].status==1)//&&(new_f12 != p->count_cpp_status))
 									{
 										if (p->fromMN3.a_params[0]==f12->data.SS2_1) //esli otet=sosto9nie 
 										{
@@ -944,33 +963,19 @@ main()
 			{
 				//------------------- timer oprosa ----------------------------------------
 				timer2++;
-				if (timer2 > 30) 
+				if (((timer2 % 40) == 0)&&(p->cvs==10)) 
 				{
 					rli_request();
 					//timer2 =0;
 				}
-				/*if (timer2 > 40) 
+				 if (timer2 > (60+pause_req))
 				{
+					//printf("request \n");
+					pause_req = 0;
 					status_request();
 					timer2 =0;
-				} */
-				if ((f181.n_form > 0)&&(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words<614)) //достать Дане долги
-				{
-					//f181 -> danye
-					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f181.Sach, 12);
-					memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f181.form5, 16);
-					if(p->toMN3.Mem_Region2.Mem_Region_RLI.num_words == 0) p->toMN3.Mem_Region2.Mem_Region_RLI.num_words = 8;
-					//memcpy(&p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8], (char *)f181.form6[f181.n_word-202], 404);
-					word181=(f181.n_form-1)*202;
-					wordRLI=p->toMN3.Mem_Region2.Mem_Region_RLI.num_words-8;
-					for(i3=0;i3<202;i3++) p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[wordRLI+i3]=f181.form6[word181+i3];
-					p->toMN3.Mem_Region2.Mem_Region_RLI.num_words += 202;
-					f181.n_form--;
-					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_transm_takt=7;
-					p->toMN3.Mem_Region2.Mem_Region_RLI.cr_data_pac++;
-					//printf("//f181 -> danye 		form181=%d 		wRLI=%d 	str=%d\n",
-					//f181.n_form,wordRLI,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7);
-				}	
+				} 
+				
 				//-------------------------------------------------------------------------
 			} 
 		}//timer
@@ -1007,7 +1012,7 @@ void read1()
 						case 0x12 : if(p->verbose>3) printf("Data recieved OK(TC=0x12)\n");
 								read_rli1();
 								//f18 = (struct from_cpp18 *)bbb1;
-								
+								pause_req = 500;
 								//printf("N_STR=%d Time %d\n",(f18->data.form6[1]>>7)&0x1FF, p->sys_timer);
 								p->count_cpp_rli++;
 							break;
@@ -1015,6 +1020,7 @@ void read1()
 								//printf("Netu strok timer=%d TS=%04x \n", p->sys_timer, f18->zag.TS);
 							break;
 						case 0x14 : if(p->verbose>3) printf("CPP parameters (TC=0x14)\n");
+								pause_req = 100;
 								p->count_cpp_status++;
 								p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 								for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
@@ -1044,26 +1050,18 @@ void read1()
 //---------------------------------------READ RLI--------------------------------------------------------
 void read_rli1()
 {
-	unsigned short N_string=0;
 	int i3;
 	int word181; //kol-vo slov v 181
 	int wordRLI; //kol-vo slov v RLI dl9 Dani
 	unsigned char buff;
-	//struct to_cpp11 f11Rli;
-
-		
+	
 		f18 = (struct from_cpp18 *)bbb1;
 		for(i3=0;i3<219;i3++) //perevorov baitov
 		{
 			buff = f18->mass1[i3*2] & 0xff;
 			f18->mass1[i3*2] = f18->mass1[i3*2+1]& 0xff;
 			f18->mass1[i3*2+1] = buff & 0xff;			
-		} 
-		//for (i3=0; i3<8; i3++)
-		//{
-		//	printf("%04x ",f18->data.form5[i3]);
-		//	if (i3 == 4) printf(" \n");
-		//}			
+		} 		
 		////////-----------------------	1 -------------------------------------------
 		memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH, f18->data.Sach, 12);
 		memcpy(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_5, f18->data.form5, 16);
@@ -1081,8 +1079,8 @@ void read_rli1()
 		else //f18 -> f181
 		{
 			word181=f181.n_form*202;
-			//memcpy(&f181.form6[f181.n_word], f18->data.form6, 404);
-			for(i3=0;i3<202;i3++) f181.form6[word181+i3]=f18->data.form6[i3];
+			memcpy(&f181.form6[word181], f18->data.form6, 404);
+			//for(i3=0;i3<202;i3++) f181.form6[word181+i3]=f18->data.form6[i3];
 			//printf("n_str=%d nstr_old=%d word=%d form=%d\n",f181.form6[word181+1]>>7,f18->data.form6[1]>>7,word181,f181.n_form);
 			f181.n_form++;
 		}
@@ -1096,7 +1094,7 @@ void read_rli1()
 		prev_str=N_string;
 		//printf("form18 = %d RLI.num_words = %d  N_STR=%d Time %d\n", f181.n_form,p->toMN3.Mem_Region2.Mem_Region_RLI.num_words,N_string&0x1FF, p->sys_timer);
 //-----------------------------test end-----------------------------------------------			
-					
+			
 		//printf("stoka %d=%d prinyata %d timer %d kolvo slov %d y=%d \n" ,f18->data.form6[1],p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1],i2,p->sys_timer, n/2,f181.data.n_word);
 		if(f18->zag.PS==1) 
 		{
