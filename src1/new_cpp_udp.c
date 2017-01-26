@@ -73,7 +73,7 @@ unsigned short N_string=0;
 int word181; //kol-vo slov v 181
 	int wordRLI; //kol-vo slov v RLI dl9 Dani
 	int i3;//setprio(0,(getprio(0)+6));
-
+int stop, step_stop;
 
 short cmd_send(int );
 short status_request( );
@@ -968,7 +968,7 @@ main()
 					rli_request();
 					//timer2 =0;
 				}
-				 if (timer2 > (60+pause_req))
+				 if ((timer2 > (60+pause_req))&&(stop == 0))
 				{
 					//printf("request \n");
 					pause_req = 0;
@@ -1012,18 +1012,25 @@ void read1()
 						case 0x12 : if(p->verbose>3) printf("Data recieved OK(TC=0x12)\n");
 								read_rli1();
 								//f18 = (struct from_cpp18 *)bbb1;
-								pause_req = 500;
+								//pause_req = 500;
 								//printf("N_STR=%d Time %d\n",(f18->data.form6[1]>>7)&0x1FF, p->sys_timer);
+								stop = 1;
 								p->count_cpp_rli++;
 							break;
 						case 0x13 : if(p->verbose>3) printf("No data from AK(TC=0x13)\n");
 								//printf("Netu strok timer=%d TS=%04x \n", p->sys_timer, f18->zag.TS);
 							break;
 						case 0x14 : if(p->verbose>3) printf("CPP parameters (TC=0x14)\n");
-								pause_req = 100;
+								//pause_req = 100;
 								p->count_cpp_status++;
 								p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 								for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
+								step_stop++;
+								if (step_stop == 10)
+								{
+									stop = 0;
+									step_stop = 0;
+								}
 								//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \read_udp",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 							break;
 						default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);

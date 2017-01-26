@@ -63,7 +63,7 @@
                   /* Start accepting connections */
                   if (p->verbose>1) printf ("start accepting connections\n\n");
 				  listen(sock, 5);
-				  if (p->verbose>1)  printf ("listen_ok\n");
+				  if (p->verbose>1) printf ("listen_ok\n");
                   do {				 
                           if (p->verbose>1) printf ("cycle\n");
 						  msgsock = accept(sock, 0, 0);
@@ -86,7 +86,7 @@
 												if (p->verbose>1) printf("sending \n");
 												for (j=0; j<i; j++) mass[j].rez_tst=2;//b[j]=2;	
 												write(msgsock, mass, sizeof(struct my_elt)*i);			
-												if (p->verbose>1) printf("-->%s %d \n", b,rval);
+												if (p->verbose>1) printf("-->%d %d %d %d %d %d %d \n", mass[0].rez_tst, mass[1].rez_tst, mass[2].rez_tst, mass[3].rez_tst, mass[4].rez_tst, mass[5].rez_tst, mass[6].rez_tst ,rval);
 											}								  
 								} 
 						  while (rval > 0);
