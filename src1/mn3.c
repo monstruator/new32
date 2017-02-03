@@ -42,9 +42,9 @@ void main(int argc, char **argv)
 		//char name[30] ="SPIAK_N8_Eth2";// "192.168.3.1";
 		char *name ="SPIAK_N8_Eth2";// "192.168.3.1";
 //------------------------------------------TEST pribora 3.2-------------------------------------------
-		char *name1 ="SPIAK_4_2"; 
-		short SRC_PORT1=4005;
-		short DST_PORT1=4005;
+		char *name1; 
+		short SRC_PORT1;
+		short DST_PORT1;
 //---------------------------------------End test pribora 3.2------------------------------------------
 		short SRC_PORT=4003;  //???
 		short DST_PORT=4000;  //???
@@ -86,17 +86,23 @@ void main(int argc, char **argv)
 		//name="192.168.1.2";
 		SRC_PORT=4001;
 		DST_PORT=4001;
+		name1 ="SPIAK_N8_Eth2";//"192.168.3.1"; 
+		SRC_PORT1=4006;
+		DST_PORT1=4006;
 	}
 	else 
 	{
 		name ="SPIAK_N9_Eth4";// "192.168.1.2";
 		SRC_PORT=4002;
 		DST_PORT=4002;
-		i = Udp_Client_Ini(&Uc43,name1,DST_PORT1,SRC_PORT1);
-		printf("Udp_Init_3.2=%d	dst=%d src=%d %s \n", i,DST_PORT1,SRC_PORT1, name1);
+		name1 ="SPIAK_4_2"; 
+		SRC_PORT1=4005;
+		DST_PORT1=4005;
 	}
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
 	printf("Udp_Init=%d	dst=%d src=%d %s \n", i,DST_PORT,SRC_PORT, name);
+	i = Udp_Client_Ini(&Uc43,name1,DST_PORT1,SRC_PORT1);
+		printf("Udp_Init_3.2=%d	dst=%d src=%d %s \n", i,DST_PORT1,SRC_PORT1, name1);
 	
 
 	while(1)
@@ -136,14 +142,14 @@ void main(int argc, char **argv)
 					//for(j=0;j<9;j++) printf("%08x ",p->toMN3.sost_kasrt[j]);  printf("\n");
 					//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 	     			i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
-					if (p->cvs==11) i = Udp_Client_Send(&Uc43,pack_buf,sizeof(packusoi));//---------------TEST 3.2-----------
+					//i = Udp_Client_Send(&Uc43,pack_buf,sizeof(packusoi));//---------------TEST 3.2-----------
 					
 					//printf("Send i = %d\n ",i);
 					//printf("\n=====> ");for(i1=0;i1<10;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
 					//printf("\n=====> ");for(i1=11;i1<21;i1++) printf(" %d ", pack_buf[i1]);printf("\n");
 				}
 				
-				else if (p->cvs==11) 
+				else 
 				{
 					bytes = Udp_Client_Read(&Uc43,bufi,1400);//------------------------------------
 					if (bytes>0)
@@ -191,6 +197,7 @@ void main(int argc, char **argv)
 				printf("RLI=%d  t=%d str1=%d str2=%d str3=%d\n",
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words, p->sys_timer,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[203]>>7)&0x1FF,(p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[405]>>7)&0x1FF);
 				i = Udp_Client_Send(&Uc42,pack_buf,sizeof(packusoi));
+				i = Udp_Client_Send(&Uc43,pack_buf,sizeof(packusoi));
 				p->toMN3.Mem_Region2.Mem_Region_RLI.num_words=0;
 				//printf("Send2 %d RLI word timer %d  N_STRING=%d \n",num_word, p->sys_timer,p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_6[1]);
 				//for(i3=0;i3<6;i3++)	printf(" %04x ",p->toMN3.Mem_Region2.Mem_Region_RLI.SVCH_FORM_SACH[i3]);printf("\n");
