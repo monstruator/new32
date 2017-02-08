@@ -82,11 +82,10 @@ void main(int argc, char **argv)
 	
 	if (p->cvs==10) 
 	{
-		name="SPIAK_N8_Eth2";//"192.168.3.1";
-		//name="192.168.1.2";
+		name="192.168.3.1";
 		SRC_PORT=4001;
 		DST_PORT=4001;
-		name1 ="SPIAK_4_1";//"192.168.3.3"; 
+		name1 ="192.168.3.3"; 
 		SRC_PORT1=4010;
 		DST_PORT1=4010;
 	}
