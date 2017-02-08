@@ -86,9 +86,9 @@ void main(int argc, char **argv)
 		//name="192.168.1.2";
 		SRC_PORT=4001;
 		DST_PORT=4001;
-		name1 ="SPIAK_N8_Eth2";//"192.168.3.1"; 
-		SRC_PORT1=4006;
-		DST_PORT1=4006;
+		name1 ="SPIAK_4_1";//"192.168.3.3"; 
+		SRC_PORT1=4010;
+		DST_PORT1=4010;
 	}
 	else 
 	{
@@ -102,7 +102,7 @@ void main(int argc, char **argv)
 	i = Udp_Client_Ini(&Uc42,name,DST_PORT,SRC_PORT);
 	printf("Udp_Init=%d	dst=%d src=%d %s \n", i,DST_PORT,SRC_PORT, name);
 	i = Udp_Client_Ini(&Uc43,name1,DST_PORT1,SRC_PORT1);
-		printf("Udp_Init_3.2=%d	dst=%d src=%d %s \n", i,DST_PORT1,SRC_PORT1, name1);
+	printf("Udp_Init_3.2=%d	dst=%d src=%d %s \n", i,DST_PORT1,SRC_PORT1, name1);
 	
 
 	while(1)
