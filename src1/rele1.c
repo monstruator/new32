@@ -100,7 +100,7 @@ main(int argc, char *argv[])
 	//Определение Базового адреса внутренних регистров моста
 	i=new_func_read(D_Bridge,V_Bridge,&my_device,BAR0,ind);
 	
-	printf("i = %x\n", i);
+	//printf("i = %x\n", i);
 	if (i==-1) {printf("Мост отсутствует");exit(1);}
 	else if (!PCI_IS_MEM(mass[BAR0])) {printf("PCI устройство не обнаружено");exit(1);}
 	//Отображение портов модуля в PCI Memory Space
@@ -110,10 +110,10 @@ main(int argc, char *argv[])
 	fd1=shm_open("Physical",O_RDWR,0777);
 	ptr1=(char *)mmap(0,64*1024,PROT_READ|PROT_WRITE|PROT_NOCACHE,MAP_SHARED,fd1,
 	PCI_MEM_ADDR(mass[BAR0])&~4095);
-	printf ("ptr1 = %x %8x\n",ptr1,ba); 
+	//printf ("ptr1 = %x %8x\n",ptr1,ba); 
 	if (ptr1==(char *)-1) {printf ("FAULT\n"); exit (-1);}
 	addr1=ptr1 + (ba&4095);
-	printf ("Memory configuration addr = %x\n",addr1);
+	//printf ("Memory configuration addr = %x\n",addr1);
 	*(unsigned int*)(addr1)=0xFFFFFFFF;
 
 	i=1; printf("WRITE O_CTL %x %x\n",0x2000 + 0x400*i,*(unsigned int*)(addr1 +0x2000 + 0x400*i)=0);
@@ -135,7 +135,7 @@ main(int argc, char *argv[])
 				for (i=0;i<p->work_com[c_step].num_mini_com;i++) //prosmotrim vse minicomandi na wage 
 					if((p->work_com[c_step].s[i].n_chan==N_CHAN)&&(p->work_com[c_step].s[i].status!=2)&&(p->work_com[c_step].s[i].status!=3)) //na tekuwem wage (i - minikomanda) est' komanda dl9 nas
 					{
-						if((p->verbose>1)&&(p->work_com[c_step].s[i].status==0)) printf("\nSTEP=%d    minicom for RELE : %d      status=%d time %d \n", p->cur_step,  p->work_com[c_step].s[i].n_com, p->work_com[c_step].s[i].status, p->sys_timer);
+						if((p->verbose)&&(p->work_com[c_step].s[i].status==0)) printf("\nSTEP=%d    minicom for RELE : %d      status=%d time %d \n", p->cur_step,  p->work_com[c_step].s[i].n_com, p->work_com[c_step].s[i].status, p->sys_timer);
 
 						switch(p->work_com[c_step].s[i].n_com)
 						{
@@ -172,13 +172,13 @@ main(int argc, char *argv[])
 									{
 										p->work_com[c_step].s[i].status=1; 
 										rele|=1; *(unsigned int*)(addr1 +0x2C00)=rele;
-										printf("WRITE OUT DATA %x\n",rele);
+										if(p->verbose>1) printf("WRITE OUT DATA %x\n",rele);
 									}
 									if (p->work_com[c_step].s[i].status==1)
 									{
 										if (*(unsigned int*)(addr1 + 0x4C00)&0x08) p->work_com[c_step].s[i].status=2;
-										if(ii1==0) printf("READ DATA %x \n",*(unsigned int*)(addr1 + 0x4C00));
-										ii1++;
+										if(p->verbose>1) printf("READ DATA %x \n",*(unsigned int*)(addr1 + 0x4C00));
+										//ii1++;
 									}
 									break;
 							case 20: //off 2 rele
@@ -235,8 +235,7 @@ main(int argc, char *argv[])
 									{
 										if (*(unsigned int*)(addr1 + 0x4C00)&0x04) p->work_com[c_step].s[i].status=2;
 										//if ((p->fromMN3.a_params[0]==0)&&((*(unsigned int*)(addr1 + 0x4C00)&0x04)==0)) p->work_com[c_step].s[i].status=2;
-										if(ii1==1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
-										ii1++;
+										if(p->verbose>1) printf("READ DATA %x\n",*(unsigned int*)(addr1 + 0x4C00));
 									}
 									break;
 							case 40: //off 4 rele
@@ -256,22 +255,20 @@ main(int argc, char *argv[])
 									}
 									break;
 							case 50: //off 5 rele
-							printf("status rele 50 %d \n", p->work_com[c_step].s[i].status);// -----vremenno
-									//if (p->work_com[c_step].s[i].status==0) 
-									//{
+									if (p->work_com[c_step].s[i].status==0) 
+									{
 										p->work_com[c_step].s[i].status=2; 
 										rele &= ~0x10; 	*(unsigned int*)(addr1 +0x2C00)=rele;
-										/*if(p->verbose>1)*/ printf("WRITE OUT DATA %x\n",rele);
-									//}
+										if(p->verbose>1) printf("WRITE OUT DATA %x\n",rele);
+									}
 									break;
 							case 51: //on 5 rele
-							printf("status rele 51 %d \n", p->work_com[c_step].s[i].status);// -----vremenno
-									//if (p->work_com[c_step].s[i].status==0) 
-									//{
+									if (p->work_com[c_step].s[i].status==0) 
+									{
 										p->work_com[c_step].s[i].status=2; 
 										rele|=0x10; *(unsigned int*)(addr1 +0x2C00)=rele;
-										/*if(p->verbose>1)*/ printf("WRITE OUT DATA  %x\n",rele);
-									//}
+										if(p->verbose>1) printf("WRITE OUT DATA  %x\n",rele);
+									}
 									break;
 							case 60: //off 6 rele
 									if (p->work_com[c_step].s[i].status==0) 

@@ -77,19 +77,16 @@
 						  else do 
 								{
                                   memset(buf, 0, sizeof(buf));
-                                  if ((rval  = read(msgsock, buf,  1024)) < 0)
-                                  perror("reading stream message");
-                                  else if (rval == 0)
-                                          if (p->verbose>1) printf("Ending connection %d\n", rval);
-										else 
-											{								 
-												if (p->verbose>1) printf("sending \n");
-												for (j=0; j<i; j++) mass[j].rez_tst=2;//b[j]=2;	
-												write(msgsock, mass, sizeof(struct my_elt)*i);			
-												if (p->verbose>1) printf("-->%d %d %d %d %d %d %d \n", mass[0].rez_tst, mass[1].rez_tst, mass[2].rez_tst, mass[3].rez_tst, mass[4].rez_tst, mass[5].rez_tst, mass[6].rez_tst ,rval);
-											}								  
+                                  if ((rval  = read(msgsock, buf,  1024)) < 0)  perror("reading stream message");
+                                  else 	{								 
+											if (p->verbose>1) printf("sending \n");
+											for (j=0; j<i; j++) mass[j].rez_tst=2;//b[j]=2;	
+											write(msgsock, mass, sizeof(struct my_elt)*i);			
+											if (p->verbose>1) printf("-->%d %d %d %d %d %d %d \n", mass[0].rez_tst, mass[1].rez_tst, mass[2].rez_tst, mass[3].rez_tst, mass[4].rez_tst, mass[5].rez_tst, mass[6].rez_tst ,rval);
+										}								  
 								} 
 						  while (rval > 0);
+						  printf("close socket\n");
                           close(msgsock);
                   } 
 				  while (TRUE);

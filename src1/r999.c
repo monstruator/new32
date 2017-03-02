@@ -27,7 +27,7 @@
 struct command999 
 {
 	
-	unsigned char addr; //0xf8
+	unsigned char addr; //0xf8 //3C0000F8
 	unsigned char chan01 : 4; // edinici kanala
 	unsigned char chan10 : 4; // des9tki kanala
 	unsigned char speed  : 2; // skorost'
@@ -238,7 +238,54 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 										p->work_com[c_step].t_start = p->sys_timer;
 										p->work_com[c_step].s[i].status=2;
 									}
+									break;
+							case 12: if (p->work_com[c_step].s[i].status==0) 
+									{
+										p->work_com[c_step].s[i].status=1; 
+										if(p->verbose) printf("		R999 CONTR_0 \n");
+										//com999.command=0x3C0000F8;
+										com999.cm.com=0x3C; //0x22
+										com999.cm.chan01=0;
+										com999.cm.chan10=0;
+										com999.cm.power=0;
+										com999.cm.speed=0;
+										send_com();
+										p->work_com[c_step].t_start = p->sys_timer;
+										p->work_com[c_step].s[i].status=2;
+									}
 									
+									break;
+							case 79:if (p->work_com[c_step].s[i].status==0) //R999 Request
+									{
+										p->work_com[c_step].s[i].status=1; 
+										if(p->verbose) printf("		R999 REQUEST CONTR_0 \n");
+										
+										pc_so_uf (1,0,1,0); //1 raz 1 slovo
+										pc_wml(0x8000,0xba0001f8);		
+										pc_wm (0x2004,0x00); //KCP 
+										pc_wm (0x2001,0x0888); //ô£¡ò ???-?ÿöR¢« (<®öR? c<R÷R,
+										p->work_com[c_step].t_start = p->sys_timer;
+									}
+									if ((p->work_com[c_step].s[i].status==1)&&(p->sys_timer - p->work_com[c_step].t_start > 300))
+									{
+										read_w=pc_rml(0x41f0);
+										if(p->verbose>1) printf("		R999 READ=%x %x\n",0x41f0,read_w);
+										printf("		R999 READ=%x %x\n",0x41f0,read_w);
+										/*printf("Chetnost'=%d\n",((read_w >> 31) & 0x1)));
+										//printf("Comandi=%d\n",((read_w & 0x7f)>>24));
+										printf("RRCh=%d\n",((read_w & 0x01)>>23));
+										printf("AP=%d\n",((read_w & 0x01)>>22));
+										printf("Moshnost'=%d\n",((read_w & 0x0c)>>18));
+										printf("C1-I=%d\n",((read_w & 0x1)>>19));
+										printf("CA=%d\n",((read_w & 0x01)>>18));
+										printf("Scorost'=%d\n",((read_w >>16 ) &0x03));
+										printf("Nomer kanala=%d\n",((read_w >>8) & 0xFF));
+										printf("const=%d\n",((read_w & 0x01)>>0));
+										*/
+										p->toMN3.sost_r999=read_w;
+										p->work_com[c_step].s[i].status=2;
+									}  
+									//if(p->verbose) printf("		%d %d\n",p->work_com[c_step].s[i].status,p->sys_timer - p->work_com[c_step].t_start);
 									break;
 							case 80:if (p->work_com[c_step].s[i].status==0) //R999 Request
 									{
@@ -256,16 +303,16 @@ if (p->verbose) printf("START MO3A<->R999\n\n");
 										read_w=pc_rml(0x41f0);
 										if(p->verbose>1) printf("		R999 READ=%x %x\n",0x41f0,read_w);
 										printf("		R999 READ=%x %x\n",0x41f0,read_w);
-										//printf("Chetnost'=%d\n",(read_w & 0x1)>>31);
-										//printf("Comandi=%d\n",(read_w & 0x7f)>>24);
-										printf("RRCh=%d\n",(read_w & 0x7e000000)>>25);
-										//printf("AP=%d\n",(read_w & 0x01)>>22);
-										printf("Moshnost'=%d\n",(read_w & 0x300000)>>20);
-										//printf("C1-I=%d\n",(read_w & 0x1)>>19);
-										//printf("CA=%d\n",(read_w & 0x01)>>18);
-										printf("Scorost'=%x\n",(read_w & 0x30000)>>16);
-										printf("Nomer kanala=%d\n",(read_w & 0xff00)>>8);
-										//printf("const=%d\n",(read_w & 0x01)>>0);
+										//printf("Chetnost'=%d\n",((read_w >> 31) & 0x1)));
+										printf("Comandi=%d\n",((read_w & 0x7f)>>24));
+										printf("RRCh=%d\n",((read_w & 0x01)>>23));
+										printf("AP=%d\n",((read_w & 0x01)>>22));
+										printf("Moshnost'=%d\n",((read_w & 0x0c)>>18));
+										printf("C1-I=%d\n",((read_w & 0x1)>>19));
+										printf("CA=%d\n",((read_w & 0x01)>>18));
+										printf("Scorost'=%d\n",((read_w >>16 ) &0x03));
+										printf("Nomer kanala=%d\n",((read_w >>8) & 0xFF));
+										printf("const=%d\n",((read_w & 0x01)>>0));
 										p->toMN3.sost_r999=read_w;
 										
 										p->work_com[c_step].s[i].status=2;
