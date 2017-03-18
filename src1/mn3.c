@@ -115,6 +115,7 @@ void main(int argc, char **argv)
 			{
 				TC10=0;
 				bytes = Udp_Client_Read(&Uc42,bufi,1400);
+				//printf("%d\n",p->cmd_625.T625_on_off);
 				//if (p->cvs==11) bytes = Udp_Client_Read(&Uc43,bufi,1400);//--------------------TEST 3.2----------------
 				if (bytes>0)
 				{
@@ -753,7 +754,7 @@ void main(int argc, char **argv)
 							if(p->cvs==11) 
 							{	
 								p->work_com[n_s].s[n_mc].n_chan=6; //T625
-								p->work_com[n_s].s[n_mc].n_com=1;   //CHECK
+								p->work_com[n_s].s[n_mc].n_com=4;   //1
 							}
 							else 
 							{
@@ -761,7 +762,8 @@ void main(int argc, char **argv)
 								p->work_com[n_s].s[n_mc].n_com=101; // Command OK
 							}
 							n_mc++; //kol-vo mini komand + 1
-							p->work_com[n_s].t_stop =p->sys_timer+300;  
+							//p->work_com[n_s].num_mini_com=n_mc;
+							p->work_com[n_s].t_stop =p->sys_timer+800;  
 							break;
 					case 6 : //FK 5	
 							if(p->cvs==11) 

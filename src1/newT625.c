@@ -1,6 +1,18 @@
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <sys/kernel.h>
+  
+#include <unistd.h>
+#include "../include/ts.h"
+#include "../include/cpuplus.h"
+#include <sys/osinfo.h>
+
+#include <time.h>
+#include <process.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/dev.h>
 
   #include <netinet/in.h>
   #include <stdio.h>
@@ -24,7 +36,7 @@
       unsigned short buffer[62];
       unsigned long k,sum;
       unsigned char byte_bufer[124];
-      int i,jj,m,K,K_com,FLAG;                               
+      int jj,m,K,K_com,FLAG;                               
       int FLAG_Z,FLAG_DMW,FLAG_CV;
 //--------------------------------------------                        
 
@@ -39,8 +51,7 @@
 	char bufo[1024];
     unsigned char buf625[31];
 	char out_buf[1024];
-	int timer2=0;
-	int timer3=0;
+	int timer2=0,timer3=0,rez1=0;
 	int iii;
 	int x=0;
 	int tri=0;
@@ -74,7 +85,7 @@ main(int argc, char *argv[])
 {
 	int cnt=0;
 	int i1=0,ii=0;
-	int rez,bytes;
+	int bytes;
 	unsigned short buf[4];
 	unsigned int K_Summa;
 	unsigned int komanda;
@@ -335,6 +346,34 @@ main(int argc, char *argv[])
 										//break;
 									}
 									break;
+							case 4 : 
+									if(p->work_com[c_step].s[i].status==0)
+									{
+										p->work_com[c_step].s[i].status=1;
+										if(p->verbose) printf("		TEST PING \n");
+										rez1=test();
+										printf("TEST=%d\n",rez1);
+										if (rez1==1)	 
+										{
+											
+											p->toMN3.sost_spiak.T625=1;
+											p->toMN3.sost_spiak.rabota=1;
+											p->toMN3.sost_spiak.ispr=1;
+											p->SOST625=2;
+											p->cmd_625.T625_on_off=0;
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+										else 
+										{
+											p->toMN3.sost_spiak.T625=0;
+											p->toMN3.sost_spiak.rabota=0;
+											p->toMN3.sost_spiak.ispr=0;
+											p->SOST625=3;
+											p->cmd_625.T625_on_off=1;
+											p->work_com[c_step].s[i].status=3;
+										}
+									}
+								break;
 							case 922: 	// FK5 800bit
 									p->work_com[c_step].s[i].status=1;
 									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=ii; // 0x5555
@@ -506,6 +545,7 @@ main(int argc, char *argv[])
 			} //step>0
 			else 
 			{
+			/*	
 				timer2++;
 				if (timer2 == 100) // primerno 5 sec
 				{
@@ -567,8 +607,10 @@ main(int argc, char *argv[])
 						}
 					timer2 =0;
 				}
+				*/
 			}
 			timer3++;
+			/*
 			if (timer3 > 5) // zapros dannih c T-625
 			{
 				//printf("bytes=%d p->cmd_625.count625_inf=%d \n",bytes,p->cmd_625.count625_inf);
@@ -582,6 +624,7 @@ main(int argc, char *argv[])
 				}
 				timer3 = 0;
 			}
+			*/
 		}//timer
 	}//while
 	
@@ -702,3 +745,103 @@ int send_DMW()
      read_7118.Read_com.CVM_A=0x60;
      return 1;
   }   
+  
+  
+  
+  int
+F_Socket_Test()
+	{
+	short status = 0;
+	char temp_msg[300], command[50];	
+	FILE *fp,*fp1;
+	int j;
+	char *find[]={"Socklet","Socket","Tcpip",NULL};
+	setenv("PATH",":/bin:/usr/bin:.",1);
+	setenv("SHELL","ksh",1);
+	setenv("LOGNAME","root",1);	
+
+//	printf ("Net driver testing...\n");
+	for (j=0;j<3;j++) {
+	if (status == 1) return (status);
+	sprintf (command, "sin -P %s", find[j]);
+	fp = popen (command, "r");
+	if (fp!=0)
+		{
+	while (fgets (temp_msg, sizeof(temp_msg), fp) != 0)
+		{
+//		printf ("temp_msg = %s\n", temp_msg);
+		if (strstr (temp_msg, find[j]) != 0)  
+				{
+//			printf ("msg = %s\n", strstr (temp_msg, Net_Driver));
+			printf("Driver found...\n");
+			status = 1;
+			break;
+				}
+		else
+			{
+			printf("No Driver found...\n");
+			status = -1;
+			}
+		 }
+	pclose(fp);
+		 }
+					 }	
+	return (status);
+	}
+
+int	connect_CMP (char *host_addr)
+{
+	short status = 0;
+	char Cmd[40],*point[6];
+	FILE *fp;
+    int find=0;
+	char temp_msg[300];
+	setenv("PATH",":/bin:/usr/bin:.:/usr/ucb",1);
+	setenv("SHELL","ksh",1);
+	setenv("LOGNAME","root",1);
+	
+//----Запуск утилиты ping c адресом заданного хоста
+	sprintf(Cmd,"ping -c 6 %s",host_addr);
+	printf("PING %s\n",Cmd);
+	fp=popen(Cmd,"r");
+	
+	if (fp!=0)
+	{
+		while (fgets (temp_msg, sizeof(temp_msg), fp) != 0)
+		{
+			printf("HERE %s \n",temp_msg);
+			if(strstr(temp_msg,"ret=-1") != 0)
+			{
+				status=-1;
+				break;
+			}
+			if(strstr(temp_msg,host_addr) != 0) 
+			{find++;printf ("%s %d\n",host_addr,find);}					
+		}
+	
+		if (find>4) status++; else status=0;
+		if (!find) printf("Не отвечает host %s\n",host_addr);
+	
+	}
+	else status=0;
+	
+	printf("status %d\n",status);
+	return (status);
+}
+
+int test()
+{
+int status_PT=0,status_AT=0;
+char host_addr[80]="192.168.4.2";
+
+printf("HOST %s\n",host_addr);
+
+//oopen();
+	status_PT=F_Socket_Test();
+	
+ 	return connect_CMP (host_addr);
+
+//if ( status_AT<=0) err++;
+//if(err==0) return 1; else return 0;
+//  oclose(); //exit(rez);
+} 
