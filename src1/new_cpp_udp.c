@@ -333,17 +333,19 @@ main()
 									{
 										p->work_com[c_step].s[i].status=1;
 										if(p->verbose) printf("			SVCH ATT \n");
-										f11.data.KU7=p->fromMN3.a_params[0]; // oslablenie 0 - 25
+										f11.data.KU7=p->fromMN3.a_params[0]; // oslablenie prd 0 - 25
 										f11.data.ustKU7=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+										f11.data.KU12=p->fromMN3.a_params[1]; // oslablenie prm 0 - 31.5
+										f11.data.ustKU12=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
 										//if(p->verbose>1) printf("param %d = SS6 %d\n", p->fromMN3.a_params[0],f12->data.SS6);
-										if (p->fromMN3.a_params[0]==f12->data.SS6) //esli otet=sosto9nie 
+										if ((p->fromMN3.a_params[0]==f12->data.SS6)&&(p->fromMN3.a_params[1]==f12->data.SS21)) //esli otet=sosto9nie 
 										{
-											if(p->verbose>1) printf("SS6=%d\n",f12->data.SS6);
+											if(p->verbose>1) printf("SS6=%d SS21=%d\n",f12->data.SS6, f12->data.SS21);
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
 										else p->work_com[c_step].s[i].status=3;

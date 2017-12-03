@@ -63,7 +63,7 @@ int fd1;
 main(int argc, char *argv[])
 {
 	
-	int n,i,j,col,command,i1;
+	int n,i,j,col,command,i1, iii;
 	unsigned char rele=0;// sosto9nie rele
     short c_step=0,T0=0;	
     long rele_timer=0;
@@ -129,6 +129,15 @@ main(int argc, char *argv[])
 		if (rele_timer!=p->sys_timer) //timer
 		{
 			rele_timer=p->sys_timer;
+			if (iii == 25) 
+			{
+				//printf("READ DATA - Retranslyator %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x01);
+				//printf("READ DATA - Gotovnost' %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x02);
+				//printf("READ DATA - Ispravnost' %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x04);
+				//printf("READ DATA - Antenna\Ekvivalent %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x08);
+				iii =0;
+			}
+			iii++;
 			if (p->cur_step!=0) //est' wag dl9 vipolnenni9
 			{
 				c_step=p->cur_step;
@@ -257,7 +266,7 @@ main(int argc, char *argv[])
 							case 50: //off 5 rele
 									if (p->work_com[c_step].s[i].status==0) 
 									{
-										p->work_com[c_step].s[i].status=2; 
+										p->work_com[c_step].s[i].status=1; 
 										rele &= ~0x10; 	*(unsigned int*)(addr1 +0x2C00)=rele;
 										if(p->verbose>1) printf("WRITE OUT DATA %x\n",rele);
 									}
@@ -265,7 +274,7 @@ main(int argc, char *argv[])
 							case 51: //on 5 rele
 									if (p->work_com[c_step].s[i].status==0) 
 									{
-										p->work_com[c_step].s[i].status=2; 
+										p->work_com[c_step].s[i].status=1; 
 										rele|=0x10; *(unsigned int*)(addr1 +0x2C00)=rele;
 										if(p->verbose>1) printf("WRITE OUT DATA  %x\n",rele);
 									}
