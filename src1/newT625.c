@@ -545,7 +545,7 @@ main(int argc, char *argv[])
 			} //step>0
 			else 
 			{
-			/*	
+				
 				timer2++;
 				if (timer2 == 100) // primerno 5 sec
 				{
@@ -607,10 +607,10 @@ main(int argc, char *argv[])
 						}
 					timer2 =0;
 				}
-				*/
+				
 			}
 			timer3++;
-			/*
+			
 			if (timer3 > 5) // zapros dannih c T-625
 			{
 				//printf("bytes=%d p->cmd_625.count625_inf=%d \n",bytes,p->cmd_625.count625_inf);
@@ -624,7 +624,7 @@ main(int argc, char *argv[])
 				}
 				timer3 = 0;
 			}
-			*/
+			
 		}//timer
 	}//while
 	
