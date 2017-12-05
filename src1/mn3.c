@@ -64,7 +64,7 @@ void main(int argc, char **argv)
 	delay(1500);
 	open_shmem();
 	delay(1000);
-	p->verbose=0; //default
+	p->verbose=1; //default
 	p->cvs=0;  //default
 	InitArgs( argc, argv );
 	
@@ -893,7 +893,7 @@ void main(int argc, char **argv)
 								p->work_com[n_s].s[n_mc].n_chan=2;    //Cpp
 								p->work_com[n_s].s[n_mc].n_com=101; // Command OK
 								p->work_com[n_s].t_stop =p->sys_timer+300;
-								p->work_com[n_s].num_mini_com=n_mc;
+							//	p->work_com[n_s].num_mini_com=n_mc;
 							}
 							break;	
 					case 7 :  // FK6
@@ -922,6 +922,42 @@ void main(int argc, char **argv)
 						p->toMN3.cr_com++;						
 					}
  					break;
+					
+				case 99: // test T625/R999,  param1 = 1 (DMV)
+						if(p->cvs==11) 								//setup T625 to DMV
+						{
+							n_s=1;  //nomer waga
+							n_mc=0; //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=6; //t625
+							p->work_com[n_s].s[n_mc].n_com=2;
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+100;
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+					//---------------------------------------------
+							n_s=2;  n_mc=0; 					// send to T625 massiv
+							p->work_com[n_s].s[n_mc].n_chan=6; //T625
+							p->fromMN3.a_params[1]=48900; //vrem9
+							p->fromMN3.a_params[2]=555;
+							p->fromMN3.a_params[3]=161;
+							p->work_com[n_s].s[n_mc].n_com=922; //T625 peredacha fomulyara
+							n_mc++; //kol-vo mini komand + 1						
+							p->work_com[n_s].t_stop =p->sys_timer+600;
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
+					//---------------------------------------------
+						}
+				
+						else 
+						{
+							n_s=1;  //nomer waga
+							n_mc=0; //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=3;
+							p->work_com[n_s].s[n_mc].n_com=21;
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].t_stop =p->sys_timer+100; 
+						}
+							
+						break;
+					
 				case 100 : //rele_off
 						if ((p->fromMN3.a_params[0]>=0)&&(p->fromMN3.a_params[0]<9))
 						{

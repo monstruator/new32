@@ -131,10 +131,28 @@ main(int argc, char *argv[])
 			rele_timer=p->sys_timer;
 			if (iii == 25) 
 			{
-				//printf("READ DATA - Retranslyator %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x01);
-				//printf("READ DATA - Gotovnost' %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x02);
+				p->toMN3.sost_spiak.obm_R999=1;  //vremenno!!!!!!
+				printf("obmen 1 \n");
+				if (*(unsigned int*)(addr1 + 0x4C00)&0x01) 
+				{
+					p->toMN3.sost_spiak.retr_R999=1;
+					printf("READ DATA - Retranslyator %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x01);
+				}
+				else p->toMN3.sost_spiak.retr_R999=0;
+				
+				if (*(unsigned int*)(addr1 + 0x4C00)&0x08)
+				{
+					printf("READ DATA - Antenna\Ekvivalent %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x08);
+				}
+				
+				if (*(unsigned int*)(addr1 + 0x4C00)&0x02) 
+				{
+					p->toMN3.sost_spiak.ready_R999=1;
+					printf("READ DATA - Gotovnost' %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x02);
+				}
+				else p->toMN3.sost_spiak.ready_R999=0;
+				
 				//printf("READ DATA - Ispravnost' %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x04);
-				//printf("READ DATA - Antenna\Ekvivalent %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x08);
 				iii =0;
 			}
 			iii++;

@@ -1,0 +1,2 @@
+//#line "CrSocket.h" 6
+extern int CrSocket(char *host,char *port);

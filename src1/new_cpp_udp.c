@@ -177,7 +177,7 @@ main()
 										col=cmd_send();
 										new_f12 = p->count_cpp_status;
 									}
-									if (p->verbose>1) printf("SS0=%d status=%d(1) newf12 %d != cpp_status %d\n",f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
+									//if (p->verbose>1) printf("TS=%d SS0_prd=%d SS0_prm=%d SS0_cpp=%d SS0=%d status=%d(1) newf12 %d != cpp_status %d\n", f12->zag.TS ,f12->data.SS0_prd ,f12->data.SS0_prm ,f12->data.SS0_cpp ,f12->data.SS0_all , p->work_com[c_step].s[i].status, new_f12, p->count_cpp_status);
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
 										printf("count=%d status=%d ss_all=%d\n",p->count_cpp_status,p->work_com[c_step].s[i].status, f12->data.SS0_all);
@@ -192,11 +192,7 @@ main()
 											col=status_request();
 										}
 									}
-									if (f12->zag.TS != 20) 
-									{
-										p->work_com[c_step].s[i].status=3;
-										printf("TS error TS=%d(20)", f12->zag.TS);
-									}
+									
 									//printf("KSS=%04x TS=%04x II=%04x PS=%04x\n",f12->zag.KSS, f12->zag.TS, f12->zag.II, f12->zag.PS);
 									//printf("SS1=%04x SS0_prd=%04x SS0_prm=%04x SS0_cpp=%04x SS0_all=%04x\n", f12->data.SS1, f12->data.SS0_prd, f12->data.SS0_prm, f12->data.SS0_cpp, f12->data.SS0_all);
 									//printf("SS2_0=%04x SS2_1=%04x SS3=%04x SS5=%04x SS4=%04x\n", f12->data.SS2_0, f12->data.SS2_1, f12->data.SS3, f12->data.SS5, f12->data.SS4);
@@ -1019,18 +1015,13 @@ void read1()
 				case 0x13 : if(p->verbose>3) printf("No data from AK(TC=0x13)\n");
 								//printf("Netu strok timer=%d TS=%04x \n", p->sys_timer, f18->zag.TS);
 							break;
-				case 0x14 : if(p->verbose>3) printf("CPP parameters (TC=0x14)\n");
+				case 0x14 : //if(p->verbose>3) printf("CPP parameters (TC=0x14)\n");
 								//pause_req = 100;
 								p->count_cpp_status++;
 								p->toMN3.sost_spiak.Cpp=1; //ispavno CPP
 								for(j=0;j<9;j++) p->toMN3.sost_kasrt[j]=f12->i.data_int[j];
-								step_stop++;
-								if (step_stop == 10)
-								{
-									stop = 0;
-									step_stop = 0;
-								}
-								//if(p->verbose>1) printf("SS0=%x SS1=%x SS2=%x SS3=%x \read_udp",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
+							
+								//if(p->verbose>3) printf("SS0=%x SS1=%x SS2=%x SS3=%x\n",p->toMN3.sost_kasrt[0],p->toMN3.sost_kasrt[1],p->toMN3.sost_kasrt[2],p->toMN3.sost_kasrt[3]);
 							break;
 						default :   if(p->verbose) printf("Error TS (TC=%d)\n",f12->zag.TS);
 							break;

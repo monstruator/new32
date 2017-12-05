@@ -40,7 +40,11 @@ struct sostSPIAK {
       unsigned char Spiak: 1;
       unsigned char Cpp:   1;
       unsigned char T625:  1;
-      unsigned char rez1:  5;
+	  unsigned char obm_R999:   1;
+	  unsigned char ready_R999:   1;
+	  unsigned char retr_R999:   1;
+	  unsigned char rez1:  2;
+      //unsigned char rez1:  5;
 	 
 	  unsigned char ispr:  1;
 	  unsigned char rabota:1;
