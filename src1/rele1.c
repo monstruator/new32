@@ -284,7 +284,7 @@ main(int argc, char *argv[])
 							case 50: //off 5 rele
 									if (p->work_com[c_step].s[i].status==0) 
 									{
-										p->work_com[c_step].s[i].status=1; 
+										p->work_com[c_step].s[i].status=2; 
 										rele &= ~0x10; 	*(unsigned int*)(addr1 +0x2C00)=rele;
 										if(p->verbose>1) printf("WRITE OUT DATA %x\n",rele);
 									}
@@ -292,7 +292,7 @@ main(int argc, char *argv[])
 							case 51: //on 5 rele
 									if (p->work_com[c_step].s[i].status==0) 
 									{
-										p->work_com[c_step].s[i].status=1; 
+										p->work_com[c_step].s[i].status=2; 
 										rele|=0x10; *(unsigned int*)(addr1 +0x2C00)=rele;
 										if(p->verbose>1) printf("WRITE OUT DATA  %x\n",rele);
 									}

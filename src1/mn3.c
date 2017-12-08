@@ -225,7 +225,7 @@ void main(int argc, char **argv)
 					p->work_com[n_s].s[n_mc].n_chan=2;
 					p->work_com[n_s].s[n_mc].n_com=1; //SVCH work		
                     n_mc++; //kol-vo mini komand + 1
-					
+					//-----------------------------------------------------------
 					if (p->cvs==10)
 					{
 						p->work_com[n_s].s[n_mc].n_chan=3; //rele
@@ -272,6 +272,13 @@ void main(int argc, char **argv)
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
 							p->work_com[n_s].t_stop =p->sys_timer+100;
 							//-----------------------------------------------------------
+							n_s=4;  n_mc=0; //nomer waga //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=3;
+							p->work_com[n_s].s[n_mc].n_com=20; //rele prm/prd on/off
+							n_mc++; //kol-vo mini komand + 1
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s  
+							p->work_com[n_s].t_stop =p->sys_timer+100;
+							
 							if (p->fromMN3.a_params[0]) // R999 onn
 							{
 								n_s=4;  n_mc=0; //s4et4ik mini komamdi
@@ -911,7 +918,7 @@ void main(int argc, char **argv)
 							break;
 					case 9 :  // FK4
 							p->work_com[n_s].s[n_mc].n_chan=2;  //Cpp
-							p->work_com[n_s].s[n_mc].n_com=101; // Command OK
+							p->work_com[n_s].s[n_mc].n_com=70; // Command OK
 							
 							n_mc++; //kol-vo mini komand + 1
 							p->work_com[n_s].t_stop =p->sys_timer+300;  
@@ -944,6 +951,13 @@ void main(int argc, char **argv)
 							p->work_com[n_s].t_stop =p->sys_timer+600;
 							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 					//---------------------------------------------
+							n_s=3;  
+							n_mc=0; //s4et4ik mini komamdi
+							p->work_com[n_s].s[n_mc].n_chan=6; //t625
+							p->work_com[n_s].s[n_mc].n_com=923; //nomer waga   sravnenie massiva
+							n_mc++; //kol-vo mini komand + 1						
+							p->work_com[n_s].t_stop =p->sys_timer+1000;
+							p->work_com[n_s].num_mini_com=n_mc; //zapomnim kol-vo mini komand na wage n_s
 						}
 				
 						else 

@@ -169,6 +169,8 @@ main()
 									if (p->fromMN3.a_params[0]==1) f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
 									else f11.data.KU0=ustSS=0;
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU12=25; // oslablenie prm = 25
+									f11.data.ustKU12=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										
 									if(p->work_com[c_step].s[i].status==0)
 									{
@@ -481,6 +483,7 @@ main()
 									if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 									{
 										//if ((f12->data.SS10>10)&&(f12->data.SS10<50)) //esli otet=sosto9nie 
+										//printf("SS10(<50)=%d ",f12->data.SS10);
 										if (f12->data.SS10<50) //esli otet=sosto9nie 
 										{
 											p->work_com[c_step].s[i].status=2; // ispravnost'
@@ -637,6 +640,33 @@ main()
 								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
 								{								
 									if ((f12->data.SS1==1)&&(f12->data.SS7==8)) //esli otet=sosto9nie 
+									{
+										p->work_com[c_step].s[i].status=2; // ispravnost'
+									}
+									//else p->work_com[c_step].s[i].status=3;
+									else 
+									{
+										//f11.zag.KSS=0;
+										new_f12 = p->count_cpp_status;
+										col=status_request();
+									}
+								}
+								break;
+								
+							case 70 : if(p->work_com[c_step].s[i].status==0) //FK8
+								{
+									p->work_com[c_step].s[i].status=1;
+									if(p->verbose) printf("		FK %d \n",p->fromMN3.a_params[0]);
+									f11.data.KU0=1; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
+									f11.data.KU8=7;  //p->fromMN3.a_params[0]; //FK 1 - 12
+									f11.data.ustKU0=1;
+									f11.data.ustKU8=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									col=cmd_send();
+									new_f12 = p->count_cpp_status;
+								}
+								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+								{								
+									if ((f12->data.SS1==1)&&(f12->data.SS7==7)) //esli otet=sosto9nie 
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}
