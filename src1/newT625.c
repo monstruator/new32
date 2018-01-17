@@ -428,8 +428,12 @@ main(int argc, char *argv[])
 									break;
 						//------------FK5 END-----------------------------------------------------
 						//------------Ustanovit' svyaz' s AK START--------------------------------
-							case 93:  //ust svyaz' s AK
-									send_SVCH();
+							case 93:  //ust svyaz' s AK SVCH
+									if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
+                                    {
+										send_SVCH();
+									}
+									p->work_com[c_step].s[i].status=1;
 									Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
 									p->SOST625=1;
 									for (ii=0;ii<sizeof(read_7118);ii++) read_7118.bufcom[ii]=0;
@@ -466,44 +470,26 @@ main(int argc, char *argv[])
 											p->work_com[c_step].s[i].status=2; // ispravnost'
 										}
 									}
-									else 
-									{
-										if (p->verbose>1) printf("T-625-Rqst no answer\n");
-										p->cmd_625.T625_on_off=1;
-										p->SOST625=3;
-										p->work_com[c_step].s[i].status=3;
-									}
+									//else 
+									//{
+									//	if (p->verbose>1) printf("T-625-Rqst no answer\n");
+									//	p->cmd_625.T625_on_off=1;
+									//	p->SOST625=3;
+									//	p->work_com[c_step].s[i].status=3;
+									//}
 									break;
 									
 							case 931: 	// t625  po lvs 
-									for(ii=0;ii<50;ii++) buffer[ii]=0x5555;
-									Initinf(50);
-									sen = Udp_Client_Send(&Uc42,&send_data,sizeof(send_data));
+									p->work_com[c_step].s[i].status=1;
+									for(ii=0;ii<50;ii++) send_data.send_inf.Data[ii]=ii; // 0x5555
+									
+									sen = Udp_Client_Send(&Uc42,&send_data,Initinf(50)); //1-50
 									p->SOST625=1;
 									local_timer=p->sys_timer;
 									bytes=0;
-									while  ((( bytes = Udp_Client_Read(&Uc42,&send_data,sizeof(send_data)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
-									//	if( (p->sys_timer-local_timer)>time625)
-									if (bytes>0)
-									{
-										p->SOST625=2; 
-										memcpy(&p->inf_625,&send_data,sizeof(send_data));
-										p->cmd_625.count625_inf++;
-										//printf(" formulyar       :         %x\n  dlinna       :         %d\n" ,	send_data.buffer[4],	p->cmd_625.count625_inf);
-										//for (ii=0; ii<28; ii++) printf ("\k = %x\n", send_data.buffer[ii]);
-										for (ii=0; ii<10; ii++) printf ("%04x  ",send_data.buffer[ii]); 
-										printf("\n"); 
-										p->cmd_625.T625_on_off=0;
-										
-									}
-									else 
-									{
-										if (p->verbose>1) printf("T-625-Inf no answer\n");
-										p->cmd_625.T625_on_off=1;
-										p->SOST625=3;
-										p->work_com[c_step].s[i].status=3;
-										//break;
-									}
+									p->work_com[c_step].s[i].status=2;
+									t625com = p->cmd_625.count625_inf;
+									p->cmd_625.T625_on_off=0;
 									break;
 							
 							case 932: 	// t625  po lvs   
@@ -519,6 +505,58 @@ main(int argc, char *argv[])
 										p->work_com[c_step].s[i].status=3;
 										}
 										break;
+										
+							case 933:  //ust svyaz' s AK DMV
+									if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
+                                    {
+										send_DMW();
+									}
+									p->work_com[c_step].s[i].status=1;
+									Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
+									p->SOST625=1;
+									for (ii=0;ii<sizeof(read_7118);ii++) read_7118.bufcom[ii]=0;
+									local_timer=p->sys_timer;
+									bytes=0;
+									while  ((( bytes = Udp_Client_Read(&Uc41,&read_7118,sizeof(read_7118)))<=0)&&((p->sys_timer-local_timer)<time625)) delay(5);
+									if (bytes>0)
+									{
+										p->SOST625=2; 
+										p->cmd_625.count625_cmd++;
+										/*if(read_7118.O_na_zapros.Tip==0x2)
+										{
+											p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
+											p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
+											printf (" Otvet na zapros   :   sostoyanie-  %d   rshim raboti- %d   dlina-  %d  schetchik komand-  %d\n",
+											p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
+											p->cmd_625.T625_Result, // reshim raboti
+											read_7118.O_na_zapros.Dlina, //dlina
+											p->cmd_625.count625_cmd);
+											if (p->cmd_625.T625_Result == 0) printf (" work");
+											if (p->cmd_625.T625_Result == 1) printf (" reboot");
+											if (p->cmd_625.T625_Result == 2) printf (" reglament");
+											if (p->cmd_625.T625_Result == 3) printf (" finish");
+											if (p->cmd_625.T625_Result == 4) printf (" control");
+											fflush (stdout);
+											
+										} */
+										if(read_7118.O_na_zapros.Tip==0x113)
+										{
+											p->cmd_625.T625_DMW_Result=read_7118.O_na_kom.Result;
+											printf (" Otvet na vybor DMW:  %d   %d    %d\n",
+											read_7118.O_na_kom.Tip,
+											p->cmd_625.T625_DMW_Result,p->cmd_625.count625_cmd);
+											p->work_com[c_step].s[i].status=2; // ispravnost'
+										}
+									}
+									//else 
+									//{
+									//	if (p->verbose>1) printf("T-625-Rqst no answer\n");
+									//	p->cmd_625.T625_on_off=1;
+									//	p->SOST625=3;
+									//	p->work_com[c_step].s[i].status=3;
+									//}
+									break;		
+									
 						//------------Ustanovit' svyaz' s AK END-----------------------------------
 						case 101: if (p->work_com[c_step].s[i].status==0) //na4alo vipolneni9
                                     {    
@@ -547,7 +585,7 @@ main(int argc, char *argv[])
 			{
 				
 				timer2++;
-				if (timer2 == 100) // primerno 5 sec
+				/*if (timer2 == 100) // primerno 5 sec
 				{
 					send_zapros();
 					Udp_Client_Send(&Uc41,&read_7118,sizeof(read_7118));
@@ -567,12 +605,13 @@ main(int argc, char *argv[])
 								p->toMN3.sost_spiak.konez=p->toMN3.sost_spiak.kontr=0; 
 								p->cmd_625.T625_ok_nok= read_7118.O_na_zapros.Sost;
 								p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
+								p->cmd_625.T625_Result= read_7118.O_na_zapros.Opt;
 								//printf (" T625 : sostoyanie-0x%02x   rshim raboti-%d   dlina-  %d  schetchik komand-  %d\n",
 								//p->cmd_625.T625_ok_nok, // sostoyanie 64 = 1 0x40
 								//p->cmd_625.T625_Result, // reshim raboti
 								//read_7118.O_na_zapros.Dlina, //dlina
 								//p->cmd_625.count625_cmd);
-								
+								printf (" Worktime : %d \n", read_7118.O_na_zapros.Reserv1);
 								printf (" T625 : ");
 								if (p->cmd_625.T625_ok_nok==0x40) p->toMN3.sost_spiak.ispr=1;
 								else p->toMN3.sost_spiak.ispr=0;
@@ -606,7 +645,7 @@ main(int argc, char *argv[])
 							p->toMN3.sost_spiak.T625=0; //ne ispravno T625
 						}
 					timer2 =0;
-				}
+				}*/
 				
 			}
 			timer3++;

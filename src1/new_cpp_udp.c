@@ -169,7 +169,7 @@ main()
 									if (p->fromMN3.a_params[0]==1) f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
 									else f11.data.KU0=ustSS=0;
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
-									f11.data.KU12=25; // oslablenie prm = 25
+									f11.data.KU12=17; // oslablenie prm = 25
 									f11.data.ustKU12=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
 										
 									if(p->work_com[c_step].s[i].status==0)
@@ -861,19 +861,26 @@ main()
 									f11.zag.PS=1;
 									f11.data.KU0=0; //rezim raboti 0 - rabota, 1 - FK, 2 - SR
 									f11.data.ustKU0=1; // 1 - ustanovit' , 0 - ne ustanavlivat'
+									f11.data.KU1=1;
+									f11.data.ustKU1=1;
 									f11.data.KU2=0;
 									f11.data.ustKU2=1;
-									f11.data.KU3=1;
+									f11.data.KU3=0;
 									f11.data.ustKU3=1;
 									f11.data.KU7=0;
 									f11.data.ustKU7=1;
 									col=cmd_send();
 									new_f12 = p->count_cpp_status;
-									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS1==0)&&(f12->data.SS2_1==0)&&(f12->data.SS2_0==1)&&(f12->data.SS6==0)&&(f12->data.SS8==0)&&(f12->data.SS9==0))  //esli otet pravilnii 
+								}
+								if ((p->work_com[c_step].s[i].status==1)&&(new_f12 != p->count_cpp_status))
+								{
+									printf("ss0 == %d (1) ss1 == %d (0) ss2.1 == %d (0) ss2.0 == %d (1) ss6 = %d (0) ss8 = %d (0) ss9 = %d (0) \n", f12->data.SS0_all, f12->data.SS1, f12->data.SS2_1, f12->data.SS2_0, f12->data.SS6, f12->data.SS8, f12->data.SS9);
+
+									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS1==0)&&(f12->data.SS2_1==0)/*&&(f12->data.SS2_0==1)*/&&(f12->data.SS6==0)/*&&(f12->data.SS8==0)&&(f12->data.SS9==0)*/)  //esli otet pravilnii 
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'
 									}
-									else p->work_com[c_step].s[i].status=3;
+									else col=status_request();
 								}
 								break;
 							
@@ -887,6 +894,7 @@ main()
 									f11.zag.PS=1;
 									col=cmd_send();
 									new_f12 = p->count_cpp_status;
+									printf("SS9 = %d (1) \n", f12->data.SS9==1);
 									if ((f12->data.SS0_all)&&(p->work_com[c_step].s[i].status==1)&&(f12->data.SS9==1))  //esli otet pravilnii 
 									{
 										p->work_com[c_step].s[i].status=2; // ispravnost'

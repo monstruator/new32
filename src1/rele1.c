@@ -129,26 +129,32 @@ main(int argc, char *argv[])
 		if (rele_timer!=p->sys_timer) //timer
 		{
 			rele_timer=p->sys_timer;
-			if (iii == 25) 
+			//printf("iii = %d\n", iii);
+			if (iii > 25) 
 			{
 				p->toMN3.sost_spiak.obm_R999=1;  //vremenno!!!!!!
 				printf("obmen 1 \n");
 				if (*(unsigned int*)(addr1 + 0x4C00)&0x01) 
 				{
 					p->toMN3.sost_spiak.retr_R999=1;
-					printf("READ DATA - Retranslyator %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x01);
+					printf("READ DATA - Priem %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x01);
 				}
 				else p->toMN3.sost_spiak.retr_R999=0;
 				
 				if (*(unsigned int*)(addr1 + 0x4C00)&0x08)
 				{
-					printf("READ DATA - Antenna\Ekvivalent %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x08);
+					printf("READ DATA - Antenna %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x08);
+				}
+				
+				if (*(unsigned int*)(addr1 + 0x4C00)&0x1000)
+				{
+					printf("Gotovnost' T-625 = 1 \n");
 				}
 				
 				if (*(unsigned int*)(addr1 + 0x4C00)&0x02) 
 				{
 					p->toMN3.sost_spiak.ready_R999=1;
-					printf("READ DATA - Gotovnost' %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x02);
+					printf("READ DATA - Peredacha %x\n",*(unsigned int*)(addr1 + 0x4C00)&0x02);
 				}
 				else p->toMN3.sost_spiak.ready_R999=0;
 				
@@ -342,6 +348,39 @@ main(int argc, char *argv[])
 									//if(p->verbose>1) printf(" %d\n",p->work_com[c_step].t_stop-p->sys_timer);
 									if (p->work_com[c_step].t_stop-p->sys_timer<20) p->work_com[c_step].s[i].status=2;
 									break;
+							
+							case 99: // gogovnost' T-625 == 1
+									if (p->work_com[c_step].s[i].status==0) 
+									{
+										p->work_com[c_step].s[i].status=1; 
+									}
+									if (p->work_com[c_step].s[i].status==1)
+									{
+										if (*(unsigned int*)(addr1 + 0x4C00)&0x1000)
+										{
+											p->work_com[c_step].s[i].status=2;
+											printf("T-625 gotovnost' 1 \n");
+										}
+										else printf("ERROR!!! T-625 gotovnost' != 1 \n");
+									}
+									break;
+									
+							case 100: // gogovnost' T-625 == 0
+									if (p->work_com[c_step].s[i].status==0) 
+									{
+										p->work_com[c_step].s[i].status=1; 
+									}
+									if (p->work_com[c_step].s[i].status==1)
+									{
+										if ((*(unsigned int*)(addr1 + 0x4C00)&0x1000) == 0) 
+										{
+											p->work_com[c_step].s[i].status=2;
+											printf("T-625 gotovnost' 0 \n");
+										}
+										else printf("ERROR!!! T-625 gotovnost' != 0 \n");
+									}
+									break;
+							
 							case 104: //Ogidanie Ispravnosti R999
 									//p->work_com[c_step].s[i].status=1;
 									//if(p->verbose>1) 
